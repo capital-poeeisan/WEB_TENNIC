@@ -1,0 +1,56 @@
+﻿
+<div id="layoutSidenav_nav">
+    <nav class="sb-sidenav accordion sb-sidenav-dark" id="sidenavAccordion">
+        <div class="sb-sidenav-menu"> 
+            <div class="logo">
+                    <h4>Web Tennic</h4>
+            </div>
+            <div class="nav">
+                <div class="sb-sidenav-menu-heading text-white">
+                    Progress
+                </div>
+                <a class="nav-link fw-semibold"
+                   asp-controller="ProjectDetail"
+                   asp-action="Index">
+
+                    <div class="sb-nav-link-icon">
+                        <i class="fas fa-chart-line "></i>
+                    </div>
+
+                    Progress Input
+
+                </a>
+                <div class="sb-sidenav-menu-heading text-white fw-semibold">
+                    Project
+                </div>
+
+
+                <a class="nav-link fw-semibold"
+                   asp-controller="ProjectList"
+                   asp-action="Index">
+
+                    <div class="sb-nav-link-icon">
+                        <i class="fas fa-project-diagram"></i>
+                    </div>
+
+                    Project List
+
+                </a>
+
+                <a class="nav-link fw-semibold"
+                   asp-controller="ImportExcel"
+                   asp-action="Index">
+
+                    <div class="sb-nav-link-icon">
+                        <i class="fas fa-file-excel"></i>
+                    </div>
+
+                    Excel Upload
+                </a>
+            </div>
+
+        </div>
+
+    </nav>
+
+</div>
