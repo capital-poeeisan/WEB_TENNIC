@@ -12,12 +12,7 @@
 
 <div class="card shadow  py-2 px-1">
     <div class="card-body " style="padding-top:0px!important;">
-        @*  <div class="card shadow-sm h-100 table-card"> *@
-
-        @*  <div class="card-header fw-semibold">
-                        <i class="fas fa-table me-2"></i>
-                        Project List
-                    </div> *@
+       
         <div class="d-flex align-items-center gap-3 mt-3" style="padding-top:0px!important">
             <form asp-action="Index" method="get" id="searchForm" class="form-check me-3">
                 <input type="checkbox"
@@ -38,14 +33,11 @@
                         id="btnShow "
                         type="submit">
                     表示
-                </button>
-                @* <button type="submit" class="btn btn-primary btn-sm btn-search ">
-                                            表示
-                                     </button> *@
+                </button>               
 
             </form>
         </div>
-        @*   <div class="card-body"> *@
+      
         <div class="table-responsive">
             <table id="projectTable"
                    class="table table-sm table-hover table-bordered table-striped align-middle mb-0 table-edit small">
@@ -77,10 +69,7 @@
                                 { *@
                                 <a class="btn btn-outline-primary btn-sm" style="font:200!important;" onclick="location.href='@Url.Action("Index", "ProjectDetail")'">
                                     Detail
-                                </a>
-                                @* <a href="/ProjectDetail/Index">
-                                        Detail
-                                    </a> *@
+                                </a>                              
                                 @*   } *@
 
                             </td>
@@ -94,11 +83,7 @@
 
 
         </div>
-        @*   </div> *@
-
-        @*  </div> *@
-
-
+     
         <div class="d-flex justify-content-center gap-3 mt-3">
 
             <div class="card-footer bg-light border-0 text-center">
