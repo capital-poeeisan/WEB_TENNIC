@@ -62,8 +62,9 @@
 }
 #progressTable {
     width: 100% !important;
-    min-width: 400px;
+    min-width: 610px;
     font-size: 0.88rem;
+    table-layout:fixed;
 }
 
     #progressTable th {
@@ -91,7 +92,7 @@
    
     #progressTable th:nth-child(2),
     #progressTable td:nth-child(2) {
-        width: 100px;
+        width: 120px;
         white-space: nowrap;
         overflow: hidden;
         text-overflow: ellipsis;
@@ -106,8 +107,7 @@
  
     #progressTable th:nth-child(4),
     #progressTable td:nth-child(4) {
-        width: 30px;
-        color:blue;
+        width: 52px;
     }
 
     

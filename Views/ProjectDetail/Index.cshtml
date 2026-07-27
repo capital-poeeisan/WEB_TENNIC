@@ -21,7 +21,8 @@
                 <div class="col-md-6">
                     <select asp-for="ProjectCd"
                             asp-items="Model.ProjectList"
-                            class="form-select">
+                            class="form-select"
+                           >
                         <option value="">
                             Select Project
                         </option>
@@ -204,7 +205,6 @@
                 });
             });
            $(document).on("click", "#btnCancel", function () {
-            console.log("Cancel clicked");
               var staff = $("#StaffCD");
                  staff.val(null).trigger("change");
                 $("#ProjectCd").val("");
@@ -236,8 +236,6 @@
             // });
 
         $(document).on("click", "#btnSave", function () {
-
-
          if ($("#progressTable").DataTable().rows().count() === 0) {
             Swal.fire({
                 icon: "warning",
@@ -262,6 +260,14 @@
 
         });
 
+
+       var projectCd = $("#ProjectCd").val();
+
+        if (projectCd) {
+             
+                $("#btnShow").click();
+                  $("#ProjectCd").trigger("change");
+        }
 
         function saveProject() {
 

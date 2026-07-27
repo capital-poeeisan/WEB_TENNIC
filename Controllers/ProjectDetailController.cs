@@ -12,12 +12,13 @@ namespace WEB_TENNIC.Controllers
         {
             _service = service;
         }
-        public IActionResult Index()
+        public IActionResult Index(string projectCD)
         {
             var model = _service.GetProjectList();
+            model.ProjectCd = projectCD;
             return View(model);
         }
-
+        
         public IActionResult GetStaff(string projectCD)
         {
 
