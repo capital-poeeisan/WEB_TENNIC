@@ -48,7 +48,7 @@ namespace WEB_TENNIC.Controllers
 
                     if (header1 != "CustomerCD" && header2 != "OrderAmt")
                     {
-                        TempData["ErrorMessage"] = "Invalid Excel format. Expected columns: CustomerCD, OrderAmt.";
+                        TempData["ErrorMessage"] = "無効なExcel形式です。必要な列：CustomerCD、OrderAmt です。";
                         return View("Index");                        
                     }
                     else
@@ -58,7 +58,7 @@ namespace WEB_TENNIC.Controllers
                                 .AnyAsync(p => p.ProjectName == model.ProjectName);
                         if (pj_exists)
                         {
-                            TempData["ErrorMessage"] = $"This Project Name :'{model.ProjectName}'is already exist!";
+                            TempData["ErrorMessage"] = $"'{model.ProjectName}'は既に存在します。";
                             return View("Index");
                             //ModelState.AddModelError("", $"This Project Name :'{model.ProjectName}'is already exist!");
                             //return View("Index", model);
@@ -77,7 +77,7 @@ namespace WEB_TENNIC.Controllers
 
                         if (!customerCDValues.Any())
                         {
-                            TempData["ErrorMessage"] = "Excel file has no data.";
+                            TempData["ErrorMessage"] = "Excelファイルにデータがありません。";
                             return RedirectToAction("Index");
                         }
                         else
@@ -101,7 +101,8 @@ namespace WEB_TENNIC.Controllers
 
                                     if (!exists)
                                     {
-                                        TempData["ErrorMessage"] = $"Row {row}: CustomerCD '{customerCd}' does not exist.";
+                                      
+                                        TempData["ErrorMessage"] = $"{row}行：CustomerCD  '{customerCd}' が存在しません。";
                                         return View("Index");
 
                                     }
@@ -119,7 +120,7 @@ namespace WEB_TENNIC.Controllers
 
                             }
 
-                            TempData["SuccessMessage"] = $"'{model.fileName.FileName}'was successfuly imported.";
+                            TempData["SuccessMessage"] = $"'{model.fileName.FileName}'登録が完了しました。";
 
                            
 
