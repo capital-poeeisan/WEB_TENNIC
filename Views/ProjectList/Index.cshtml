@@ -48,7 +48,7 @@
                   @*   <div class="card-body"> *@
                         <div class="table-responsive">                           
                             <table id="projectTable"
-                                   class="table table-sm table-hover table-bordered table-striped  align-middle mb-0 table-edit small">
+                                   class="table table-sm table-hover table-bordered  align-middle mb-0 table-edit small">
                                 <thead class="table-info">
                                     <tr>
                                         <th class="text-center w-auto">
@@ -174,40 +174,101 @@
 
 @section Scripts{
     <script>
-    $(document).ready(function () {
-               var table = $('#projectTable').DataTable({
-            paging: true,
-            searching: true,
-            ordering: true,
-            info: true,
-            lengthChange: false,
-            responsive: true,
-            autoWidth: false
+
+              $(document).ready(function () {
+
+            var table = $('#projectTable').DataTable({
+                paging: true,
+                searching: true,
+                ordering: true,
+                info: true,
+                lengthChange: false,
+                responsive: true,
+                autoWidth: false
+            });
+
+
+            function addAllButton() {
+
+                if ($('#btnShowAll').length === 0) {
+
+                    $('.dt-paging ul').append(`
+                        <li class="dt-paging-button page-item">
+                            <button id="btnShowAll"
+                                    class="page-link"
+                                    type="button">
+                                ALL
+                            </button>
+                        </li>
+                    `);
+
+                }
+
+            }
+
+
+            // Page load အစပိုင်းအတွက်
+            addAllButton();
+
+
+            // နောက်ပိုင်း redraw တွေအတွက်
+            table.on('draw', function () {
+                addAllButton();
+            });
+
+
+            $(document).on('click', '#btnShowAll', function () {
+                table.page.len(-1).draw();
+            });
+
+
+            document.querySelector('.d-md-flex')
+                .prepend(document.getElementById('searchForm'));
+
         });
 
-        // All button ထည့်မယ်
-        if ($('#btnShowAll').length === 0) {
-            $('.dt-paging ul').append(`
-                <li class="dt-paging-button page-item">
-                    <button id="btnShowAll"
-                            class="page-link"
-                            type="button">
-                        ALL
-                    </button>
-                </li>
-            `);
-        }
+    // $(document).ready(function () {
+    //        var table = $('#projectTable').DataTable({
+    //         paging: true,
+    //         searching: true,
+    //         ordering: true,
+    //         info: true,
+    //         lengthChange: false,
+    //         responsive: true,
+    //         autoWidth: false
+    //     });
 
-        // Click Event
-        $(document).on('click', '#btnShowAll', function () {
-            table.page.len(-1).draw();
-        });
 
-        document.querySelector('.d-md-flex')
-    .prepend(document.getElementById('searchForm'));
+    //     table.on('draw', function () {
+
+    //         if ($('#btnShowAll').length === 0) {
+
+    //             $('.dt-paging ul').append(`
+    //                 <li class="dt-paging-button page-item">
+    //                     <button id="btnShowAll"
+    //                             class="page-link"
+    //                             type="button">
+    //                         ALL
+    //                     </button>
+    //                 </li>
+    //             `);
+
+    //         }
+
+    //     });
+
+
+    //     $(document).on('click', '#btnShowAll', function () {
+    //         table.page.len(-1).draw();
+    //     });
+
+        
+
+    //  document.querySelector('.d-md-flex')
+    // .prepend(document.getElementById('searchForm'));
 
       
-    });
+    // });
 
               
      

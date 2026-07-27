@@ -26,7 +26,7 @@ namespace WEB_TENNIC.Interface.Repositories
         .AsEnumerable()     // Execute SQL first
         .GroupBy(p => new { p.ProjectCd, p.ProjectName })
         .Select(g => g.First())
-        .OrderBy(p => p.ProjectCd)
+        .OrderByDescending(p => p.ProjectCd)
         .ToList();
         } 
 
@@ -68,8 +68,8 @@ namespace WEB_TENNIC.Interface.Repositories
         {
             using var transaction = await _context.Database.BeginTransactionAsync();
 
-            
-            
+           
+
             try
             {
                 DataTable table = new DataTable();

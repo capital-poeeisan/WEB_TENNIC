@@ -1,7 +1,5 @@
 ﻿body {
 }
-
-
 /* Select2 Multiple - make it look like normal dropdown */
 .select2-container--default .select2-selection--multiple {
     min-height: 35px;
@@ -64,10 +62,13 @@
 }
 #progressTable {
     width: 100% !important;
-    min-width: 350px;
+    min-width: 400px;
     font-size: 0.88rem;
-    table-layout: auto; /* change auto to fixed */
 }
+
+    #progressTable th {
+        white-space: nowrap;
+    }
     #progressTable td {
         padding-left: 0.1rem;
         padding-right: 0.1rem;
@@ -87,25 +88,26 @@
         width: 20px;
     }
 
-    /* Customer CD */
+   
     #progressTable th:nth-child(2),
     #progressTable td:nth-child(2) {
-        width: 150px;
+        width: 100px;
         white-space: nowrap;
         overflow: hidden;
         text-overflow: ellipsis;
     }
 
-    /* Active */
+    
     #progressTable th:nth-child(3),
     #progressTable td:nth-child(3) {
-        width: 33px;
+        width: 40px;
     }
 
-    /* Amount */
+ 
     #progressTable th:nth-child(4),
     #progressTable td:nth-child(4) {
-        width: 32px;
+        width: 30px;
+        color:blue;
     }
 
     
@@ -116,71 +118,6 @@
         overflow: hidden;
         text-overflow: ellipsis;
     }
-
-  
-/*#progressTable {
-    width: 100% !important;
-    min-width: 500px;
-    font-size: 0.88rem;
-    table-layout: auto;
-}
-
-
-#progressTable td {
-    padding-left: 0.1rem;
-    padding-right: 0.1rem;
-    padding-top: 0;
-    padding-bottom: 0;
-}
-#progressTable input.form-control {
-    border: none;
-    background: transparent;
-    box-shadow: none;
-    height: 1.6rem;
-}
-
-#progressTable input.form-control:focus {*/
-    /*background: #fff;*/
-    /*border: 1px solid #6f42c1;*/
-    /*box-shadow: 0 0 0 .15rem rgba(111,66,193,.15);*/
-/*}
-
-
-
-    #progressTable th:nth-child(1),
-    #progressTable td:nth-child(1) {
-        width: 25px;
-    }
-    #progressTable th:nth-child(2),
-    #progressTable td:nth-child(2) {
-        width: 40px;
-        white-space: nowrap;
-        overflow: hidden;
-        text-overflow: ellipsis;
-    }
-
-    #progressTable th:nth-child(3),
-    #progressTable td:nth-child(3)
-    {
-        width: 23px;
-        color:red;
-        
-    }
-
-    #progressTable th:nth-child(4),
-    #progressTable td:nth-child(4) {
-        width: 20px;
-    }
-
-    #progressTable th:nth-child(5),
-    #progressTable td:nth-child(5) {
-        padding-left: 0.1rem;
-        width: 200px;
-        white-space: nowrap;
-        overflow: hidden;
-        text-overflow: ellipsis;
-    }*/
-
 
 #summaryTable {
     width: 100% !important;
@@ -218,3 +155,7 @@
             width: 50px !important;
             text-align: center;
         }
+
+      .col-custom{
+          width:120px;
+      }

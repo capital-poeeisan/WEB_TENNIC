@@ -80,6 +80,10 @@ namespace WEB_TENNIC.Interface.Services
         }
         public async Task SaveProjectDetailsAsync(ProjectDetailViewModel details, bool endFlg, string projectCD)
         {
+            if (details.ProjectProgress == null || !details.ProjectProgress.Any())
+            {
+                throw new Exception("登録するデータがありません。");
+            }
             await _repository.SaveProjectDetailsAsync(details, endFlg, projectCD);
         }
     }
