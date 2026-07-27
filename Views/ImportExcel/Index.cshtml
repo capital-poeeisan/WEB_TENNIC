@@ -168,8 +168,19 @@
         var fileName = file.name;
         var extension = fileName.split('.').pop().toLowerCase();
 
-        if (extension !== "xlsx" && extension !== "xls") {
-            alert("Please select only Excel (.xlsx or .xls) file.");
+        if (extension !== "xlsx" && extension !== "xls") { 
+                            Swal.fire({
+                            title: 'エラー!',
+                            html: 'Excelファイルを選択してください。',
+                            confirmButtonText: 'はい',
+                            width: '360px',
+                            customClass: {
+                                popup: 'my-popup',
+                                title: 'my-title',
+                                confirmButton: 'my-button'
+                            },
+                            buttonsStyling: false
+                        });          
 
             input.value = "";
             document.getElementById("fileName").value = "";
