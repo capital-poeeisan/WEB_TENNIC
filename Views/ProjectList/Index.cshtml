@@ -11,104 +11,92 @@
 </div>
 
 <div class="card shadow  py-2 px-1">
-    <div class="card-body " style="padding-top:0px!important;">       
-               @*  <div class="card shadow-sm h-100 table-card"> *@
+    <div class="card-body " style="padding-top:0px!important;">
+       
+        <div class="d-flex align-items-center gap-3 mt-3" style="padding-top:0px!important">
+            <form asp-action="Index" method="get" id="searchForm" class="form-check me-3">
+                <input type="checkbox"
+                       class="form-check-input border-2 border-dark"
+                       name="EndFlag"
+                       id="chkEndFlag"
+                       style="align-items: !important"
+                       value="1"
+                       @(ViewBag.EndFlag == 1 ? "checked" : "") />
 
-                   @*  <div class="card-header fw-semibold">
-                        <i class="fas fa-table me-2"></i>
-                        Project List
-                    </div> *@
-              <div class="d-flex align-items-center gap-3 mt-3" style="padding-top:0px!important">
-                <form asp-action="Index" method="get" id="searchForm" class="form-check me-3">
-                                    <input type="checkbox"
-                                           class="form-check-input "
-                                           name="EndFlag"
-                                           id="chkEndFlag"
-                                           style="align-items: !important"
-                                           value="1"
-                                           @(ViewBag.EndFlag == 1 ? "checked" : "") />
+                <label class="form-check-label fw-semibold align-items-center"
+                       style="align-items:center !important" for="chkEndFlag">
+                    ALL
+                </label>
 
-                                    <label class="form-check-label fw-bold align-items-center"
-                           style="align-items:center !important" for="chkEndFlag">
-                                        ALL
-                                    </label>
+                &nbsp;&nbsp;
+                <button class="btn btn-primary  px-4 ms-3 shadow-sm px-4"
+                        id="btnShow "
+                        type="submit">
+                    表示
+                </button>               
 
-                                    &nbsp;&nbsp;
-                                        <button class="btn btn-primary  px-4 ms-3 shadow-sm px-4"
-                                                id="btnShow "
-                                                type="submit">
-                                            表示
-                                        </button>
-                                     @* <button type="submit" class="btn btn-primary btn-sm btn-search ">
-                                            表示
-                                     </button> *@
-                                    
-                                </form>
-                            </div>
-                  @*   <div class="card-body"> *@
-                        <div class="table-responsive">                           
-                            <table id="projectTable"
-                                   class="table table-sm table-hover table-bordered  align-middle mb-0 table-edit small">
-                                <thead class="table-info">
-                                    <tr>
-                                        <th class="text-center w-auto">
-                                            No.
-                                        </th>
-                                        <th>
-                                            ProjectName
-                                        </th>
-                                        <th class="text-center w-auto">
-                                            終了
-                                        </th>
-                                        <th class="text-center w-auto">
-                                        </th>
+            </form>
+        </div>
+      
+        <div class="table-responsive">
+            <table id="projectTable"
+                   class="table table-sm table-hover table-bordered table-striped align-middle mb-0 table-edit small">
+                <thead class="table-info">
+                    <tr>
+                        <th class="text-center w-auto">
+                            No.
+                        </th>
+                        <th>
+                            プロジェクト名
+                        </th>
+                        <th class="text-center w-auto">
+                            終了
+                        </th>
+                        <th class="text-center w-auto">
+                        </th>
 
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    @foreach (var item in Model)
-                                    {
-                                        <tr>
-                                            <td>@item.No</td>
-                                            <td>@item.ProjectName</td>
-                                            <td>@item.EndFlag</td>
-                                            <td>
-                                                @if (item.EndFlag != "◯")
-                                                {
-                                                    <a href="/ProjectDetail/Index">
-                                                        Detail
-                                                    </a>
-                                                }
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model)
+                    {
+                        <tr>
+                            <td>@item.No</td>
+                            <td>@item.ProjectName</td>
+                            <td>@item.EndFlag</td>
+                            <td>
+                                @*  @if (item.EndFlag != "◯")
+                                { *@
+                                <a class="btn btn-outline-primary btn-sm" style="font:200!important;" onclick="location.href='@Url.Action("Index", "ProjectDetail")'">
+                                    Detail
+                                </a>                              
+                                @*   } *@
 
-                                            </td>
+                            </td>
 
-                                        </tr>
+                        </tr>
 
-                                    }
+                    }
 
-                                </tbody>
-                            </table>
+                </tbody>
+            </table>
 
-                        
-                        </div>
-                  @*   </div> *@
 
-               @*  </div> *@
-          
-  
+        </div>
+     
         <div class="d-flex justify-content-center gap-3 mt-3">
 
             <div class="card-footer bg-light border-0 text-center">
-                <a class="btn btn-outline-secondary px-4" onclick="location.href='@Url.Action("Index", "ProjectList")'">                                       
-                    戻る
+                <a class="btn btn-outline-secondary px-4" onclick="location.href='@Url.Action("Index", "ProjectList")'">
+                    クリア
                 </a>
                 <button id="btnSave" type="button" onclick="location.href='@Url.Action("Index", "ImportExcel")'" class="btn btn-success  px-4 ms-3 ">
-                    登録
+                    新しい Project
                 </button>
             </div>
 
         </div>
-    
+
     </div>
 </div>
 
@@ -130,9 +118,9 @@
     .form-check-label {
         margin-left: 6px;
         font-weight: bold;
-  /*       margin-left: 5px; */
+        /*       margin-left: 5px; */
     }
-  
+
     .toolbar {
         padding-left: 12px !important;
         padding-right: 12px !important;
@@ -162,134 +150,93 @@
         text-align: center;
     }
 
-   
+
     .btn-search {
         /* min-width: 90px; */
         background-color: #0c63e4 !important;
     }
 
-   
 </style>
 
 
-@section Scripts{
+@section Scripts {
     <script>
 
-              $(document).ready(function () {
+                  $(document).ready(function () {
 
-            var table = $('#projectTable').DataTable({
-                paging: true,
-                searching: true,
-                ordering: true,
-                info: true,
-                lengthChange: false,
-                responsive: true,
-                autoWidth: false
-            });
+                var table = $('#projectTable').DataTable({
+                    paging: true,
+                    searching: true,
+                    ordering: true,
+                    info: true,
+                    lengthChange: false,
+                    responsive: true,
+                    autoWidth: false,
+                    order: []
+                });
 
 
-            function addAllButton() {
+                function addAllButton() {
 
-                if ($('#btnShowAll').length === 0) {
+                    if ($('#btnShowAll').length === 0) {
 
-                    $('.dt-paging ul').append(`
-                        <li class="dt-paging-button page-item">
-                            <button id="btnShowAll"
-                                    class="page-link"
-                                    type="button">
-                                ALL
-                            </button>
-                        </li>
-                    `);
+                        $('.dt-paging ul').append(`
+                            <li class="dt-paging-button page-item">
+                                <button id="btnShowAll"
+                                        class="page-link"
+                                        type="button">
+                                    ALL
+                                </button>
+                            </li>
+                        `);
+
+                    }
 
                 }
 
-            }
 
 
-            // Page load အစပိုင်းအတွက်
-            addAllButton();
-
-
-            // နောက်ပိုင်း redraw တွေအတွက်
-            table.on('draw', function () {
                 addAllButton();
+
+
+
+                table.on('draw', function () {
+                    addAllButton();
+                });
+
+
+                $(document).on('click', '#btnShowAll', function () {
+                    table.page.len(-1).draw();
+                });
+
+
+                document.querySelector('.d-md-flex')
+                    .prepend(document.getElementById('searchForm'));
+
             });
 
 
-            $(document).on('click', '#btnShowAll', function () {
-                table.page.len(-1).draw();
-            });
 
 
-            document.querySelector('.d-md-flex')
-                .prepend(document.getElementById('searchForm'));
+
+           document.getElementById("searchForm").addEventListener("submit", function () {
+
+            const checkbox = document.getElementById("chkEndFlag");
+
+            if (checkbox.checked) {
+
+               document.getElementById("chkEndFlag").value=1;
+
+            }
+            else {
+
+               document.getElementById("chkEndFlag").value=0;
+
+            }
 
         });
 
-    // $(document).ready(function () {
-    //        var table = $('#projectTable').DataTable({
-    //         paging: true,
-    //         searching: true,
-    //         ordering: true,
-    //         info: true,
-    //         lengthChange: false,
-    //         responsive: true,
-    //         autoWidth: false
-    //     });
-
-
-    //     table.on('draw', function () {
-
-    //         if ($('#btnShowAll').length === 0) {
-
-    //             $('.dt-paging ul').append(`
-    //                 <li class="dt-paging-button page-item">
-    //                     <button id="btnShowAll"
-    //                             class="page-link"
-    //                             type="button">
-    //                         ALL
-    //                     </button>
-    //                 </li>
-    //             `);
-
-    //         }
-
-    //     });
-
-
-    //     $(document).on('click', '#btnShowAll', function () {
-    //         table.page.len(-1).draw();
-    //     });
-
-        
-
-    //  document.querySelector('.d-md-flex')
-    // .prepend(document.getElementById('searchForm'));
-
-      
-    // });
-
-              
-     
-       document.getElementById("searchForm").addEventListener("submit", function () {
-          
-        const checkbox = document.getElementById("chkEndFlag");
-
-        if (checkbox.checked) {
-          
-           document.getElementById("chkEndFlag").value=1;
-         
-        }
-        else {
-            
-           document.getElementById("chkEndFlag").value=0;
-          
-        }
-
-    });
-
-</script>
+    </script>
 }
 
 
