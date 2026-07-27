@@ -192,14 +192,22 @@
                     success:function(result){
                         if(result.success===false){
                             Swal.fire({
-                                icon:"warning",
-                                title:"Project Required",
-                                text:"Please select a project."
+                                 title:"警告！",
+                                  html:"プロジェクトCDを選択してください。",
+                               confirmButtonText: 'はい',
+                               width: '360px',
+                               customClass: {
+                                   popup: 'my-popup',
+                                    title: 'title-warting',
+                                     confirmButton: 'warning-btn'
+                               },
+                 buttonsStyling: false
                             });
                             return;
 
                         }
                         $("#tableArea").html(result);
+                         $("#progressTable tbody .remark").first().focus();
                         initializeDataTables();
                     }
                 });
@@ -213,49 +221,42 @@
                       $('#summaryTable').DataTable().clear().draw();
 
         });
-
-            // $(document).on("change","#EndFlag",function(){
-
-            //     if($(this).is(":checked")){
-            //         $("#endFlagLabel")
-            //         .removeClass("btn-outline-success")
-            //         .addClass("btn-success");
-            //             $("#endFlagIcon")
-            //             .removeClass("fa-square")
-            //             .addClass("fa-square-check");
-            //     }
-
-            //     else{
-            //         $("#endFlagLabel")
-            //         .removeClass("btn-success")
-            //         .addClass("btn-outline-success");
-            //             $("#endFlagIcon")
-            //              .removeClass("fa-square-check")
-            //              .addClass("fa-square");
-            //     }
-            // });
-
         $(document).on("click", "#btnSave", function () {
          if ($("#progressTable").DataTable().rows().count() === 0) {
             Swal.fire({
-                icon: "warning",
-                title: "データがありません。"
+                 title:"警告！",
+                html: "データがありません。",
+                 confirmButtonText: 'はい',
+                              width: '360px',
+                              customClass: {
+                                  popup: 'my-popup',
+                                   title: 'title-warting',
+                                    confirmButton: 'warning-btn'
+                              },
+                buttonsStyling: false
             });
             return;
         }
+        var hasChecked = $("#progressTable .active:checked").length > 0;
+               
 
-            Swal.fire({
-                title: "登録しますか？",
-                icon: "question",
-                showCancelButton: true,
-                confirmButtonText: "登録",
-                cancelButtonText: "キャンセル"
+        var message = hasChecked
+            ? "登録しますか？"
+             : "どの行も選択されていません.　登録しますか？";
+                   
+        
+        
+        Swal.fire({
+                  title: message,
+                 icon: "question",
+                 showCancelButton: true,
+                 confirmButtonText: "登録",
+                 cancelButtonText: "キャンセル"
             }).then((result) => {
 
                 if (result.isConfirmed) {
                     saveProject();
                 }
-
             });
 
         });
@@ -309,12 +310,19 @@
                 success: function () {
 
                     Swal.fire({
-                        title: "登録しました。",
-                        icon: "success",
-                        confirmButtonText: "OK"
-                    }).then(() => {
-                        location.reload();
-                    });
+                         title: '成功!',
+                        html: "登録しました。",
+                      confirmButtonText: "はい",
+                             width: '360px',
+                             customClass: {
+                                 popup: 'my-popup',
+                                 title: 'my-title-success',
+                                 confirmButton: 'success-btn'
+                             },
+                             buttonsStyling: false
+                                }).then(() => {
+                         location.reload();
+                              });
 
                 },
                 error: function () {
@@ -322,7 +330,14 @@
                     Swal.fire({
                         title: "エラー",
                         text: "登録に失敗しました。",
-                        icon: "error"
+                           confirmButtonText: 'はい',
+                                 width: '360px',
+                                 customClass: {
+                                     popup: 'my-popup',
+                                     title: 'my-title',
+                                     confirmButton: 'my-button'
+                                 },
+                                 buttonsStyling: false
                     });
 
                 }

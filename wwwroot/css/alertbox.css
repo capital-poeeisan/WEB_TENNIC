@@ -55,3 +55,40 @@
     font-size: 24px;
     font-weight: bold;
 }
+
+.warning-btn {
+    background: #FFF3CD;
+    color: #333;
+    border: none;
+    border-radius: 8px;
+    padding: 8px 30px;
+    font-size: 16px;
+    margin-bottom: 20px;
+}
+.title-warting {
+    background: #FFF3CD;
+    color: #333;
+    padding: 15px;
+    margin: 0;
+    font-size: 24px;
+    font-weight: bold;
+}
+
+.question-btn {
+    background: #6C757D;
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    padding: 8px 30px;
+    font-size: 16px;
+    margin-bottom: 20px;
+}
+
+.title-question {
+    background: #6C757D;
+    color: #fff;
+    padding: 15px;
+    margin: 0;
+    font-size: 24px;
+    font-weight: bold;
+}
