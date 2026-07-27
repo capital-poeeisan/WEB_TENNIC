@@ -1,0 +1,10 @@
+﻿################################################################################
+# This .gitignore file was automatically created by Microsoft(R) Visual Studio.
+################################################################################
+
+/.vs
+/WEB_TENNIC/bin/Debug/net8.0
+/WEB_TENNIC/obj
+/obj/Debug/net8.0/rpswa.dswa.cache.json
+/obj/Debug/net8.0/WEB_TENNIC.AssemblyInfo.cs
+/obj/Debug/net8.0/WEB_TENNIC.AssemblyInfoInputs.cache
