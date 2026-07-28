@@ -74,18 +74,29 @@
     font-weight: bold;
 }
 
-.question-btn {
-    background: #6C757D;
+.confirm-btn {
+    background: #0DCAF0;
     color: #fff;
     border: none;
     border-radius: 8px;
-    padding: 8px 30px;
-    font-size: 16px;
+    padding: 7px 21px;
+    font-size: 14px;
+    margin-bottom: 20px;
+    margin-right:20px;
+}
+
+.cancecl-btn {
+    background: #0DCAF0;
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    padding: 7px 21px;
+    font-size: 14px;
     margin-bottom: 20px;
 }
 
 .title-question {
-    background: #6C757D;
+    background: #0DCAF0;
     color: #fff;
     padding: 15px;
     margin: 0;

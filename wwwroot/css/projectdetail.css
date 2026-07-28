@@ -1,6 +1,26 @@
 ﻿body {
+    
+}
+
+.table-card {
+    display: flex;
+    flex-direction: column;
+}
+
+
+ .table-card .card-body {
+        flex: 1;
+        overflow: hidden;
+    }
+
+/* only table scroll */
+.table-scroll {
+    height: calc(100vh - 330px);
+    overflow-y: auto;
+    overflow-x: auto;
 }
 /* Select2 Multiple - make it look like normal dropdown */
+.select2-container--default .select2-selection--single,
 .select2-container--default .select2-selection--multiple {
     min-height: 35px;
     border: 1px solid #ced4da;
@@ -9,8 +29,20 @@
     position: relative;
 }
 
+    
+    /* Bigger default Select2 arrow */
+.select2-container--default .select2-selection--single .select2-selection__arrow {
+        height: 35px;
+        width: 35px;
+        right: 5px;
+    }
+.select2-container--default .select2-selection--single .select2-selection__arrow b {
+            border-width: 7px 6px 0 6px; /* Bigger triangle */
+            margin-left: -6px;
+            margin-top: -3px;
+        }
     /* Arrow */
-    .select2-container--default .select2-selection--multiple::after {
+.select2-container--default .select2-selection--multiple::after {
         content: "";
         position: absolute;
         right: 16px;
@@ -24,29 +56,39 @@
         pointer-events: none;
     }
 
-    /* Keep placeholder vertically centered */
-    .select2-container--default .select2-selection--multiple .select2-search--inline .select2-search__field {
+/* Keep placeholder vertically centered */
+.select2-container--default .select2-selection--multiple .select2-search--inline .select2-search__field {
         margin-top: 6px;
         font-size: 15px;
     }
 
     /* Placeholder color */
-    .select2-container--default .select2-selection--multiple .select2-selection__placeholder {
-        font-size: 1rem; 
-        font-weight: 600; 
-        color:red;
+ .select2-container--default .select2-selection--single .select2-selection__placeholder,
+ .select2-container--default .select2-selection--multiple .select2-selection__placeholder {
+        font-size: 1rem;
+        font-weight: 400;
     }
 
+.select2-container--default .select2-selection--multiple .select2-selection__placeholder {
+        font-size: 3rem;
+        font-weight: 600;
+    }
+
+
 .select2-container--default.select2-container--focus
-.select2-selection--multiple {
+.select2-selection--multiple,
+.select2-container--default.select2-container--focus
+.select2-selection--single {
     border-color: #86b7fe !important;
-    box-shadow: 0 0 0 .25rem rgba(13,110,253,.25); 
+    box-shadow: 0 0 0 .25rem rgba(13,110,253,.25);
 }
 
 .select2-container--default .select2-selection__placeholder {
     font-size: 14px;
     color: #6c757d !important;
 }
+
+
 /*Table CArd*/
 
 .table-card .card-body {
@@ -58,7 +100,7 @@
     padding:0;
 }
 .table-responsive {
-    overflow-x: auto;
+    overflow: auto;
 }
 #progressTable {
     width: 100% !important;
@@ -158,4 +200,9 @@
 
       .col-custom{
           width:120px;
+          
       }
+
+.textcolor-custom {
+    color: #073584;
+}

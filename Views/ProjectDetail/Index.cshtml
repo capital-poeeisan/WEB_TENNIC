@@ -1,29 +1,26 @@
 ﻿@model WEB_TENNIC.Models.ViewModels.ProjectDetailViewModel
 <!-- Page Heading -->
-<div class="d-sm-flex align-items-center justify-content-between mb-3">
+<div class="d-sm-flex align-items-center justify-content-between mb-3 ">
 
-    <h3 class="mb-0 fw-bold">
+    <h3 class="mb-0 fw-bold textcolor-custom">
         <i class="fas fa-chart-line me-2"></i>
         Project Progress Input & Summary
     </h3>
 </div>
 <!-- Search Card -->
-@* <div class="card shadow pg-header  py-2 px-1">
-    <div class="card-body "> *@
-        <form id="detailform" asp-action="Index" method="post">
-            <!-- Project -->
-            <div class="row mb-3 g-1 align-items-center">
 
+        <form id="detailform"   asp-action="Index" method="post">
+            <!-- Project -->
+            <div class="row mb-4 g-1 align-items-center">
                 <label asp-for="ProjectCd"
                        class="col-custom col-form-label fw-semibold text-start text-end">
                     プロジェクト名
                 </label>
-                <div class="col-md-6">
+                <div class="col-md-5 ">
                     <select asp-for="ProjectCd"
                             asp-items="Model.ProjectList"
-                            class="form-select"
-                           >
-                        <option value="">
+                    class="form-select select2-single">
+                        <option >
                             Select Project
                         </option>
                     </select>
@@ -31,7 +28,7 @@
             </div>
 
             <!-- Staff -->
-    <div class="row mb-3 g-1 align-items-center">
+    <div class="row mb-4 g-1 align-items-center">
                 <label asp-for="StaffCD"
                class="col-custom col-form-label fw-semibold  text-start text-end">
                     スタッフ名
@@ -39,8 +36,9 @@
                 <div class="col-md-7">
                     <select asp-for="StaffCD"
                             asp-items="Model.StaffList"
-                            class="form-select select2 fw-semibold"
-                            multiple="multiple">
+                    class="form-select select2-multiple fw-semibold"
+                    multiple="multiple">
+                
                         <option value="">
                             Select Staff
                         </option>
@@ -50,8 +48,6 @@
             <button class="btn btn-primary shadow-sm px-4 "
                     id="btnShow"
                     type="button">
-
-
                 表示
             </button>
                 </div>
@@ -60,14 +56,10 @@
         <div id="tableArea">
             <partial name="_ProjectDetailTable" />
         </div>
-    @* </div>
-</div> *@
 @section Scripts {
     <script>
-              function addShowAllButton() {
-
+        function addShowAllButton() {
             if ($('#progressTable_wrapper #btnShowAll').length === 0) {
-
                 $('#progressTable_wrapper .dt-paging ul').append(`
                     <li class="dt-paging-button page-item">
                         <button id="btnShowAll"
@@ -77,18 +69,16 @@
                         </button>
                     </li>
                 `);
-
             }
         }
 
-                function initializeDataTables() {
+        function initializeDataTables() {
             // Destroy old Progress DataTable
             if ($.fn.DataTable.isDataTable('#progressTable')) {
                 $('#progressTable').DataTable().destroy();
             }
             // Initialize Progress Table
             var progressTable = $('#progressTable').DataTable({
-
                 paging: true,
                 searching: false,
                 ordering: true,
@@ -97,19 +87,19 @@
                 lengthChange: true,
                 responsive: true,
                 autoWidth: false,
-
                 layout: {
                     topStart: null
                 },
-
                 order: [],
-
                 columnDefs: [
                     {
                         targets: 0,   // No column
                         orderable: false
                     }
-                ]
+                ],
+                initComplete: function () {
+                 $("#progressTable tbody .remark:first").focus();
+                }
             });
             // Destroy old Summary DataTable
             if ($.fn.DataTable.isDataTable('#summaryTable')) {
@@ -117,13 +107,11 @@
             }
             // Initialize Summary Table
             $('#summaryTable').DataTable({
-
                 paging: false,
                 searching: false,
                 ordering: false,
                 info: false,
                 autoWidth: false,
-
                 layout: {
                     topStart: null
                 }
@@ -132,25 +120,32 @@
           addShowAllButton();
         progressTable.on('draw', function () {
             addShowAllButton();});
-
                     $(document)
-        .off('click','#btnShowAll')
-        .on('click','#btnShowAll',function(){
-
-            $('#progressTable')
-                .DataTable()
-                .page
-                .len(-1)
-                .draw();
-
-        });
+                    .off('click','#btnShowAll')
+                    .on('click','#btnShowAll',function(){
+                     $('#progressTable')
+                         .DataTable()
+                         .page
+                         .len(-1)
+                         .draw();
+                        });
         }
         $(document).ready(function(){
-            $('.select2').select2({
-                placeholder:"Select Staff",
-                width:"100%",
-                closeOnSelect:false
-            });
+            // $('.select2').select2({
+            //     placeholder:"Select Staff",
+            //     width:"100%"
+            // });
+           $('#ProjectCd').select2({
+            width: '100%',
+             placeholder:"Select Project",
+            
+        });
+            
+        $('#StaffCD').select2({
+            width: '100%',
+             placeholder:"Select Staff",
+            closeOnSelect: false
+        });
             initializeDataTables();
 
             $("#ProjectCd").change(function(){
@@ -193,7 +188,7 @@
                         if(result.success===false){
                             Swal.fire({
                                  title:"警告！",
-                                  html:"プロジェクトCDを選択してください。",
+                                   html:"プロジェクト名を選択してください。",
                                confirmButtonText: 'はい',
                                width: '360px',
                                customClass: {
@@ -207,20 +202,42 @@
 
                         }
                         $("#tableArea").html(result);
-                         $("#progressTable tbody .remark").first().focus();
                         initializeDataTables();
                     }
                 });
             });
-           $(document).on("click", "#btnCancel", function () {
-              var staff = $("#StaffCD");
-                 staff.val(null).trigger("change");
-                $("#ProjectCd").val("");
-                 staff.empty();
-                  $('#progressTable').DataTable().clear().draw();
-                      $('#summaryTable').DataTable().clear().draw();
+                    $(document).on("click", "#btnCancel", function () {
+
+            // Clear Staff Select2
+            $("#StaffCD")
+                .val(null)
+                .trigger("change")
+                .empty();
+
+            // Clear Project Select2
+            $("#ProjectCd")
+                .val(null)
+                .trigger("change");
+
+            // Clear tables
+            if ($.fn.DataTable.isDataTable('#progressTable')) {
+                $('#progressTable').DataTable().clear().draw();
+            }
+
+            if ($.fn.DataTable.isDataTable('#summaryTable')) {
+                $('#summaryTable').DataTable().clear().draw();
+            }
 
         });
+        //    $(document).on("click", "#btnCancel", function () {
+        //       var staff = $("#StaffCD");
+        //          staff.val(null).trigger("change");
+        //         $("#ProjectCd").val("");
+        //          staff.empty();
+        //           $('#progressTable').DataTable().clear().draw();
+        //               $('#summaryTable').DataTable().clear().draw();
+
+        // });
         $(document).on("click", "#btnSave", function () {
          if ($("#progressTable").DataTable().rows().count() === 0) {
             Swal.fire({
@@ -243,15 +260,22 @@
         var message = hasChecked
             ? "登録しますか？"
              : "どの行も選択されていません.　登録しますか？";
-                   
-        
-        
         Swal.fire({
-                  title: message,
-                 icon: "question",
+                     title: "確認？",
+                 // icon: "question",
                  showCancelButton: true,
                  confirmButtonText: "登録",
-                 cancelButtonText: "キャンセル"
+                 cancelButtonText: "キャンセル",
+                   html: message,
+                  confirmButtonText: 'はい',
+                               width: '360px',
+                               customClass: {
+                                     popup: 'my-popup',
+                                     title: 'title-question',
+                                       confirmButton: 'confirm-btn',
+                                        cancelButton:'cancecl-btn'
+                               },
+                 buttonsStyling: false
             }).then((result) => {
 
                 if (result.isConfirmed) {
