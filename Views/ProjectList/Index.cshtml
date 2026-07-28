@@ -67,7 +67,7 @@
                             <td>
                                 @*  @if (item.EndFlag != "◯")
                                 { *@
-                                <a class="btn btn-outline-primary btn-sm" style="font:200!important;" onclick="location.href='@Url.Action("Index", "ProjectDetail")'">
+                                <a class="btn btn-outline-primary btn-sm" style="font:200!important;" onclick="location.href='@Url.Action("Index", "ProjectDetail", new { projectCd = item.ProjectCD })'">
                                     Detail
                                 </a>                              
                                 @*   } *@
