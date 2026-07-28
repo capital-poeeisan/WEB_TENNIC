@@ -20,17 +20,7 @@
                 <div class="row justify-content-center">
                     <div class="col-lg-7 col-md-9">
                         @if (@TempData["ErrorMessage"] != null)
-                        {
-                            @* <div class="alert alert-dismissible fade show border-0 shadow-sm"
-                                 role="alert"
-                                 style="background:#fdeaea;color:#dc3545;">
-                                <i class="bi bi-exclamation-circle-fill me-2"></i>
-                                @TempData["ErrorMessage"]
-                                <button type="button"
-                                        class="btn-close"
-                                        data-bs-dismiss="alert"
-                                        aria-label="Close"></button>
-                            </div> *@
+                        {                          
 
                         <script>
                                 Swal.fire({                               
@@ -51,16 +41,6 @@
                         @if (TempData["SuccessMessage"] != null)
                         {
 
-                            @* <div class="alert alert-dismissible fade show border-0 shadow-sm"
-                                 role="alert"
-                                 style="background:#e8f1ff;color:#0d6efd;">
-                                <i class="bi bi-check-circle-fill me-2"></i>
-                                @TempData["SuccessMessage"]
-                                <button type="button"
-                                        class="btn-close"
-                                        data-bs-dismiss="alert"
-                                        aria-label="Close"></button>
-                            </div> *@
                         <script>
                             Swal.fire({
                             title: '成功!',
@@ -78,15 +58,43 @@
 
                         }
 
-                        <form asp-action="UploadExcel" enctype="multipart/form-data" id="uploadForm" method="post">
+                    <form asp-action="UploadExcel" enctype="multipart/form-data" id="uploadForm" method="post" >
 
                             <!-- Project Name -->
                             <div class="row-cols-1">
                                 <label class="col-md-3 col-form-label fw-bold">
                                     Project Name
                                 </label>
-                                <input type="text" autofocus class="col-md-6 form-control" id="ProjectName" name="ProjectName" maxlength="50" required>
 
+                            <input type="text" asp-for="ProjectName"
+                                   autofocus
+                                   class="col-md-6 form-control"
+                                   id="ProjectName"
+                                   name="ProjectName"
+                                   maxlength="50"                                                                
+
+                            >
+                            @if (TempData["ProjectName"] != null)
+                            {
+                                <script>                               
+
+                                            Swal.fire({
+                                           title: "警告！",
+                                              html: "プロジェクト名",
+                                           confirmButtonText: 'はい',
+                                           width: '360px',
+                                           customClass: {
+                                               popup: 'my-popup',
+                                               title: 'title-warning',
+                                               confirmButton: 'warning-btn'
+                                           },
+                                           buttonsStyling: false
+                                       }).then(() => {
+                                              $("#ProjectName").focus();
+                                       });
+                                              
+                                </script>
+                            }
 
                             </div>
 
@@ -98,12 +106,13 @@
 
                                 <div class="input-group col-md-6">
 
-                                    <input type="text"
+                                    <input type="text" 
                                            id="fileName"
                                            class="form-control"
-                                           placeholder="Select Excel File"
+                                           placeholder="Select Excel File"   
                                            readonly
-                                           required>
+                                                                              
+                                    >                              
 
                                     <button class="btn btn-light border"
                                             type="button"
@@ -111,16 +120,40 @@
                                             onclick="document.getElementById('excelFile').click()">
                                     <i class="bi bi-three-dots" style="font:bold;font-size:large;align-items:center;">...</i>
                                     </button>
+                               
 
                                 </div>
-
+                            @if (TempData["fileName"] != null)
+                            {
+                                <script>
+                                      Swal.fire({
+                                        title: "警告！",
+                                        html: "Excelファイル",
+                                        confirmButtonText: 'はい',
+                                        width: '360px',
+                                        customClass: {
+                                            popup: 'my-popup',
+                                            title: 'title-warning',
+                                            confirmButton: 'warning-btn'
+                                        },
+                                        buttonsStyling: false
+                                    }).then(() => {
+                                        $("#fileName").focus();
+                                       
+                                    });
+                                                
+                                </script>
+                            }
+                           
+                            <span id="fileNameError" class="text-danger"></span>
                                 <input type="file"
                                        id="excelFile"
                                        accept=".xlsx,.xls"
                                        name="fileName"
                                        hidden
                                        onchange="checkExcelFile(this)"
-                                       required>
+                                                                     
+                                   >
                             </div>
                             <div class="d-flex justify-content-center gap-3 mt-3">
                                 <div class="card-footer bg-light border-0 text-center">
@@ -151,8 +184,7 @@
 
                     </div>
                 </div>
-           @*  </div>     *@    
-         
+          
         </div>
        
     </div>
@@ -160,6 +192,9 @@
 
 
 <script>
+    
+
+
         function checkExcelFile(input) {
 
         if (input.files.length === 0)
@@ -180,7 +215,8 @@
                                 confirmButton: 'my-button'
                             },
                             buttonsStyling: false
-                        });          
+                        }); 
+                       
 
             input.value = "";
             document.getElementById("fileName").value = "";
@@ -190,3 +226,4 @@
         document.getElementById("fileName").value = fileName;
     }
 </script>
+

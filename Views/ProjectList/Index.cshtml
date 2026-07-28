@@ -37,53 +37,56 @@
 
             </form>
         </div>
-      
         <div class="table-responsive">
             <table id="projectTable"
-                   class="table table-sm table-hover table-bordered table-striped align-middle mb-0 table-edit small">
-                <thead class="table-info">
+                   class="table table-hover table-bordered align-middle table-striped mb-0">
+                <thead class="table-primary">
                     <tr>
-                        <th class="text-center w-auto">
-                            No.
-                        </th>
-                        <th>
-                            プロジェクト名
-                        </th>
-                        <th class="text-center w-auto">
-                            終了
-                        </th>
-                        <th class="text-center w-auto">
-                        </th>
-
+                        <th class="text-center" style="width:5%;">No.</th>
+                        <th style="width:40%;">プロジェクト名</th>
+                        <th style="width:40%;">ファイル名</th>
+                        <th class="text-center" style="width:5%;">終了</th>
+                        <th class="text-center" style="width:10%;"></th>
                     </tr>
                 </thead>
+
                 <tbody>
                     @foreach (var item in Model)
                     {
                         <tr>
-                            <td>@item.No</td>
-                            <td>@item.ProjectName</td>
-                            <td>@item.EndFlag</td>
-                            <td>
-                                @*  @if (item.EndFlag != "◯")
-                                { *@
-                                <a class="btn btn-outline-primary btn-sm" style="font:200!important;" onclick="location.href='@Url.Action("Index", "ProjectDetail")'">
-                                    Detail
-                                </a>                              
-                                @*   } *@
+                            <td class="text-center">@item.No</td>
 
+                            <td class="text-truncate"
+                                style="max-width:280px;"
+                                title="@item.ProjectName">
+                                @item.ProjectName
                             </td>
 
+                            <td class="text-truncate"
+                                style="max-width:250px;"
+                                title="@item.FileName">
+                                @item.FileName
+                            </td>
+
+                            <td class="text-center">@item.EndFlag</td>
+
+                            <td class="text-center">
+                                <a class="btn btn-outline-primary btn-sm me-2 fw-bold"
+                                   onclick="location.href='@Url.Action("Index", "ProjectDetail", new { projectCd = item.ProjectCD })'">
+                                    Detail
+                                </a>
+
+                                <a class="btn btn-outline-primary btn-sm me-2 fw-bold"
+                                   onclick="location.href='@Url.Action("Index", "ImportExcelUpdate", new { projectCd = item.ProjectCD })'">
+                                    Edit
+                                </a>
+                            </td>
                         </tr>
-
                     }
-
                 </tbody>
             </table>
-
-
         </div>
-     
+      
         <div class="d-flex justify-content-center gap-3 mt-3">
 
             <div class="card-footer bg-light border-0 text-center">
@@ -172,7 +175,10 @@
                     lengthChange: false,
                     responsive: true,
                     autoWidth: false,
-                    order: []
+                    order: [],
+                     pageLength: 10,
+                    scrollY: "480px",   // Vertical Height
+                    scrollCollapse: true
                 });
 
 

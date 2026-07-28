@@ -15,11 +15,12 @@ namespace WEB_TENNIC.Interface.Repositories.ImportExcel
         {
             var result = await _context.Database.ExecuteSqlRawAsync(
             "EXEC WT_M_Project_Insert " +
-            "@ProjectCD={0}, @CustomerCD={1},@ProjectName={2}, @OrderAmt={3}",
+            "@ProjectCD={0}, @CustomerCD={1},@ProjectName={2}, @OrderAmt={3},@FileName={4}",
             m.ProjectCd,
             m.CustomerCd,
             m.ProjectName,
-            m.OrderAmt);
+            m.OrderAmt,
+            m.fileName.FileName);
             return result;
         }
     }

@@ -9,8 +9,9 @@ namespace WEB_TENNIC.Models.ViewModels
         public string   CustomerCd { get; set; } = string.Empty;
         public string   ProjectCd { get; set; } = string.Empty;
         public int      OrderAmt { get; set; }
+        [Required(ErrorMessage = "プロジェクト名")]
         public string   ProjectName { get; set; } = string.Empty;
-
+        [Required(ErrorMessage = "Excelファイル")]
         public IFormFile fileName { get; set; }
     }
 }

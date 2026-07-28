@@ -25,7 +25,24 @@ namespace WEB_TENNIC.Controllers
 
         [HttpPost]
         public async Task<IActionResult> UploadExcel(ImportExcelViewModel model)
-        {            
+        {
+            TempData["ProjectName"] = null;
+            TempData["fileName"] = null;
+
+            if (!ModelState.IsValid) 
+            {
+               
+                if (model.ProjectName == null) {
+                    TempData["ProjectName"] = "no_pj";
+                }
+                else if(model.fileName==null)
+                {
+                    TempData["fileName"] = "no_file";
+                }
+                
+                    return View("index",model); 
+            }
+        
             TempData["ErrorMessage"] = null;
             TempData["SuccessMessage"] = null;
             string ProjectCD = "";
@@ -107,11 +124,22 @@ namespace WEB_TENNIC.Controllers
 
                                     }
 
+                                    bool cusCD_exit = await _context.WT_M_Project
+                                        .AnyAsync(c => c.CustomerCd == customerCd
+                                                    && c.ProjectCd == ProjectCD);
+                                    if(cusCD_exit)
+                                    {
+                                        //TempData["ErrorMessage"] = $"{row}行：CustomerCD  '{customerCd}' 重複している";
+                                        continue;
+                                        //return View("Index");
+                                    }
+
                                     int orderAmt = int.Parse(worksheet.Cells[row, 2].Text);
 
                                     model.CustomerCd = customerCd;
                                     model.OrderAmt = orderAmt;
                                     model.ProjectCd = ProjectCD;
+                                  
 
                                     await _importExcelService.ImportExcelAsync(model);
 
