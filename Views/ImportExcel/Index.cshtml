@@ -66,7 +66,7 @@
                                     Project Name
                                 </label>
 
-                            <input type="text"
+                            <input type="text" asp-for="ProjectName"
                                    autofocus
                                    class="col-md-6 form-control"
                                    id="ProjectName"
@@ -76,19 +76,22 @@
                             >
                             @if (TempData["ProjectName"] != null)
                             {
-                                <script>
-                                 Swal.fire({
-                                              title:"警告！",
-                                                 html:"プロジェクト名を入力してください。",
-                                              confirmButtonText: 'はい',
-                                              width: '360px',
-                                              customClass: {
-                                                  popup: 'my-popup',
-                                                  title: 'title-warting',
-                                                  confirmButton: 'warning-btn'
-                                                  },
-                                    buttonsStyling: false
-                                               });
+                                <script>                               
+
+                                            Swal.fire({
+                                           title: "警告！",
+                                              html: "プロジェクト名",
+                                           confirmButtonText: 'はい',
+                                           width: '360px',
+                                           customClass: {
+                                               popup: 'my-popup',
+                                               title: 'title-warning',
+                                               confirmButton: 'warning-btn'
+                                           },
+                                           buttonsStyling: false
+                                       }).then(() => {
+                                              $("#ProjectName").focus();
+                                       });
                                               
                                 </script>
                             }
@@ -103,7 +106,7 @@
 
                                 <div class="input-group col-md-6">
 
-                                    <input type="text"
+                                    <input type="text" 
                                            id="fileName"
                                            class="form-control"
                                            placeholder="Select Excel File"   
@@ -123,18 +126,21 @@
                             @if (TempData["fileName"] != null)
                             {
                                 <script>
-                                    Swal.fire({
-                                                 title:"警告！",
-                                                 html:"Excel ファイルを選択してください。",
-                                                 confirmButtonText: 'はい',
-                                                 width: '360px',
-                                                 customClass: {
-                                                     popup: 'my-popup',
-                                                     title: 'title-warting',
-                                                     confirmButton: 'warning-btn'
-                                                     },
-                                       buttonsStyling: false
-                                                  });
+                                      Swal.fire({
+                                        title: "警告！",
+                                        html: "Excelファイル",
+                                        confirmButtonText: 'はい',
+                                        width: '360px',
+                                        customClass: {
+                                            popup: 'my-popup',
+                                            title: 'title-warning',
+                                            confirmButton: 'warning-btn'
+                                        },
+                                        buttonsStyling: false
+                                    }).then(() => {
+                                        $("#fileName").focus();
+                                       
+                                    });
                                                 
                                 </script>
                             }

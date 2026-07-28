@@ -12,6 +12,8 @@ namespace WEB_TENNIC.Models.ViewModels
        
         public int No { get; set; }
 
+        public string? FileName { get; set; } 
+
     }
    
 }

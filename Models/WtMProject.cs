@@ -21,4 +21,6 @@ public partial class WtMProject
     public DateTime? UpdateDateTime { get; set; }
 
     public DateTime? DeleteDateTime { get; set; }
+
+    public string? FileName { get; set; }    
 }
