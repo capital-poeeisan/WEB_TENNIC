@@ -11,7 +11,7 @@ namespace WEB_TENNIC.Models.ViewModels
         public int      OrderAmt { get; set; }
         [Required(ErrorMessage = "プロジェクト名")]
         public string   ProjectName { get; set; } = string.Empty;
-
+        [Required(ErrorMessage = "Excelファイル")]
         public IFormFile fileName { get; set; }
     }
 }

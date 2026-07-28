@@ -41,16 +41,6 @@
                         @if (TempData["SuccessMessage"] != null)
                         {
 
-                            @* <div class="alert alert-dismissible fade show border-0 shadow-sm"
-                                 role="alert"
-                                 style="background:#e8f1ff;color:#0d6efd;">
-                                <i class="bi bi-check-circle-fill me-2"></i>
-                                @TempData["SuccessMessage"]
-                                <button type="button"
-                                        class="btn-close"
-                                        data-bs-dismiss="alert"
-                                        aria-label="Close"></button>
-                            </div> *@
                         <script>
                             Swal.fire({
                             title: '成功!',
@@ -81,12 +71,27 @@
                                    class="col-md-6 form-control"
                                    id="ProjectName"
                                    name="ProjectName"
-                                   maxlength="50"
-                                   required
-                                   oninvalid="this.setCustomValidity('プロジェクト名')"
-                                   oninput="this.setCustomValidity('')"
-                            >
+                                   maxlength="50"                                                                
 
+                            >
+                            @if (TempData["ProjectName"] != null)
+                            {
+                                <script>
+                                 Swal.fire({
+                                              title:"警告！",
+                                                 html:"プロジェクト名を入力してください。",
+                                              confirmButtonText: 'はい',
+                                              width: '360px',
+                                              customClass: {
+                                                  popup: 'my-popup',
+                                                  title: 'title-warting',
+                                                  confirmButton: 'warning-btn'
+                                                  },
+                                    buttonsStyling: false
+                                               });
+                                              
+                                </script>
+                            }
 
                             </div>
 
@@ -104,7 +109,7 @@
                                            placeholder="Select Excel File"   
                                            readonly
                                                                               
-                                    >
+                                    >                              
 
                                     <button class="btn btn-light border"
                                             type="button"
@@ -112,9 +117,29 @@
                                             onclick="document.getElementById('excelFile').click()">
                                     <i class="bi bi-three-dots" style="font:bold;font-size:large;align-items:center;">...</i>
                                     </button>
+                               
 
                                 </div>
-
+                            @if (TempData["fileName"] != null)
+                            {
+                                <script>
+                                    Swal.fire({
+                                                 title:"警告！",
+                                                 html:"Excel ファイルを選択してください。",
+                                                 confirmButtonText: 'はい',
+                                                 width: '360px',
+                                                 customClass: {
+                                                     popup: 'my-popup',
+                                                     title: 'title-warting',
+                                                     confirmButton: 'warning-btn'
+                                                     },
+                                       buttonsStyling: false
+                                                  });
+                                                
+                                </script>
+                            }
+                           
+                            <span id="fileNameError" class="text-danger"></span>
                                 <input type="file"
                                        id="excelFile"
                                        accept=".xlsx,.xls"
@@ -153,8 +178,7 @@
 
                     </div>
                 </div>
-           @*  </div>     *@    
-         
+          
         </div>
        
     </div>
@@ -162,10 +186,7 @@
 
 
 <script>
-
-        $("#fileName").on("keydown paste", function(e){
-        e.preventDefault();
-    });
+    
 
 
         function checkExcelFile(input) {
@@ -188,7 +209,8 @@
                                 confirmButton: 'my-button'
                             },
                             buttonsStyling: false
-                        });          
+                        }); 
+                       
 
             input.value = "";
             document.getElementById("fileName").value = "";
