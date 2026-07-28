@@ -66,19 +66,20 @@
                                             @Model.ProjectProgress[i].ShopName
                                         </span>
                                     </td>
-                                    <td class="text-end">
+                                    <td class="text-end" data-order="@Model.ProjectProgress[i].Amount">
                                         <input type="hidden"
                                                class="amount"
                                                asp-for="ProjectProgress[i].Amount" />
-                                        @(Model.ProjectProgress[i].Amount?.ToString("N0"))
+                                       
+                                        @(Model.ProjectProgress[i].Amount?.ToString("N0")) 
                                     </td>
                                     <td class="text-center">
-                                        <input autofocus  asp-for="ProjectProgress[i].Active"
+                                        <input   asp-for="ProjectProgress[i].Active"
                                                class="form-check-input active"
                                                />
                                     </td>
                                     <td >
-                                        <input asp-for="ProjectProgress[i].Remark"
+                                        <input asp-for="ProjectProgress[i].Remark" 
                                                class="form-control form-control-sm remark"
                                                maxlength="200"
                                                autocomplete="off"
