@@ -63,7 +63,7 @@
                             <!-- Project Name -->
                             <div class="row-cols-1">
                                 <label class="col-md-3 col-form-label fw-bold">
-                                    Project Name
+                                プログラム名
                                 </label>
 
                             <input type="text" asp-for="ProjectName"
@@ -80,12 +80,12 @@
 
                                             Swal.fire({
                                            title: "警告！",
-                                              html: "プロジェクト名",
+                                           html: "プログラム名を入力してください。",
                                            confirmButtonText: 'はい',
                                            width: '360px',
                                            customClass: {
                                                popup: 'my-popup',
-                                               title: 'title-warning',
+                                               title: 'title-warting',
                                                confirmButton: 'warning-btn'
                                            },
                                            buttonsStyling: false
@@ -101,7 +101,7 @@
                             <!-- Excel File -->
                             <div class="row-cols-1">
                                 <label class="col-md-3 col-form-label fw-bold">
-                                    Excel File
+                                Excelファイル
                                 </label>
 
                                 <div class="input-group col-md-6">
@@ -110,8 +110,7 @@
                                            id="fileName"
                                            class="form-control"
                                            placeholder="Select Excel File"   
-                                           readonly
-                                                                              
+                                           readonly                      
                                     >                              
 
                                     <button class="btn btn-light border"
@@ -128,12 +127,12 @@
                                 <script>
                                       Swal.fire({
                                         title: "警告！",
-                                        html: "Excelファイル",
+                                        html: "Excelファイルをインポートしてください。",
                                         confirmButtonText: 'はい',
                                         width: '360px',
                                         customClass: {
                                             popup: 'my-popup',
-                                            title: 'title-warning',
+                                            title: 'title-warting',
                                             confirmButton: 'warning-btn'
                                         },
                                         buttonsStyling: false

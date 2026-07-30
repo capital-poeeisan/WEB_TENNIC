@@ -9,55 +9,208 @@
 </div>
 <!-- Search Card -->
 
-        <form id="detailform"   asp-action="Index" method="post">
-            <!-- Project -->
-            <div class="row mb-4 g-1 align-items-center">
-                <label asp-for="ProjectCd"
-                       class="col-custom col-form-label fw-semibold text-start text-end">
-                    プロジェクト名
-                </label>
-                <div class="col-md-5 ">
-                    <select asp-for="ProjectCd"
-                            asp-items="Model.ProjectList"
+<form id="detailform" asp-action="Index" method="post">
+    <!-- Project -->
+    <div class="row mb-2 g-1 align-items-center">
+        <label asp-for="ProjectCd"
+               class="col-custom col-form-label fw-semibold text-start">
+            プロジェクト名
+        </label>
+        <div class="col-md-5 ">
+            <select asp-for="ProjectCd"
+                    asp-items="Model.ProjectList"
                     class="form-select select2-single">
-                        <option >
-                            Select Project
-                        </option>
-                    </select>
-                </div>
-            </div>
-
-            <!-- Staff -->
+                <option value="">
+                    Select Project
+                </option>
+            </select>
+        </div>
+    </div>
+    <!-- Staff -->
     <div class="row mb-4 g-1 align-items-center">
-                <label asp-for="StaffCD"
-               class="col-custom col-form-label fw-semibold  text-start text-end">
-                    スタッフ名
-                </label>
-                <div class="col-md-7">
-                    <select asp-for="StaffCD"
-                            asp-items="Model.StaffList"
+        <label asp-for="StaffCD"
+               class="col-custom col-form-label fw-semibold  text-start">
+            スタッフ名
+        </label>
+        <div class="col-md-7">
+            <select asp-for="StaffCD"
+                    asp-items="Model.StaffList"
                     class="form-select select2-multiple fw-semibold"
                     multiple="multiple">
-                
-                        <option value="">
-                            Select Staff
-                        </option>
-                    </select>
-                </div>
-                <div class="col-md-3 mt-2 mt-md-0">
+
+                <option value="">
+                    Select Staff
+                </option>
+            </select>
+        </div>
+        <div class="col-md-3 mt-2 mt-md-0">
             <button class="btn btn-primary shadow-sm px-4 "
                     id="btnShow"
                     type="button">
                 表示
             </button>
-                </div>
-            </div>
-        </form>
-        <div id="tableArea">
-            <partial name="_ProjectDetailTable" />
         </div>
+    </div>
+
+</form>
+<div id="tableArea">
+    <partial name="_ProjectDetailTable" />
+</div>
 @section Scripts {
     <script>
+        $(document).ready(function(){
+
+            $('#ProjectCd').select2({
+            width: '100%',
+             placeholder:"Select Project",
+
+        });
+
+            $('#StaffCD').select2({
+            width: '100%',
+             placeholder:"Select Staff",
+            closeOnSelect: false
+        });
+            initializeDataTables();
+
+            $("#ProjectCd").change(function(){
+                var projectCd=$(this).val();
+                 var staff = $("#StaffCD");
+                  staff.val(null).trigger("change");
+                staff.empty();
+                if(!projectCd)
+                {
+                  $('#progressTable').DataTable().clear().draw();
+                      $('#summaryTable').DataTable().clear().draw();
+
+                        return;
+                }
+                $.get("/ProjectDetail/GetStaff",
+                {
+                    projectCd:projectCd
+                },
+                function(staffList){
+                    var staff=$("#StaffCD");
+                    staff.empty();
+
+                    $.each(staffList,function(i,item){
+                        staff.append(
+                            $("<option>",{
+                                value:item.value,
+                                text:item.text
+                            })
+                        );
+                    });
+                    staff.trigger("change");
+                });
+            });
+            $("#btnShow").click(function(){
+                $.ajax({
+                    url:"/ProjectDetail/GetData",
+                    type:"POST",
+                    data:$("#detailform").serialize(),
+                    success:function(result){
+                        if(result.success===false){
+                            Swal.fire({
+                                 title:"警告！",
+                                   html:"プロジェクト名を選択してください。",
+                               confirmButtonText: 'はい',
+                               width: '360px',
+                               customClass: {
+                                   popup: 'my-popup',
+                                    title: 'title-warting',
+                                     confirmButton: 'warning-btn'
+                               },
+                 buttonsStyling: false
+                            });
+                            return;
+
+                        }
+                        $("#tableArea").html(result);
+                        initializeDataTables();
+                    }
+                });
+            });
+            $(document).on("click", "#btnCancel", function () {
+
+            // Clear Staff Select2
+            $("#StaffCD")
+                .val(null)
+                .trigger("change")
+                .empty();
+
+            // Clear Project Select2
+            $("#ProjectCd")
+                .val(null)
+                .trigger("change");
+
+            // Clear tables
+            if ($.fn.DataTable.isDataTable('#progressTable')) {
+                $('#progressTable').DataTable().clear().draw();
+            }
+
+            if ($.fn.DataTable.isDataTable('#summaryTable')) {
+                $('#summaryTable').DataTable().clear().draw();
+            }
+
+        });
+            $(document).on("click", "#btnSave", function () {
+         if ($("#progressTable").DataTable().rows().count() === 0) {
+            Swal.fire({
+                 title:"警告！",
+                html: "データがありません。",
+                 confirmButtonText: 'はい',
+                              width: '360px',
+                              customClass: {
+                                  popup: 'my-popup',
+                                   title: 'title-warting',
+                                    confirmButton: 'warning-btn'
+                              },
+                buttonsStyling: false
+            });
+            return;
+        }
+        var hasChecked = $("#progressTable .active:checked").length > 0;
+
+
+        var message = hasChecked
+            ? "登録しますか？"
+             : "どの行も選択されていません.　登録しますか？";
+        Swal.fire({
+                     title: "確認？",
+                 // icon: "question",
+                 showCancelButton: true,
+                 confirmButtonText: "登録",
+                 cancelButtonText: "キャンセル",
+                   html: message,
+                  confirmButtonText: 'はい',
+                               width: '360px',
+                               customClass: {
+                                     popup: 'my-popup',
+                                     title: 'title-question',
+                                       confirmButton: 'confirm-btn',
+                                        cancelButton:'cancecl-btn'
+                               },
+                 buttonsStyling: false
+            }).then((result) => {
+
+                if (result.isConfirmed) {
+                    saveProject();
+                }
+            });
+
+        });
+
+            var projectCd = $("#ProjectCd").val();
+
+            if (projectCd) {
+
+                $("#btnShow").click();
+                $("#ProjectCd").trigger("change");
+        }
+
+        });
+
         function addShowAllButton() {
             if ($('#progressTable_wrapper #btnShowAll').length === 0) {
                 $('#progressTable_wrapper .dt-paging ul').append(`
@@ -71,7 +224,7 @@
                 `);
             }
         }
-
+            
         function initializeDataTables() {
             // Destroy old Progress DataTable
             if ($.fn.DataTable.isDataTable('#progressTable')) {
@@ -129,169 +282,6 @@
                          .len(-1)
                          .draw();
                         });
-        }
-        $(document).ready(function(){
-            // $('.select2').select2({
-            //     placeholder:"Select Staff",
-            //     width:"100%"
-            // });
-           $('#ProjectCd').select2({
-            width: '100%',
-             placeholder:"Select Project",
-            
-        });
-            
-        $('#StaffCD').select2({
-            width: '100%',
-             placeholder:"Select Staff",
-            closeOnSelect: false
-        });
-            initializeDataTables();
-
-            $("#ProjectCd").change(function(){
-                var projectCd=$(this).val();
-                 var staff = $("#StaffCD");
-                  staff.val(null).trigger("change");
-                staff.empty();
-                if(!projectCd)
-                {
-                  $('#progressTable').DataTable().clear().draw();
-                      $('#summaryTable').DataTable().clear().draw();
-
-                        return;
-                }
-                $.get("/ProjectDetail/GetStaff",
-                {
-                    projectCd:projectCd
-                },
-                function(staffList){
-                    var staff=$("#StaffCD");
-                    staff.empty();
-
-                    $.each(staffList,function(i,item){
-                        staff.append(
-                            $("<option>",{
-                                value:item.value,
-                                text:item.text
-                            })
-                        );
-                    });
-                    staff.trigger("change");
-                });
-            });
-             $("#btnShow").click(function(){
-                $.ajax({
-                    url:"/ProjectDetail/GetData",
-                    type:"POST",
-                    data:$("#detailform").serialize(),
-                    success:function(result){
-                        if(result.success===false){
-                            Swal.fire({
-                                 title:"警告！",
-                                   html:"プロジェクト名を選択してください。",
-                               confirmButtonText: 'はい',
-                               width: '360px',
-                               customClass: {
-                                   popup: 'my-popup',
-                                    title: 'title-warting',
-                                     confirmButton: 'warning-btn'
-                               },
-                 buttonsStyling: false
-                            });
-                            return;
-
-                        }
-                        $("#tableArea").html(result);
-                        initializeDataTables();
-                    }
-                });
-            });
-                    $(document).on("click", "#btnCancel", function () {
-
-            // Clear Staff Select2
-            $("#StaffCD")
-                .val(null)
-                .trigger("change")
-                .empty();
-
-            // Clear Project Select2
-            $("#ProjectCd")
-                .val(null)
-                .trigger("change");
-
-            // Clear tables
-            if ($.fn.DataTable.isDataTable('#progressTable')) {
-                $('#progressTable').DataTable().clear().draw();
-            }
-
-            if ($.fn.DataTable.isDataTable('#summaryTable')) {
-                $('#summaryTable').DataTable().clear().draw();
-            }
-
-        });
-        //    $(document).on("click", "#btnCancel", function () {
-        //       var staff = $("#StaffCD");
-        //          staff.val(null).trigger("change");
-        //         $("#ProjectCd").val("");
-        //          staff.empty();
-        //           $('#progressTable').DataTable().clear().draw();
-        //               $('#summaryTable').DataTable().clear().draw();
-
-        // });
-        $(document).on("click", "#btnSave", function () {
-         if ($("#progressTable").DataTable().rows().count() === 0) {
-            Swal.fire({
-                 title:"警告！",
-                html: "データがありません。",
-                 confirmButtonText: 'はい',
-                              width: '360px',
-                              customClass: {
-                                  popup: 'my-popup',
-                                   title: 'title-warting',
-                                    confirmButton: 'warning-btn'
-                              },
-                buttonsStyling: false
-            });
-            return;
-        }
-        var hasChecked = $("#progressTable .active:checked").length > 0;
-               
-
-        var message = hasChecked
-            ? "登録しますか？"
-             : "どの行も選択されていません.　登録しますか？";
-        Swal.fire({
-                     title: "確認？",
-                 // icon: "question",
-                 showCancelButton: true,
-                 confirmButtonText: "登録",
-                 cancelButtonText: "キャンセル",
-                   html: message,
-                  confirmButtonText: 'はい',
-                               width: '360px',
-                               customClass: {
-                                     popup: 'my-popup',
-                                     title: 'title-question',
-                                       confirmButton: 'confirm-btn',
-                                        cancelButton:'cancecl-btn'
-                               },
-                 buttonsStyling: false
-            }).then((result) => {
-
-                if (result.isConfirmed) {
-                    saveProject();
-                }
-            });
-
-        });
-
-
-       var projectCd = $("#ProjectCd").val();
-
-        if (projectCd) {
-             
-                $("#btnShow").click();
-                  $("#ProjectCd").trigger("change");
         }
 
         function saveProject() {
@@ -367,6 +357,5 @@
                 }
             });
         }
-        });
     </script>
 }
