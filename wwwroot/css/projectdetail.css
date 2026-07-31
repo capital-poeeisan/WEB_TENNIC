@@ -2,48 +2,50 @@
     margin: 0;
 }
 
-.table-card {
-    display: flex;
-    flex-direction: column;
-    min-height:200px;
-max-height: calc(100vh - 258px);
-}
-
-
-.table-card .card-body {
-        flex: 1;
-        overflow: hidden;
-        padding: 0;
-    }
-
-/* only table scroll */
-.table-scroll {
-    height:  100%;
-    overflow-y: auto;
-}
-/* Fixed header */
-#progressTable thead th {
-    position: sticky;
-    top: 0;
-    z-index: 10;
-    background: #d1e7dd;  same as table-success 
-    border-bottom: 2px solid #dee2e6;
-}
-
-
-
 /*Table CArd*/
 
 .table-card .card-body {
     padding: 0;  
+    margin:0;
 }
 
 .table-card table {
     margin: 0;  
     padding:0;
 }
-.table-responsive {
-    overflow: auto;
+
+
+/* Progress card */
+.progress-card {
+    display: flex;
+    flex-direction: column;
+    height: auto;
+}
+.progress-card.has-data {
+       max-height: calc(100vh - 351px);
+    }
+
+
+    /* Card body */
+    .progress-card .card-body {
+        flex: 1;
+        min-height: 0;
+        padding: 0;
+        overflow: hidden;
+    }
+
+
+.progress-scroll {
+    height: 100%;
+    overflow-y: auto;
+    overflow-x: hidden;
+}
+/* Fixed table header */
+#progressTable thead th {
+    position: sticky;
+    top: 0;
+    z-index: 10;
+    background: #d1e7dd;
 }
 #progressTable {
     width: 100% !important;
