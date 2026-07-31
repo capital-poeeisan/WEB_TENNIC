@@ -10881,7 +10881,6 @@ textarea.form-control-lg {
 html,
 body {
     height: 100%;
-    overflow: hidden;
 }
 
 #layoutAuthentication {
