@@ -30,6 +30,22 @@ namespace WEB_TENNIC.Repositories.Project
             return result;
 
         }
-      
+
+        public async Task<bool> DeleteProjectName(string id)
+        {
+            var project = await _context.WT_M_Project
+                .FirstOrDefaultAsync(x => x.ProjectCd == id);
+
+            if (project == null)
+                return false;
+
+            project.DeleteDateTime = DateTime.Now;
+
+            await _context.SaveChangesAsync();
+
+            return true;
+
+        }
+
     }
 }

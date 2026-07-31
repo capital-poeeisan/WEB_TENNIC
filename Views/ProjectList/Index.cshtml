@@ -70,7 +70,7 @@
                             <td class="text-center">@item.EndFlag</td>
 
                             <td class="text-center text-nowrap">
-                                <a class="btn btn-outline-primary btn-sm me-2 fw-bold"
+                                <a class="btn btn-outline-success btn-sm me-2 fw-bold"
                                    onclick="location.href='@Url.Action("Index", "ProjectDetail", new { projectCd = item.ProjectCD })'">
                                     Detail
                                 </a>
@@ -78,13 +78,11 @@
                                    onclick="location.href='@Url.Action("Index", "ImportExcelUpdate", new { projectCd = item.ProjectCD })'">
                                     Edit
                                 </a>
-                            </td>
-                          @*   <td class="text-center">
-                                <a class="btn btn-outline-primary btn-sm me-2 fw-bold"
-                                   onclick="location.href='@Url.Action("Index", "ImportExcelUpdate", new { projectCd = item.ProjectCD })'">
-                                    Edit
+                                <a class="btn btn-outline-danger btn-sm me-2 fw-bold btnDeletePrj"  data-projectcd="@item.ProjectCD">
+                                    Delete
                                 </a>
-                            </td> *@
+                            </td>
+                        
                         </tr>
                     }
                 </tbody>
@@ -184,7 +182,7 @@
 @section Scripts {
     <script>
 
-                  $(document).ready(function () {
+           $(document).ready(function () {
 
                 var table = $('#projectTable').DataTable({
                     paging: true,
@@ -207,30 +205,7 @@
                     scrollCollapse: true
                 });
 
-
-                function addAllButton() {
-
-                    if ($('#btnShowAll').length === 0) {
-
-                        $('.dt-paging ul').append(`
-                            <li class="dt-paging-button page-item">
-                                <button id="btnShowAll"
-                                        class="page-link"
-                                        type="button">
-                                    ALL
-                                </button>
-                            </li>
-                        `);
-
-                    }
-
-                }
-
-
-
                 addAllButton();
-
-
 
                 table.on('draw', function () {
                     addAllButton();
@@ -245,28 +220,103 @@
                 document.querySelector('.d-md-flex')
                     .prepend(document.getElementById('searchForm'));
 
+
+                document.getElementById("searchForm").addEventListener("submit", function () {
+
+                const checkbox = document.getElementById("chkEndFlag");
+
+                if (checkbox.checked) {
+                   document.getElementById("chkEndFlag").value=1;
+                }
+                else {
+                   document.getElementById("chkEndFlag").value=0;
+                }
+
+                });
+
+                $(document).on("click", ".btnDeletePrj", function () {
+
+                   var projectCD = $(this).data("projectcd");
+                  
+                  var message = "本当に削除しますか？";
+                Swal.fire({
+                     title: "確認？",
+                 showCancelButton: true,
+                 confirmButtonText: "削除",
+                 cancelButtonText: "キャンセル",
+                   html: message,
+                  confirmButtonText: 'はい',
+                               width: '360px',
+                               customClass: {
+                                     popup: 'my-popup',
+                                     title: 'title-question',
+                                       confirmButton: 'delete-btn',
+                                        cancelButton:'cancecl-btn'
+                               },
+                 buttonsStyling: false
+                }).then((result) => {
+
+                if (result.isConfirmed) {
+                    $.ajax({
+                url:"/ProjectList/DeleteProject/"+projectCD,
+                type: "POST",   
+                contentType: "application/json",
+                success: function () {
+
+                    Swal.fire({
+                         title: '成功!',
+                        html: "削除しました。",
+                      confirmButtonText: "はい",
+                             width: '360px',
+                             customClass: {
+                                 popup: 'my-popup',
+                                 title: 'my-title-success',
+                                 confirmButton: 'success-btn'
+                             },
+                             buttonsStyling: false
+                                }).then(() => {
+                          location.reload();
+                              });
+
+                },
+                error: function () {
+                    Swal.fire({
+                        title: "エラー",
+                        text: "削除　できません。",
+                           confirmButtonText: 'はい',
+                                 width: '360px',
+                                 customClass: {
+                                     popup: 'my-popup',
+                                     title: 'my-title',
+                                     confirmButton: 'my-button'
+                                 },
+                                 buttonsStyling: false
+                    }).then(() => {
+                          location.reload();
+                              });
+　　　          }　
+                });
+           }
             });
 
 
-
-
-
-           document.getElementById("searchForm").addEventListener("submit", function () {
-
-            const checkbox = document.getElementById("chkEndFlag");
-
-            if (checkbox.checked) {
-
-               document.getElementById("chkEndFlag").value=1;
-
-            }
-            else {
-
-               document.getElementById("chkEndFlag").value=0;
-
-            }
-
         });
+
+             
+           });
+          function addAllButton() {
+                    if ($('#btnShowAll').length === 0) {
+                        $('.dt-paging ul').append(`
+                            <li class="dt-paging-button page-item">
+                                <button id="btnShowAll"
+                                        class="page-link"
+                                        type="button">
+                                    ALL
+                                </button>
+                            </li>`
+                        );
+                    }
+                }
 
     </script>
 }

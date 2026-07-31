@@ -27,6 +27,44 @@ namespace WEB_TENNIC.Controllers
             
         }
 
+        [HttpPost]
+        public async Task<IActionResult> DeleteProject(string id)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(new
+                {
+                    success = false,
+                    message = "Please select a project."
+                });
+            }
+            if (id == null)
+            {
+                return BadRequest(new
+                {
+                    success = false,
+                    message = "There is no data to save."
+                });
+            }
+            try
+            {
+
+
+                await _service.DeleteProjectName(id);
+
+                return Json(new { success = true });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new
+                {
+                    success = false,
+                    message = ex.Message
+                });
+            }
+
+        }
+
 
     }
 }

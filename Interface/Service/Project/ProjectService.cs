@@ -17,7 +17,14 @@ namespace WEB_TENNIC.Service.Project
         {
             return await _repository.GetProjectList(EndFlg);
         }
-        
 
+        public async Task DeleteProjectName(string id)
+        {
+            if (id == null)
+            {
+                throw new Exception("削除するデータがありません。");
+            }
+           await _repository.DeleteProjectName(id);
+        }
     }
 }
