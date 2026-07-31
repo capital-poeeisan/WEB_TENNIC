@@ -19,11 +19,22 @@
         <div class="col-md-5 ">
             <select asp-for="ProjectCd"
                     asp-items="Model.ProjectList"
-                    class="form-select select2-single">
+                    class="form-select select2-single"
+                    disabled="@(Model.IsProjectLocked)">
+                 >
+               
+
                 <option value="">
                     Select Project
                 </option>
-            </select>
+            </select >
+            @if(Model.IsProjectLocked)
+            {
+                <input type="hidden" asp-for="ProjectCd" />
+            }
+            <input type="hidden"
+                   id="ProjectCdLock"
+                   value="@Model.IsProjectLocked.ToString().ToLower()" />
         </div>
     </div>
     <!-- Staff -->
@@ -105,6 +116,7 @@
                 });
             });
             $("#btnShow").click(function(){
+                 var currentEndFlag = $("#EndFlag").is(":checked");
                 $.ajax({
                     url:"/ProjectDetail/GetData",
                     type:"POST",
@@ -127,33 +139,12 @@
 
                         }
                         $("#tableArea").html(result);
+                        $("#EndFlag").prop("checked", currentEndFlag);
                         initializeDataTables();
                     }
                 });
             });
-            $(document).on("click", "#btnCancel", function () {
-
-            // Clear Staff Select2
-            $("#StaffCD")
-                .val(null)
-                .trigger("change")
-                .empty();
-
-            // Clear Project Select2
-            $("#ProjectCd")
-                .val(null)
-                .trigger("change");
-
-            // Clear tables
-            if ($.fn.DataTable.isDataTable('#progressTable')) {
-                $('#progressTable').DataTable().clear().draw();
-            }
-
-            if ($.fn.DataTable.isDataTable('#summaryTable')) {
-                $('#summaryTable').DataTable().clear().draw();
-            }
-
-        });
+        
             $(document).on("click", "#btnSave", function () {
          if ($("#progressTable").DataTable().rows().count() === 0) {
             Swal.fire({
@@ -169,13 +160,33 @@
                 buttonsStyling: false
             });
             return;
-        }
+        } 
+
         var hasChecked = $("#progressTable .active:checked").length > 0;
+         var endFlgChecked = $("#EndFlag").is(":checked"); 
+          var message = "";
+
+         if (!hasChecked && !endFlgChecked) {
+              message = "どの行も選択されていません.登録しますか？";
+        }
+        else if (hasChecked && endFlgChecked) {
+
+            message = "終了 して、登録されますか？";
+
+        }
+        else if (!hasChecked && endFlgChecked) {
+
+            message = "どの行も チェック　しないで、終了　しますか？";
+
+        }
+       
+        else
+        {
+            message ="登録しますか？";
+        }
+       
 
 
-        var message = hasChecked
-            ? "登録しますか？"
-             : "どの行も選択されていません.登録しますか？";
         Swal.fire({
                      title: "確認？",
                  // icon: "question",
@@ -201,14 +212,20 @@
 
         });
 
+
+
+          $(document).on("change", "#EndFlag", function () {
+
+            setProgressReadonly();
+
+        });
             var projectCd = $("#ProjectCd").val();
-
             if (projectCd) {
-
-                $("#btnShow").click();
                 $("#ProjectCd").trigger("change");
+                $("#btnShow").click();
+                
         }
-
+           setProgressReadonly();
         });
 
         function addShowAllButton() {
@@ -355,6 +372,33 @@
                     });
 
                 }
+            });
+        }
+
+         function setProgressReadonly() {
+
+            var isLockedProject = $("#ProjectCdLock").val() === "true";
+            var isEndFlag = $("#EndFlag").is(":checked");
+
+            if (!isLockedProject) {
+                return;
+            }
+            var readonly = isEndFlag;
+
+            console.log(isLockedProject);
+            console.log(isEndFlag);
+;            $("#progressTable input").each(function () {
+
+                if ($(this).hasClass("active")) {
+
+                    $(this).prop("disabled", readonly);
+
+                } else {
+
+                    $(this).prop("readonly", readonly);
+
+                }
+
             });
         }
     </script>

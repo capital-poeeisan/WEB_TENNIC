@@ -105,15 +105,17 @@
             </div> *@
             <!-- Footer -->
             <div class="card-footer bg-light border-0 text-center">
+                 <a asp-controller="ProjectList"
+                   asp-action="Index"
+                     class="btn btn-outline-secondary px-4" >
+                    戻る
+                </a >　 
                
-                <button id="btnCancel" type="button"
-                        class="btn btn-outline-secondary px-4 ms-3">
-                    クリア
-                </button>
+               
                 <button id="btnSave"
                         type="button"
                         class="btn btn-success  px-4 ms-3 ">
-                    @* <i class="fas fa-save me-1"></i> *@
+                   
                     登録
                 </button>
             </div>

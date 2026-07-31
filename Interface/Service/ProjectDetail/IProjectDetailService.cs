@@ -4,7 +4,7 @@ namespace WEB_TENNIC.Interface.Services
 {
     public interface IProjectDetailService
     {
-        ProjectDetailViewModel GetProjectList();
+        ProjectDetailViewModel GetProjectList(string projectcd);
 
         ProjectDetailViewModel GetStaffList(string projectcd);
 
