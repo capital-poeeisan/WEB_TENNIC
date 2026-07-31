@@ -20,6 +20,7 @@ namespace WEB_TENNIC.Controllers
         }
         public IActionResult Index()
         {
+            
             return View();
         }
 
@@ -28,6 +29,14 @@ namespace WEB_TENNIC.Controllers
         {
             TempData["ProjectName"] = null;
             TempData["fileName"] = null;
+            TempData["ErrorMessage"] = null;
+            TempData["SuccessMessage"] = null;
+            TempData["WarningMessage"] =null;
+           
+            string ProjectCD = "";
+            List<string> notFoundCustomerCd = new List<string>();
+            List<string> order_amt_errorList = new List<string>();
+            List<string> warningMessages = new();
 
             if (!ModelState.IsValid) 
             {
@@ -41,11 +50,8 @@ namespace WEB_TENNIC.Controllers
                 }
                 
                     return View("index",model); 
-            }
-        
-            TempData["ErrorMessage"] = null;
-            TempData["SuccessMessage"] = null;
-            string ProjectCD = "";
+            }       
+            
 
             ExcelPackage.License.SetNonCommercialPersonal("CKM");
 
@@ -75,11 +81,22 @@ namespace WEB_TENNIC.Controllers
                                 .AnyAsync(p => p.ProjectName == model.ProjectName);
                         if (pj_exists)
                         {
-                            TempData["ErrorMessage"] = $"'{model.ProjectName}'は既に存在します。";
+                            TempData["ErrorMessage"] = $"'{model.ProjectName}'プロジェクト名は既に存在します。";
                             return View("Index");
-                            //ModelState.AddModelError("", $"This Project Name :'{model.ProjectName}'is already exist!");
-                            //return View("Index", model);
+                           
                         }
+
+                        //Check Excel File
+
+                        bool excelfile_exists = await _context.WT_M_Project
+                                .AnyAsync(p => p.FileName == model.fileName.FileName);
+
+                        if (excelfile_exists)
+                        {
+                            TempData["ErrorMessage"] = $"'{model.fileName.FileName}'Excelファイル名は既に存在します。";
+                            return View("Index");
+                        }
+
 
                         //Check Data in Excel
                         var customerCDValues = worksheet.Cells[2,        // Start Row
@@ -100,11 +117,12 @@ namespace WEB_TENNIC.Controllers
                         else
                         {
                             ProjectCD = GenerateProjectCD();
-                            //Check CustoerCd 
+
+                            
                             for (int row = 2; row <= worksheet.Dimension.End.Row; row++)
                             {
                                 string customerCd = worksheet.Cells[row, 1].Text.Trim();
-
+                               
 
                                 if (string.IsNullOrWhiteSpace(customerCd))
                                 {
@@ -113,44 +131,77 @@ namespace WEB_TENNIC.Controllers
                                 }
                                 else
                                 {
+                                    //Check CustomerCd 
                                     bool exists = await _context.WT_M_Customer
                                        .AnyAsync(c => c.CustomerCd == customerCd);
 
                                     if (!exists)
                                     {
-                                      
-                                        TempData["ErrorMessage"] = $"{row}行：CustomerCD  '{customerCd}' が存在しません。";
-                                        return View("Index");
+                                        notFoundCustomerCd.Add(customerCd);
+                                        continue;                                       
 
                                     }
 
-                                    bool cusCD_exit = await _context.WT_M_Project
+
+                                    //Check CustomerCd Duplicate? in insert table
+                                    bool cusCD_duplicate = await _context.WT_M_Project
                                         .AnyAsync(c => c.CustomerCd == customerCd
                                                     && c.ProjectCd == ProjectCD);
-                                    if(cusCD_exit)
+                                    if(cusCD_duplicate )
+                                    {                                        
+                                        continue;                                        
+                                    }
+                                    //Check OrderAmout is Character?
+                                    if (!decimal.TryParse(worksheet.Cells[row, 2].Text, out decimal orderAmt))
                                     {
-                                        //TempData["ErrorMessage"] = $"{row}行：CustomerCD  '{customerCd}' 重複している";
+                                        order_amt_errorList.Add(worksheet.Cells[row, 2].Text);
                                         continue;
-                                        //return View("Index");
                                     }
 
-                                    int orderAmt = int.Parse(worksheet.Cells[row, 2].Text);
+                                    int ord_Amt = int.Parse(worksheet.Cells[row, 2].Text);
 
                                     model.CustomerCd = customerCd;
-                                    model.OrderAmt = orderAmt;
+                                    model.OrderAmt = ord_Amt;
                                     model.ProjectCd = ProjectCD;
                                   
 
                                     await _importExcelService.ImportExcelAsync(model);
 
                                 }
+                               
 
 
                             }
 
-                            TempData["SuccessMessage"] = $"'{model.fileName.FileName}'登録が完了しました。";
+                            //ErrorMessage For Warning 
+                            if (order_amt_errorList.Any())
+                            {
+                                warningMessages.Add(string.Join(", ", order_amt_errorList.Distinct()) + "行…　の　数字の形式が無効です");
 
-                           
+                            }
+                            if (notFoundCustomerCd.Any())
+                            {
+                                warningMessages.Add(string.Join(", ", notFoundCustomerCd.Distinct()) + "はテーブルに登録されていません。");
+
+                            }
+                            if (warningMessages.Any())
+                            {
+                               
+                                TempData["WarningMessage"] = string.Join("<br><br>", warningMessages);
+                               
+
+                            }
+                            //Success Message
+                            else 
+                            {
+                               
+                                TempData["SuccessMessage"] = $"インポートが完了しました。";
+                                //TempData["SuccessMessage"] = $"'{model.fileName.FileName}'インポートが完了しました。";
+
+
+
+                            }
+
 
                         }
 

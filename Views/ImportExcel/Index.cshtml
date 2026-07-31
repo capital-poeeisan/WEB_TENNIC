@@ -18,7 +18,8 @@
         
             <div class="card-body">
                 <div class="row justify-content-center">
-                    <div class="col-lg-7 col-md-9">
+                    <div class="col-lg-7 col-md-9">                         
+
                         @if (@TempData["ErrorMessage"] != null)
                         {                          
 
@@ -37,26 +38,60 @@
                             });
                         </script>
                            
-                        }
-                        @if (TempData["SuccessMessage"] != null)
-                        {
+                        }                   
+                    
+                        
+                        @if (TempData["WarningMessage"] != null)
+                    {
+                        <script>                        
 
-                        <script>
-                            Swal.fire({
-                            title: '成功!',
-                            html: '@TempData["SuccessMessage"]',
+                            Swal.fire({                                
+                            title: '警告！',
+                            html: '@Html.Raw(TempData["WarningMessage"])',
                             confirmButtonText: 'はい',
                             width: '360px',
                             customClass: {
-                                popup: 'my-popup',
-                                title: 'my-title-success',
-                                confirmButton: 'success-btn'
-                            },
-                            buttonsStyling: false
-                             });
+                                  popup: 'my-popup',
+                                  title: 'title-warting',
+                                  confirmButton: 'warning-btn'
+                             }
+                            }).then(() => {
+                                Swal.fire({
+                                     title: '成功!',
+                                     html: "インポートが完了しました。",
+                                     confirmButtonText: 'はい',
+                                     width: '360px',
+                                     customClass: {
+                                         popup: 'my-popup',
+                                         title: 'my-title-success',
+                                         confirmButton: 'success-btn'
+                                     },
+                                     buttonsStyling: false
+                                });
+                                 });
                         </script>
-
+                    }
+          
+                    
+                        @if (TempData["SuccessMessage"] != null)
+                        {
+                        <script>                           
+                                Swal.fire({
+                                 title: '成功!',
+                                 html: "インポートが完了しました。",
+                                 confirmButtonText: 'はい',
+                                 width: '360px',
+                                 customClass: {
+                                         popup: 'my-popup',
+                                         title: 'my-title-success',
+                                         confirmButton: 'success-btn'
+                                     },
+                                 buttonsStyling: false
+                            });
+                        </script>
                         }
+
+                  
 
                     <form asp-action="UploadExcel" enctype="multipart/form-data" id="uploadForm" method="post" >
 
