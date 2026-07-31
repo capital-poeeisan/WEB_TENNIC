@@ -8,6 +8,9 @@ namespace WEB_TENNIC.Service.Project
     {
         
         Task<List<ProjectViewModel>> GetProjectList(int EndFlg);
-        
+
+        Task DeleteProjectName(string id);
+
+
     }
 }
