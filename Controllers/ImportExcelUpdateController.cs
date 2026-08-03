@@ -142,6 +142,7 @@ namespace WEB_TENNIC.Controllers
 
                         else
                         {
+                            int update_status = 0;
                             for (int row = 2; row <= rowCount; row++)
                             {
                                 string customerCD = worksheet.Cells[row, 1].Text.Trim();
@@ -172,39 +173,34 @@ namespace WEB_TENNIC.Controllers
 
                                 bool pjProect = await _context.WT_M_Project.AnyAsync(x => x.ProjectCd == model.ProjectCd);
                                 bool pjCustomer = await _context.WT_M_Project.AnyAsync(x => x.ProjectCd == model.ProjectCd && x.CustomerCd == customerCD);
-                                int update_status = 0;
+                               
                                 if (pjCustomer)
                                 {
                                     // Update
+                                    update_status += 1;
                                     model.CustomerCd = customerCD;
                                     model.OrderAmt = ord_Amt;
                                     model.UpdateFlag = 1;
                                     await _importExcelService.Update_ImportExcelAsync(model);
-                                    update_status += 1;
+                                   
 
 
                                 }
                                 else if(pjProect==true && pjCustomer==false)
-                                {   
+                                {
                                     //insert
+                                    update_status += 1;
                                     model.CustomerCd = customerCD;
                                     model.OrderAmt = ord_Amt;
                                     model.UpdateFlag = 0;
                                     await _importExcelService.Update_ImportExcelAsync(model);
-                                    update_status += 1;
+                                   
                                 }
 
                                 if(update_status==1)
                                 {
-                                    var project = await _context.WT_M_Project
-                                    .FirstOrDefaultAsync(x =>x.ProjectCd==model.ProjectCd);
-
-                                    if (project != null)
-                                    {                                       
-                                        project.ProjectName = model.ProjectName;                                        
-
-                                        await _context.SaveChangesAsync();
-                                    }
+                                    model.UpdateFlag = 2;
+                                    await _importExcelService.Update_ImportExcelAsync(model);
                                 }
                             }
 
@@ -243,7 +239,7 @@ namespace WEB_TENNIC.Controllers
                 //Success Message
                 else
                 {
-                    TempData["SuccessMessage"] = $"インポートが完了しました。";
+                    TempData["SuccessMessage"] = $"修正　終わりました。";
                    
                 }
 

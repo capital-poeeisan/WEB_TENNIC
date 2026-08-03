@@ -76,18 +76,21 @@
                     @if (TempData["SuccessMessage"] != null)
                     {
                         <script>
-
-                                Swal.fire({
-                                 title: '成功!',
-                                 html: "インポートが完了しました。",
-                                 confirmButtonText: 'はい',
-                                 width: '360px',
-                                 customClass: {
-                                         popup: 'my-popup',
-                                         title: 'my-title-success',
-                                         confirmButton: 'success-btn'
-                                     },
-                                 buttonsStyling: false
+                                                        Swal.fire({
+                                title: '成功!',
+                                html: "修正　終わりました。",
+                                confirmButtonText: 'はい',
+                                width: '360px',
+                                customClass: {
+                                    popup: 'my-popup',
+                                    title: 'my-title-success',
+                                    confirmButton: 'success-btn'
+                                },
+                                buttonsStyling: false
+                            }).then((result) => {
+                                if (result.isConfirmed) {
+                                    window.location.href = '/ImportExcel/Index';
+                                }
                             });
                         </script>
                     }
