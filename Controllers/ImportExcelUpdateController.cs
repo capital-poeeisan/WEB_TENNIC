@@ -103,13 +103,7 @@ namespace WEB_TENNIC.Controllers
                         {
                             TempData["ErrorMessage"] = $"'{model.ProjectName}'プロジェクト名は既に存在します。";
                             return View("Index");
-                            //bool check_pj_exists = await _context.WT_M_Project
-                            //    .AnyAsync(p => p.ProjectName == model.ProjectName);
-                            //if (check_pj_exists)                            
-                            //{
-                            //    TempData["ErrorMessage"] = $"'{model.ProjectName}'プロジェクト名は既に存在します。";
-                            //    return View("Index");
-                            //}
+                            
                             
 
                         }
@@ -123,13 +117,7 @@ namespace WEB_TENNIC.Controllers
 
                             TempData["ErrorMessage"] = $"'{model.fileName.FileName}'Excelファイル名は既に存在します。";
                             return View("Index");
-                            //bool check_pj_exists = await _context.WT_M_Project
-                            //    .AnyAsync(p => p.FileName == model.fileName.FileName);
-                            //if (check_pj_exists)
-                            //{
-                            //    TempData["ErrorMessage"] = $"'{model.fileName.FileName}'Excelファイル名は既に存在します。";
-                            //    return View("Index");
-                            //}
+                           
 
 
                         }
@@ -184,7 +172,7 @@ namespace WEB_TENNIC.Controllers
 
                                 bool pjProect = await _context.WT_M_Project.AnyAsync(x => x.ProjectCd == model.ProjectCd);
                                 bool pjCustomer = await _context.WT_M_Project.AnyAsync(x => x.ProjectCd == model.ProjectCd && x.CustomerCd == customerCD);
-
+                                int update_status = 0;
                                 if (pjCustomer)
                                 {
                                     // Update
@@ -192,7 +180,9 @@ namespace WEB_TENNIC.Controllers
                                     model.OrderAmt = ord_Amt;
                                     model.UpdateFlag = 1;
                                     await _importExcelService.Update_ImportExcelAsync(model);
-                               
+                                    update_status += 1;
+
+
                                 }
                                 else if(pjProect==true && pjCustomer==false)
                                 {   
@@ -201,6 +191,20 @@ namespace WEB_TENNIC.Controllers
                                     model.OrderAmt = ord_Amt;
                                     model.UpdateFlag = 0;
                                     await _importExcelService.Update_ImportExcelAsync(model);
+                                    update_status += 1;
+                                }
+
+                                if(update_status==1)
+                                {
+                                    var project = await _context.WT_M_Project
+                                    .FirstOrDefaultAsync(x =>x.ProjectCd==model.ProjectCd);
+
+                                    if (project != null)
+                                    {                                       
+                                        project.ProjectName = model.ProjectName;                                        
+
+                                        await _context.SaveChangesAsync();
+                                    }
                                 }
                             }
 
