@@ -176,7 +176,7 @@ namespace WEB_TENNIC.Controllers
                             //ErrorMessage For Warning 
                             if (order_amt_errorList.Any())
                             {
-                                warningMessages.Add(string.Join(", ", order_amt_errorList.Distinct()) + "行…　の　数字の形式が無効です");
+                                warningMessages.Add(string.Join(", ", order_amt_errorList.Distinct()) + "数字が無効です。");
 
                             }
                             if (notFoundCustomerCd.Any())

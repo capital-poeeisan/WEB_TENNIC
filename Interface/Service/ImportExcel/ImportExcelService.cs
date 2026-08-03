@@ -17,5 +17,10 @@ namespace WEB_TENNIC.Interface.Service.ImportExcel
         {
             return await _repository.ImportExcelAsync(m);
         }
+
+        public async Task<int> Update_ImportExcelAsync(ImportExcelViewModel m)
+        {
+            return await _repository.Update_ImportExcelAsync(m);
+        }
     }
 }

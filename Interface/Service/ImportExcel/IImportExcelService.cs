@@ -7,5 +7,6 @@ namespace WEB_TENNIC.Interface.Service.ImportExcel
     public interface IImportExcelService
     {
        Task<int> ImportExcelAsync(ImportExcelViewModel m);
+       Task<int> Update_ImportExcelAsync(ImportExcelViewModel m);
     }
 }
