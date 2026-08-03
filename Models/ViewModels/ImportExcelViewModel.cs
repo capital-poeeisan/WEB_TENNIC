@@ -13,6 +13,7 @@ namespace WEB_TENNIC.Models.ViewModels
         public string   ProjectName { get; set; } = string.Empty;
         [Required(ErrorMessage = "Excelファイル")]
         public IFormFile fileName { get; set; }
+        public int UpdateFlag { get; set; }
     }
 }
                                                                                                                                                                                                                                                                                                         

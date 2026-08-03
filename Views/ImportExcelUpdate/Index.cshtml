@@ -38,32 +38,67 @@
                         </script>
 
                     }
-                    @if (TempData["SuccessMessage"] != null)
-                    {
 
+
+                    @if (TempData["WarningMessage"] != null)
+                    {
                         <script>
+
+
                             Swal.fire({
-                            title: '成功!',
-                            html: '@TempData["SuccessMessage"]',
+                            title: '警告！',
+                            html: '@Html.Raw(TempData["WarningMessage"])',
                             confirmButtonText: 'はい',
                             width: '360px',
                             customClass: {
-                                popup: 'my-popup',
-                                title: 'my-title-success',
-                                confirmButton: 'success-btn'
-                            },
-                            buttonsStyling: false
-                             });
+                                  popup: 'my-popup',
+                                  title: 'title-warting',
+                                  confirmButton: 'warning-btn'
+                             }
+                            }).then(() => {
+                                Swal.fire({
+                                     title: '成功!',
+                                     html: "インポートが完了しました。",
+                                     confirmButtonText: 'はい',
+                                     width: '360px',
+                                     customClass: {
+                                         popup: 'my-popup',
+                                         title: 'my-title-success',
+                                         confirmButton: 'success-btn'
+                                     },
+                                     buttonsStyling: false
+                                });
+                                 });
                         </script>
-
                     }
+
+
+                    @if (TempData["SuccessMessage"] != null)
+                    {
+                        <script>
+
+                                Swal.fire({
+                                 title: '成功!',
+                                 html: "インポートが完了しました。",
+                                 confirmButtonText: 'はい',
+                                 width: '360px',
+                                 customClass: {
+                                         popup: 'my-popup',
+                                         title: 'my-title-success',
+                                         confirmButton: 'success-btn'
+                                     },
+                                 buttonsStyling: false
+                            });
+                        </script>
+                    }
+
 
                     <form asp-action="UploadExcel" enctype="multipart/form-data" id="uploadForm" method="post">
 
                         <!-- Project Name -->
                         <div class="row-cols-1">
                             <label class="col-md-3 col-form-label fw-bold">
-                                Project Name
+                                プログラム名
                             </label>
 
                             <input type="text" asp-for="ProjectName"                                   
@@ -95,11 +130,12 @@
                             }
 
                         </div>
+                        <input type="text" asp-for="ProjectCd" id="ProjectCd" hidden />
 
                         <!-- Excel File -->
                         <div class="row-cols-1">
                             <label class="col-md-3 col-form-label fw-bold">
-                                Excel File
+                                Excelファイル
                             </label>
 
                             <div class="input-group col-md-6">

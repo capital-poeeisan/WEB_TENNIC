@@ -14,14 +14,31 @@ namespace WEB_TENNIC.Interface.Repositories.ImportExcel
         public async Task<int> ImportExcelAsync(ImportExcelViewModel m)
         {
             var result = await _context.Database.ExecuteSqlRawAsync(
-            "EXEC WT_M_Project_Insert " +
-            "@ProjectCD={0}, @CustomerCD={1},@ProjectName={2}, @OrderAmt={3},@FileName={4}",
+            "EXEC WT_M_Project_Insert_Update " +
+            "@ProjectCD={0}, @CustomerCD={1},@ProjectName={2}, @OrderAmt={3},@FileName={4},@UpdateFlag={5}",
             m.ProjectCd,
             m.CustomerCd,
             m.ProjectName,
             m.OrderAmt,
-            m.fileName.FileName);
+            m.fileName.FileName,
+            0);
             return result;
         }
+
+        public async Task<int> Update_ImportExcelAsync(ImportExcelViewModel m)
+        {
+            var result = await _context.Database.ExecuteSqlRawAsync(
+            "EXEC WT_M_Project_Insert_Update " +
+            "@ProjectCD={0}, @CustomerCD={1},@ProjectName={2}, @OrderAmt={3},@FileName={4},@UpdateFlag={5}",
+            m.ProjectCd,
+            m.CustomerCd,
+            m.ProjectName,
+            m.OrderAmt,
+            m.fileName.FileName,
+            m.UpdateFlag);
+            return result;
+        }
+
+
     }
 }
