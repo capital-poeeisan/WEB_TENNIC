@@ -14,17 +14,50 @@ namespace WEB_TENNIC.Interface.Services
         } 
 
 
-        public ProjectDetailViewModel GetProjectList()
+        public ProjectDetailViewModel GetProjectList(string projectCd)
         {
             var model = new ProjectDetailViewModel();
             // =========================
             // Project Dropdown
             // =========================
-
+            model.IsProjectLocked = false;
             var projects = _repository.GetProjects();
+            if (!string.IsNullOrEmpty(projectCd))
+            {
+                // When project is passed from another page
+                var selectedProject = projects
+                    .Where(p => p.DeleteDateTime == null
+                             && p.ProjectCd == projectCd)
+                    .FirstOrDefault();
+
+
+                if (selectedProject != null)
+                {
+                    model.ProjectCd = selectedProject.ProjectCd;
+                    model.IsProjectLocked = true;
+                    model.EndFlag = selectedProject.EndFlag == 1;
+                    model.ProjectList = new List<SelectListItem>
+            {
+                new SelectListItem
+                {
+                    Value = selectedProject.ProjectCd,
+                    Text = selectedProject.ProjectName,
+                    Selected = true
+                }
+            };
+
+                    return model;
+                }
+            }
+
 
 
             model.ProjectList = projects
+                 .Where(p => p.DeleteDateTime == null && p.EndFlag == 0)
+                .AsEnumerable()     // Execute SQL first
+                .GroupBy(p => new { p.ProjectCd, p.ProjectName })
+                .Select(g => g.First())
+                .OrderByDescending(p => p.ProjectCd)
                 .Select(p => new SelectListItem
                 {
                     Value = p.ProjectCd,
@@ -72,6 +105,7 @@ namespace WEB_TENNIC.Interface.Services
             // =========================
             if (!string.IsNullOrEmpty(projectCd))
             {
+                
                 model.SummaryList =
               _repository.GetSummary(projectCd);
             }

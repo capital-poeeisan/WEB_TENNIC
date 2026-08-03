@@ -7,7 +7,7 @@ namespace WEB_TENNIC.Models.ViewModels
     {
         [Required(ErrorMessage = "Please select a project.")]
         public string ProjectCd { get; set; }
-
+        public bool IsProjectLocked { get; set; }
         public string? ProjectName { get; set; }
         public List<string> StaffCD { get; set; } = new();
         // Result

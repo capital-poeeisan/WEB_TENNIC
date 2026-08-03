@@ -19,15 +19,9 @@ namespace WEB_TENNIC.Interface.Repositories
         public List<WtMProject> GetProjects()
         {
             //&& p.EndFlag == 0
-            //return _context.WT_M_Project
-            //    .ToList(); 
             return _context.WT_M_Project
-              .Where(p => p.DeleteDateTime == null && p.EndFlag == 0)
-        .AsEnumerable()     // Execute SQL first
-        .GroupBy(p => new { p.ProjectCd, p.ProjectName })
-        .Select(g => g.First())
-        .OrderByDescending(p => p.ProjectCd)
-        .ToList();
+                .ToList();
+            
         } 
 
 
