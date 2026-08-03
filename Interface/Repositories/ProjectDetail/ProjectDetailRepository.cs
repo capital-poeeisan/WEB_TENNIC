@@ -18,13 +18,9 @@ namespace WEB_TENNIC.Interface.Repositories
 
         public List<WtMProject> GetProjects()
         {
-            //&& p.EndFlag == 0
             return _context.WT_M_Project
                 .ToList();
-            
         } 
-
-
         public List<ProjectStaffViewModel> GetStaffList(string projectCd)
         {
             return _context.ProjectStaffs

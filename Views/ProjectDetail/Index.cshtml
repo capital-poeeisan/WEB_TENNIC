@@ -21,17 +21,16 @@
                     asp-items="Model.ProjectList"
                     class="form-select select2-single"
                     disabled="@(Model.IsProjectLocked)">
-                 >
-               
-
                 <option value="">
                     Select Project
                 </option>
             </select >
-            @if(Model.IsProjectLocked)
+            @if (Model.IsProjectLocked)
             {
                 <input type="hidden" asp-for="ProjectCd" />
             }
+            <input type="hidden" id="OriginalEndFlag"
+                   value="@Model.EndFlag.ToString().ToLower()" />
             <input type="hidden"
                    id="ProjectCdLock"
                    value="@Model.IsProjectLocked.ToString().ToLower()" />
@@ -139,7 +138,9 @@
 
                         }
                         $("#tableArea").html(result);
-                        $("#EndFlag").prop("checked", currentEndFlag);
+                         $("#EndFlag").prop("checked", currentEndFlag); //bind data from para
+                               
+                         setProgressReadonly();
                         initializeDataTables();
                     }
                 });
@@ -216,8 +217,7 @@
 
           $(document).on("change", "#EndFlag", function () {
 
-            setProgressReadonly();
-
+             setProgressReadonly();
         });
             var projectCd = $("#ProjectCd").val();
             if (projectCd) {
@@ -225,7 +225,7 @@
                 $("#btnShow").click();
                 
         }
-           setProgressReadonly();
+          
         });
 
         function addShowAllButton() {
@@ -309,6 +309,7 @@
                     EndFlag:$("#EndFlag").is(":checked"),
                     ProjectProgress:[]
                 };
+                 
                 $("#progressTable tbody tr").each(function(){
                     data.ProjectProgress.push({
                         CustomerCD:$(this)
@@ -370,7 +371,6 @@
                                  },
                                  buttonsStyling: false
                     });
-
                 }
             });
         }
@@ -378,15 +378,16 @@
          function setProgressReadonly() {
 
             var isLockedProject = $("#ProjectCdLock").val() === "true";
-            var isEndFlag = $("#EndFlag").is(":checked");
+            var originalEndFlag = $("#OriginalEndFlag").val() === "true";
+            var currentEndFlag = $("#EndFlag").is(":checked");
+
 
             if (!isLockedProject) {
                 return;
             }
-            var readonly = isEndFlag;
+                    var readonly = isLockedProject && originalEndFlag && currentEndFlag;
 
-            console.log(isLockedProject);
-            console.log(isEndFlag);
+            
 ;            $("#progressTable input").each(function () {
 
                 if ($(this).hasClass("active")) {
