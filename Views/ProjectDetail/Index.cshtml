@@ -213,7 +213,20 @@
 
         });
 
+            $(document).on("keydown", ".remark", function (e) {
+            if (e.key === "Enter") {
+                e.preventDefault();
 
+                var remarks = $("#progressTable .remark");
+                var index = remarks.index(this);
+
+                if (index < remarks.length - 1) {
+                    remarks.eq(index + 1).focus().select();
+                } else {
+                    $("#btnSave").focus();
+                }
+            }
+        });
 
           $(document).on("change", "#EndFlag", function () {
 
