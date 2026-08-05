@@ -24,7 +24,7 @@
                         {                          
 
                         <script>
-                                Swal.fire({                               
+                                Swal.fire({
                                 title: 'エラー!',
                                 html: '@TempData["ErrorMessage"]',
                                 confirmButtonText: 'はい',
@@ -35,6 +35,16 @@
                                     confirmButton: 'my-button'
                                 },
                                 buttonsStyling: false
+                            }).then((result) => {
+                                if (result.isConfirmed) {
+
+                                let input = document.getElementById("ProjectName");
+
+                                input.focus();
+
+                               
+                                input.setSelectionRange(input.value.length, input.value.length);
+                            }
                             });
                         </script>
                            
