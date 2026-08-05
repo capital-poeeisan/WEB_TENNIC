@@ -190,6 +190,8 @@
                     ordering: true,
                     info: true,
                     lengthChange: false,
+                    // lengthChange: true,
+                    // lengthMenu:[10,20,30,50,-1],
                     responsive: true,
                     autoWidth: false,
                     order: [],
@@ -213,7 +215,9 @@
 
 
                 $(document).on('click', '#btnShowAll', function () {
-                    table.page.len(-1).draw();
+                        table.page.len(-1).draw();
+                         $('.dt-paging-button').removeClass('current active');                         
+                         $('#btnShowAll').addClass("dt-paging-button page-item active");
                 });
 
 
