@@ -15,7 +15,6 @@ namespace WEB_TENNIC.Controllers
         public IActionResult Index(string projectCD)
         {
             var model = _service.GetProjectList(projectCD);
-           // model.ProjectCd = projectCD;
             return View(model);
         }
         
@@ -43,14 +42,9 @@ namespace WEB_TENNIC.Controllers
                     message = "Please select a project."
                 });
             }
-
             var data = _service.GetData(model.ProjectCd, model.StaffCD);
             return PartialView("_ProjectDetailTable", data);
         }
-
-
-       
-
         [HttpPost]
         public async Task<IActionResult> Save([FromBody] ProjectDetailViewModel model)
         {
@@ -85,7 +79,6 @@ namespace WEB_TENNIC.Controllers
                     message = ex.Message
                 });
             }
-
         }
     }
 }

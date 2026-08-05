@@ -24,18 +24,16 @@ namespace WEB_TENNIC.Interface.Services
             var projects = _repository.GetProjects();
             if (!string.IsNullOrEmpty(projectCd))
             {
-                // When project is passed from another page
-                var selectedProject = projects
-                    .Where(p => p.DeleteDateTime == null
-                             && p.ProjectCd == projectCd)
-                    .FirstOrDefault();
+                var selectedProject = projects.FirstOrDefault(p =>
+                    p.DeleteDateTime == null &&
+                    p.ProjectCd == projectCd);
 
-
-                if (selectedProject != null)
+                if (selectedProject != null && selectedProject.EndFlag == 1)
                 {
                     model.ProjectCd = selectedProject.ProjectCd;
+                    model.EndFlag = true;
                     model.IsProjectLocked = true;
-                    model.EndFlag = selectedProject.EndFlag == 1;
+
                     model.ProjectList = new List<SelectListItem>
             {
                 new SelectListItem
@@ -50,21 +48,25 @@ namespace WEB_TENNIC.Interface.Services
                 }
             }
 
-
-
+            //normal state
             model.ProjectList = projects
-                 .Where(p => p.DeleteDateTime == null && p.EndFlag == 0)
-                .AsEnumerable()     // Execute SQL first
-                .GroupBy(p => new { p.ProjectCd, p.ProjectName })
-                .Select(g => g.First())
-                .OrderByDescending(p => p.ProjectCd)
-                .Select(p => new SelectListItem
-                {
-                    Value = p.ProjectCd,
-                    Text = p.ProjectName
-                })
-                .ToList();
+       .Where(p => p.DeleteDateTime == null && p.EndFlag == 0)
+       .AsEnumerable()
+       .GroupBy(p => new { p.ProjectCd, p.ProjectName })
+       .Select(g => g.First())
+       .OrderByDescending(p => p.ProjectCd)
+       .Select(p => new SelectListItem
+       {
+           Value = p.ProjectCd,
+           Text = p.ProjectName
+       })
+       .ToList();
 
+            // Auto select latest ProjectCd
+            if (model.ProjectList.Any())
+            {
+                model.ProjectCd = model.ProjectList.First().Value;
+            }
 
             return model;
         } 

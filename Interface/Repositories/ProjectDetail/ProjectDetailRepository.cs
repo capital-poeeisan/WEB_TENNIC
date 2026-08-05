@@ -9,7 +9,6 @@ namespace WEB_TENNIC.Interface.Repositories
 {
     public class ProjectDetailRepository: IProjectDetailRepository
     {
-
         private readonly AppDbContext _context;
         public ProjectDetailRepository(AppDbContext context)
         {
@@ -18,13 +17,9 @@ namespace WEB_TENNIC.Interface.Repositories
 
         public List<WtMProject> GetProjects()
         {
-            //&& p.EndFlag == 0
             return _context.WT_M_Project
                 .ToList();
-            
         } 
-
-
         public List<ProjectStaffViewModel> GetStaffList(string projectCd)
         {
             return _context.ProjectStaffs
@@ -39,13 +34,10 @@ namespace WEB_TENNIC.Interface.Repositories
             var staff = staffCDs == null || !staffCDs.Any()
         ? null
         : string.Join(",", staffCDs);
-
-
             return _context.ProjectInputViewModels
                 .FromSqlInterpolated(
                     $"EXEC Select_ProgressDetail {projectCd}, {staff}")
                 .ToList();
-
         }
         // Table 1
         public List<ProjectSummaryViewModel> GetSummary(string projectCd)
@@ -61,9 +53,6 @@ namespace WEB_TENNIC.Interface.Repositories
         public async Task SaveProjectDetailsAsync(ProjectDetailViewModel details, bool endFlg, string projectCD)
         {
             using var transaction = await _context.Database.BeginTransactionAsync();
-
-           
-
             try
             {
                 DataTable table = new DataTable();
@@ -90,13 +79,9 @@ namespace WEB_TENNIC.Interface.Repositories
                 SqlDbType = SqlDbType.Structured,
                 TypeName = "dbo.ProjectDetailType"
             };
-
-           
                 await _context.Database.ExecuteSqlInterpolatedAsync(
                     $"EXEC WT_ProjectDetail_Insert {tableParam}, {endFlg}, {projectCD}");
-
                 await transaction.CommitAsync();
-
             }
             catch (Exception ex)
             {
