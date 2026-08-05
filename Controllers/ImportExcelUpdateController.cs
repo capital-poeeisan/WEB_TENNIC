@@ -151,14 +151,21 @@ namespace WEB_TENNIC.Controllers
                                 {
                                     continue;
                                 }
-
-                                //Check OrderAmout is Character?
-                                if (!decimal.TryParse(worksheet.Cells[row, 2].Text, out decimal orderAmt))
+                                if(string.IsNullOrWhiteSpace(worksheet.Cells[row, 2].Text))
                                 {
-                                    order_amt_errorList.Add(worksheet.Cells[row, 2].Text);
-                                    continue;
-                                }                                
-                                int ord_Amt = int.Parse(worksheet.Cells[row, 2].Text);
+                                    model.OrderAmt= 0;
+                                }
+                                else
+                                {
+                                    //Check OrderAmout is Character?
+                                    if (!decimal.TryParse(worksheet.Cells[row, 2].Text, out decimal orderAmt))
+                                    {
+                                        order_amt_errorList.Add(worksheet.Cells[row, 2].Text);
+                                        continue;
+                                    }
+                                    int ord_Amt = int.Parse(worksheet.Cells[row, 2].Text);
+                                    model.OrderAmt= ord_Amt;
+                                }                              
 
                                 //Check CustomerCD is Exit in CustomerTable?
                                 bool customer = await _context.WT_M_Customer
@@ -179,7 +186,7 @@ namespace WEB_TENNIC.Controllers
                                     // Update
                                     update_status += 1;
                                     model.CustomerCd = customerCD;
-                                    model.OrderAmt = ord_Amt;
+                                   // model.OrderAmt = ord_Amt;
                                     model.UpdateFlag = 1;
                                     await _importExcelService.Update_ImportExcelAsync(model);
                                    
@@ -191,7 +198,7 @@ namespace WEB_TENNIC.Controllers
                                     //insert
                                     update_status += 1;
                                     model.CustomerCd = customerCD;
-                                    model.OrderAmt = ord_Amt;
+                                   // model.OrderAmt = ord_Amt;
                                     model.UpdateFlag = 0;
                                     await _importExcelService.Update_ImportExcelAsync(model);
                                    
