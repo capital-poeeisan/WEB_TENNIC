@@ -62,6 +62,7 @@ namespace WEB_TENNIC.Interface.Repositories
             table.Columns.Add("StaffCD", typeof(string));
             table.Columns.Add("Status", typeof(bool));
             table.Columns.Add("Remark", typeof(string));
+            table.Columns.Add("Amount", typeof(string));
 
             foreach (var item in details.ProjectProgress)
             {
@@ -70,7 +71,8 @@ namespace WEB_TENNIC.Interface.Repositories
                     item.CustomerCD,
                     item.StaffCD,
                     item.Active,
-                    item.Remark ?? string.Empty
+                    item.Remark ?? string.Empty,
+                    item.Amount
                 );
             }
 
