@@ -3,7 +3,7 @@
 <!-- Page Heading -->
 <div class="d-sm-flex align-items-center justify-content-between mb-4">
 
-    <h3 class="mb-0 text-primary fw-bold" id="pg-header">
+    <h3 class="mb-0 text-primary fw-semibold" id="pg-header">
         <i class="fas fa-project-diagram me-2"></i>
         Project List
     </h3>
@@ -70,11 +70,11 @@
                             <td class="text-center">@item.EndFlag</td>
 
                             <td class="text-center text-nowrap">
-                                <a class="btn btn-outline-success btn-sm me-2 fw-bold"
+                                <a class="btn btn-outline-success btn-sm me-2 fw-semibold"
                                    onclick="location.href='@Url.Action("Index", "ProjectDetail", new { projectCd = item.ProjectCD })'">
                                     Detail
                                 </a>
-                                <a class="btn btn-outline-primary btn-sm me-2 fw-bold"
+                                <a class="btn btn-outline-primary btn-sm me-2 fw-semibold"
                                    onclick="location.href='@Url.Action("Index", "ImportExcelUpdate", new { projectCd = item.ProjectCD })'">
                                     Edit
                                 </a>

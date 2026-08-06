@@ -33,6 +33,11 @@ namespace WEB_TENNIC.Controllers
                 model.ProjectName = projectName;
                 model.ProjectCd = projectCd;
             }
+            else
+            {               
+                 return RedirectToAction("Index", "ProjectList");
+               
+            }
             
                             
             return View(model);
@@ -45,7 +50,7 @@ namespace WEB_TENNIC.Controllers
             TempData["fileName"] = null;
             TempData["ErrorMessage"] = null;
             TempData["SuccessMessage"] = null;
-            TempData["WarningMessage"] = null;
+            TempData["WarningMessage"] = null;            
 
             string ProjectCD = "";
             List<string> notFoundCustomerCd = new List<string>();

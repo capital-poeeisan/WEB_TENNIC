@@ -6,7 +6,7 @@
 <!-- Page Heading -->
 <div class="d-sm-flex align-items-center justify-content-between mb-4">
 
-    <h3 class="mb-0 text-primary fw-bold" id="pg-header">
+    <h3 class="mb-0 text-primary fw-semibold" id="pg-header">
         <i class="fas fa-file-excel me-2"></i>
         Excel Import
     </h3>
@@ -110,7 +110,7 @@
 
                         <!-- Project Name -->
                         <div class="row-cols-1">
-                            <label class="col-md-3 col-form-label fw-bold">
+                            <label class="col-md-3 col-form-label fw-semibold">
                                 プログラム名
                             </label>
 
@@ -126,17 +126,15 @@
 
                                          Swal.fire({
                                         title: "警告！",
-                                           html: "プロジェクト名",
+                                        html: "プログラム名を入力してください。",
                                         confirmButtonText: 'はい',
                                         width: '360px',
                                         customClass: {
                                             popup: 'my-popup',
-                                            title: 'title-warning',
+                                            title: 'title-warting',
                                             confirmButton: 'warning-btn'
                                         },
                                         buttonsStyling: false
-                                    }).then(() => {
-                                           $("#ProjectName").focus();
                                     });
 
                                 </script>
@@ -147,7 +145,7 @@
 
                         <!-- Excel File -->
                         <div class="row-cols-1">
-                            <label class="col-md-3 col-form-label fw-bold">
+                            <label class="col-md-3 col-form-label fw-semibold">
                                 Excelファイル
                             </label>
 
@@ -174,12 +172,12 @@
                                 <script>
                                       Swal.fire({
                                         title: "警告！",
-                                        html: "Excelファイル",
+                                        html: "Excelファイルをインポートしてください。",
                                         confirmButtonText: 'はい',
                                         width: '360px',
                                         customClass: {
                                             popup: 'my-popup',
-                                            title: 'title-warning',
+                                            title: 'title-warting',
                                             confirmButton: 'warning-btn'
                                         },
                                         buttonsStyling: false
