@@ -331,31 +331,23 @@
                     EndFlag:$("#EndFlag").is(":checked"),
                     ProjectProgress:[]
                 };
-                 
-                $("#progressTable tbody tr").each(function(){
-                    data.ProjectProgress.push({
-                        CustomerCD:$(this)
-                        .find(".customerCD")
-                        .val(),
-                        StaffCD:$(this)
-                        .find(".staffCD")
-                        .val(),
-                        ShopName:$(this)
-                        .find(".shopName")
-                        .val(),
-                        Amount:$(this)
-                        .find(".amount")
-                        .val(),
-                        Active:$(this)
-                        .find(".active")
-                        .is(":checked"),
-                        Remark:$(this)
-                        .find(".remark")
-                        .val()
-                    });
-                });
 
+                  var table = $('#progressTable').DataTable();
 
+        data.ProjectProgress = [];
+
+        table.rows().every(function () {
+            var row = $(this.node());
+
+            data.ProjectProgress.push({
+                CustomerCD: row.find(".customerCD").val(),
+                StaffCD: row.find(".staffCD").val(),
+                ShopName: row.find(".shopName").val(),
+                Amount: row.find(".amount").val(),
+                Active: row.find(".active").prop("checked"),
+                Remark: row.find(".remark").val()
+            });
+        });
             $.ajax({
                 url: "/ProjectDetail/Save",
                 type: "POST",
