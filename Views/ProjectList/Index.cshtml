@@ -25,7 +25,7 @@
 
                 <label class="form-check-label fw-semibold align-items-center"
                        style="align-items:center !important" for="chkEndFlag">
-                    ALL
+                    全て
                 </label>
 
                 &nbsp;&nbsp;
@@ -72,14 +72,14 @@
                             <td class="text-center text-nowrap">
                                 <a class="btn btn-outline-success btn-sm me-2 fw-semibold"
                                    onclick="location.href='@Url.Action("Index", "ProjectDetail", new { projectCd = item.ProjectCD })'">
-                                    Detail
+                                    明細
                                 </a>
                                 <a class="btn btn-outline-primary btn-sm me-2 fw-semibold"
                                    onclick="location.href='@Url.Action("Index", "ImportExcelUpdate", new { projectCd = item.ProjectCD })'">
-                                    Edit
+                                    修正
                                 </a>
                                 <a class="btn btn-outline-danger btn-sm me-2 fw-bold btnDeletePrj"  data-projectcd="@item.ProjectCD">
-                                    Delete
+                                    削除
                                 </a>
                             </td>
                         
