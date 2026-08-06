@@ -78,7 +78,7 @@
 
             $('#StaffCD').select2({
             width: '100%',
-             placeholder:"Select Staff",
+                     placeholder:"スタッフを選択してください",
             closeOnSelect: false
         });
             initializeDataTables();
@@ -232,6 +232,13 @@
 
              setProgressReadonly();
         });
+
+
+          $(document).on('click', '#btnShowAll', function () {
+                table.page.len(-1).draw();
+              $('.dt-paging-button').removeClass('current active');
+            $('#btnShowAll').addClass("dt-paging-button page-item active");
+                        });
             var projectCd = $("#ProjectCd").val();
             if (projectCd) {
                 $("#ProjectCd").trigger("change");
