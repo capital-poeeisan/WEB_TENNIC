@@ -311,6 +311,8 @@
                          .page
                          .len(-1)
                          .draw();
+                          $('.dt-paging-button').removeClass('current active');
+                          $('#btnShowAll').addClass("dt-paging-button page-item active");
                         });
         }
 

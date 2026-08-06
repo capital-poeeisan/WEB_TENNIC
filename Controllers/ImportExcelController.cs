@@ -151,17 +151,27 @@ namespace WEB_TENNIC.Controllers
                                     {                                        
                                         continue;                                        
                                     }
-                                    //Check OrderAmout is Character?
-                                    if (!decimal.TryParse(worksheet.Cells[row, 2].Text, out decimal orderAmt))
-                                    {
-                                        order_amt_errorList.Add(worksheet.Cells[row, 2].Text);
-                                        continue;
-                                    }
 
-                                    int ord_Amt = int.Parse(worksheet.Cells[row, 2].Text);
+                                    if(string.IsNullOrWhiteSpace(worksheet.Cells[row, 2].Text))
+                                    {
+                                        model.OrderAmt = 0;
+                                    }
+                                    else
+                                    {
+                                        //Check OrderAmout is Character?
+                                        if (!decimal.TryParse(worksheet.Cells[row, 2].Text, out decimal orderAmt))
+                                        {
+                                            order_amt_errorList.Add(worksheet.Cells[row, 2].Text);
+                                            continue;
+                                        }
+
+                                        int ord_Amt = int.Parse(worksheet.Cells[row, 2].Text);
+                                        model.OrderAmt = ord_Amt;
+                                    }
+                                    
 
                                     model.CustomerCd = customerCd;
-                                    model.OrderAmt = ord_Amt;
+                                   
                                     model.ProjectCd = ProjectCD;
                                   
 
