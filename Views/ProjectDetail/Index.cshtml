@@ -112,8 +112,12 @@
                         );
                     });
                     staff.trigger("change");
+                    $('#progressTable').DataTable().clear().draw();
+                    $('#summaryTable').DataTable().clear().draw();
+                     // $("#btnShow").click();
                 });
-            });
+            }); 
+
             $("#btnShow").click(function(){
                  var currentEndFlag = $("#EndFlag").is(":checked");
                 $.ajax({
@@ -138,7 +142,7 @@
 
                         }
                         $("#tableArea").html(result);
-                         $("#EndFlag").prop("checked", currentEndFlag); //bind data from para
+                         $("#EndFlag").prop("checked", currentEndFlag); 
                                
                          setProgressReadonly();
                         initializeDataTables();
@@ -146,7 +150,24 @@
                 });
             });
         
-            $(document).on("click", "#btnSave", function () {
+        $(document).on("click", "#btnSave", function () {
+        if (!$("#ProjectCd").val()) {
+            Swal.fire({
+                title: "警告！",
+                html: "プロジェクト名を選択してください。",
+                confirmButtonText: "はい",
+                         width: '360px',
+                    customClass: {
+                        popup: 'my-popup',
+                        title: 'title-warting',
+                        confirmButton: 'warning-btn'
+                                      },
+                        buttonsStyling: false
+            });
+            return;
+        }
+
+ 
          if ($("#progressTable").DataTable().rows().count() === 0) {
             Swal.fire({
                  title:"警告！",
@@ -185,9 +206,6 @@
         {
             message ="登録しますか？";
         }
-       
-
-
         Swal.fire({
                      title: "確認？",
                  // icon: "question",
@@ -238,7 +256,9 @@
                 table.page.len(-1).draw();
               $('.dt-paging-button').removeClass('current active');
             $('#btnShowAll').addClass("dt-paging-button page-item active");
-                        });
+                        }); 
+
+
             var projectCd = $("#ProjectCd").val();
             if (projectCd) {
                 $("#ProjectCd").trigger("change");
@@ -331,31 +351,21 @@
                     EndFlag:$("#EndFlag").is(":checked"),
                     ProjectProgress:[]
                 };
-                 
-                $("#progressTable tbody tr").each(function(){
-                    data.ProjectProgress.push({
-                        CustomerCD:$(this)
-                        .find(".customerCD")
-                        .val(),
-                        StaffCD:$(this)
-                        .find(".staffCD")
-                        .val(),
-                        ShopName:$(this)
-                        .find(".shopName")
-                        .val(),
-                        Amount:$(this)
-                        .find(".amount")
-                        .val(),
-                        Active:$(this)
-                        .find(".active")
-                        .is(":checked"),
-                        Remark:$(this)
-                        .find(".remark")
-                        .val()
-                    });
-                });
+       var table = $('#progressTable').DataTable();
+        data.ProjectProgress = [];
 
+        table.rows().every(function () {
+            var row = $(this.node());
 
+            data.ProjectProgress.push({
+                CustomerCD: row.find(".customerCD").val(),
+                StaffCD: row.find(".staffCD").val(),
+                ShopName: row.find(".shopName").val(),
+                Amount: row.find(".amount").val(),
+                Active: row.find(".active").prop("checked"),
+                Remark: row.find(".remark").val()
+            });
+        });
             $.ajax({
                 url: "/ProjectDetail/Save",
                 type: "POST",
@@ -375,7 +385,7 @@
                              },
                              buttonsStyling: false
                                 }).then(() => {
-                         location.reload();
+                                    location.reload();
                               });
 
                 },

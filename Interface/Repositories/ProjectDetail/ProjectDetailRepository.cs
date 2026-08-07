@@ -75,8 +75,8 @@ namespace WEB_TENNIC.Interface.Repositories
                     item.Amount
                 );
             }
-
-            var tableParam = new SqlParameter("@ProjectDetails", table)
+              
+                var tableParam = new SqlParameter("@ProjectDetails", table)
             {
                 SqlDbType = SqlDbType.Structured,
                 TypeName = "dbo.ProjectDetailType"
