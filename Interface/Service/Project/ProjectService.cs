@@ -18,6 +18,11 @@ namespace WEB_TENNIC.Service.Project
             return await _repository.GetProjectList(EndFlg);
         }
 
+        public async Task<int> WT_Logging_Delete(ProjectViewModel m)
+        {
+            return await _repository.WT_Logging_Delete(m);
+        }
+
         public async Task DeleteProjectName(string id)
         {
             if (id == null)

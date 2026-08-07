@@ -1,4 +1,6 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.Data.SqlClient;
+using Microsoft.EntityFrameworkCore;
+using System.Data;
 using WEB_TENNIC.Data;
 using WEB_TENNIC.Models.ViewModels;
 
@@ -11,33 +13,100 @@ namespace WEB_TENNIC.Interface.Repositories.ImportExcel
         {
             _context = context;
         }
-        public async Task<int> ImportExcelAsync(ImportExcelViewModel m)
+        public async Task<int> ImportExcelAsync(DataTable dt)
         {
+            dt = dt.AsEnumerable()
+               .GroupBy(r => new
+               {
+                   ProjectCD = r.Field<string>("ProjectCD"),
+                   CustomerCD = r.Field<string>("CustomerCD")
+               })
+               .Select(g => g.First())
+               .CopyToDataTable();
+
+            var parameter = new SqlParameter("@Projects", dt)
+            {
+                SqlDbType = SqlDbType.Structured,
+                TypeName = "dbo.WT_ProjectType"
+            };
+            
             var result = await _context.Database.ExecuteSqlRawAsync(
-            "EXEC WT_M_Project_Insert_Update " +
-            "@ProjectCD={0}, @CustomerCD={1},@ProjectName={2}, @OrderAmt={3},@FileName={4},@UpdateFlag={5}",
-            m.ProjectCd,
-            m.CustomerCd,
-            m.ProjectName,
-            m.OrderAmt,
-            m.fileName.FileName,
-            0);
+                "EXEC WT_M_Project_Insert_Update @Projects",
+                parameter
+               
+            );
+
             return result;
         }
 
-        public async Task<int> Update_ImportExcelAsync(ImportExcelViewModel m)
+        public async Task<int> WT_Logging_Insert(ImportExcelViewModel m)
         {
             var result = await _context.Database.ExecuteSqlRawAsync(
-            "EXEC WT_M_Project_Insert_Update " +
-            "@ProjectCD={0}, @CustomerCD={1},@ProjectName={2}, @OrderAmt={3},@FileName={4},@UpdateFlag={5}",
-            m.ProjectCd,
-            m.CustomerCd,
-            m.ProjectName,
-            m.OrderAmt,
-            m.fileName.FileName,
-            m.UpdateFlag);
+                "EXEC WT_Logging_Insert " +
+                "@ProjectCD={0},@CustomerCD={1}," +
+                "@OrderAmt={2},@Note={3},@FileName={4}," +
+                "@CreateDateTime={5},@UpdateDateTime={6},@DeleteDateTime={7},@EndFlag={8}",
+                m.ProjectCd,
+                null,
+                null,
+                null,
+                m.fileName.FileName,
+                DateTime.Now.ToString(),
+                null,
+                null,
+                null
+                );
+
             return result;
         }
+        public async Task<int> WT_Logging_Update(ImportExcelViewModel m)
+        {
+            var result = await _context.Database.ExecuteSqlRawAsync(
+                "EXEC WT_Logging_Insert " +
+                "@ProjectCD={0},@CustomerCD={1}," +
+                "@OrderAmt={2},@Note={3},@FileName={4}," +
+                "@CreateDateTime={5},@UpdateDateTime={6},@DeleteDateTime={7},@EndFlag={8}",
+                m.ProjectCd,
+                null,
+                null,
+                null,
+                m.fileName.FileName,
+                null,
+                DateTime.Now.ToString(),
+                null,
+                null
+                );
+
+            return result;
+        }
+        //public async Task<int> Update_ImportExcelAsync(DataTable dt)
+        //{
+        //    if (dt.Rows.Count > 0)
+        //    {
+        //        dt = dt.AsEnumerable()
+        //         .GroupBy(r => new
+        //         {
+        //             ProjectCD = r.Field<string>("ProjectCD"),
+        //             CustomerCD = r.Field<string>("CustomerCD")
+        //         })
+        //         .Select(g => g.First())
+        //         .CopyToDataTable();
+        //    }
+
+        //    var parameter = new SqlParameter("@Projects", dt)
+        //    {
+        //        SqlDbType = SqlDbType.Structured,
+        //        TypeName = "dbo.WT_ProjectType"
+        //    };
+
+        //    var result = await _context.Database.ExecuteSqlRawAsync(
+        //        "EXEC WT_M_Project_Insert_Update @Projects",
+        //        parameter
+
+        //    );
+
+        //    return result;
+        //}
 
 
     }

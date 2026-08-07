@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System.Data;
+using System.Threading.Tasks;
 using WEB_TENNIC.Interface.Repositories.ImportExcel;
 using WEB_TENNIC.Models;
 using WEB_TENNIC.Models.ViewModels;
@@ -13,14 +14,22 @@ namespace WEB_TENNIC.Interface.Service.ImportExcel
         {
             _repository = repository;
         }
-        public async Task<int> ImportExcelAsync(ImportExcelViewModel m)
+        public async Task<int> ImportExcelAsync(DataTable dt)
         {
-            return await _repository.ImportExcelAsync(m);
+            return await _repository.ImportExcelAsync(dt);
         }
 
-        public async Task<int> Update_ImportExcelAsync(ImportExcelViewModel m)
+        public async Task<int> WT_Logging_Insert(ImportExcelViewModel m)
         {
-            return await _repository.Update_ImportExcelAsync(m);
+            return await _repository.WT_Logging_Insert(m);
         }
+
+        public async Task<int> WT_Logging_Update(ImportExcelViewModel m)
+        {
+            return await _repository.WT_Logging_Update(m);
+        }
+
+
+
     }
 }

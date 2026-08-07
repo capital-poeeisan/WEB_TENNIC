@@ -11,10 +11,11 @@ namespace WEB_TENNIC.Controllers
     {
         
         private readonly IProjectService _service;
-
-        public ProjectListController(IProjectService service)
+        private readonly AppDbContext _context;
+        public ProjectListController(IProjectService service, AppDbContext context)
         {
             _service = service;
+            _context = context;
         }
         
         public async Task<IActionResult> Index(int EndFlag)
@@ -49,8 +50,17 @@ namespace WEB_TENNIC.Controllers
             try
             {
 
+                var m = _context.WT_M_Project
+                           .Where(x => x.ProjectCd == id)
+                           .FirstOrDefault();
+                ProjectViewModel model = new ProjectViewModel();
+                model.ProjectCD = m.ProjectCd;
+                model.FileName = m.FileName;
+
 
                 await _service.DeleteProjectName(id);
+                
+                await _service.WT_Logging_Delete(model);
 
                 return Json(new { success = true });
             }

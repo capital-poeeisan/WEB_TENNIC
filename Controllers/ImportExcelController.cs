@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using OfficeOpenXml;
+using System.Data;
 using WEB_TENNIC.Data;
 using WEB_TENNIC.Interface.Service.ImportExcel;
 using WEB_TENNIC.Models.ViewModels;
@@ -23,218 +24,221 @@ namespace WEB_TENNIC.Controllers
             
             return View();
         }
-
         [HttpPost]
         public async Task<IActionResult> UploadExcel(ImportExcelViewModel model)
         {
-            TempData["ProjectName"] = null;
-            TempData["fileName"] = null;
-            TempData["ErrorMessage"] = null;
-            TempData["SuccessMessage"] = null;
-            TempData["WarningMessage"] =null;
-           
+            var response = new
+            {
+                success = false,
+                message = "",
+                warnings = new List<string>()
+            };
+
             string ProjectCD = "";
             List<string> notFoundCustomerCd = new List<string>();
             List<string> order_amt_errorList = new List<string>();
-            List<string> warningMessages = new();
+            List<string> warningMessages = new List<string>();
 
-            if (!ModelState.IsValid) 
+            if (!ModelState.IsValid)
             {
-               
-                if (model.ProjectName == null) {
-                    TempData["ProjectName"] = "no_pj";
-                }
-                else if(model.fileName==null)
+                if (model.ProjectName == null)
                 {
-                    TempData["fileName"] = "no_file";
+                    return Json(new
+                    {
+                        success = false,
+                        type = "warning",
+                        message = "プロジェクト名を入力してください。"
+                    });
                 }
-                
-                    return View("index",model); 
-            }       
-            
 
-            ExcelPackage.License.SetNonCommercialPersonal("CKM");
-
-            if (model.fileName != null && model.fileName.Length > 0)
+                if (model.fileName == null || model.fileName.Length == 0)
                 {
-                    using var stream = new MemoryStream();
-                    await model.fileName.CopyToAsync(stream);                 
-
-                    using var package = new ExcelPackage(stream);
-                    int wcount = package.Workbook.Worksheets.Count();
-                    var worksheet = package.Workbook.Worksheets[0];
-                    try
-                    {                   
-                    //Check Header
-                    string header1 = worksheet.Cells[1, 1].Text.Trim();
-                    string header2 = worksheet.Cells[1, 2].Text.Trim();
-
-                    if (header1 != "CustomerCD" && header2 != "OrderAmt")
+                    return Json(new
                     {
-                        TempData["ErrorMessage"] = "無効なExcel形式です。必要な列：CustomerCD、OrderAmt です。";
-                        return View("Index");                        
-                    }
-                    else
+                        success = false,
+                        type = "warning",
+                        message = "Excelファイルを選択してください。"
+                    });
+                }
+            }
+
+
+            try
+            {
+                ExcelPackage.License.SetNonCommercialPersonal("CKM");
+
+                using var stream = new MemoryStream();
+                await model.fileName.CopyToAsync(stream);
+
+                using var package = new ExcelPackage(stream);
+
+                var worksheet = package.Workbook.Worksheets[0];
+
+
+                // Header Check
+                string header1 = worksheet.Cells[1, 1].Text.Trim();
+                string header2 = worksheet.Cells[1, 2].Text.Trim();
+
+                if (header1 != "CustomerCD" || header2 != "OrderAmt")
+                {
+                    return Json(new
                     {
-                        //Check ProjectName
-                        bool pj_exists = await _context.WT_M_Project
-                                .AnyAsync(p => p.ProjectName == model.ProjectName);
-                        if (pj_exists)
-                        {
-                            TempData["ErrorMessage"] = $"'{model.ProjectName}'プロジェクト名は既に存在します。";
-                            return View("Index");
-                           
-                        }
-
-                        //Check Excel File
-
-                        bool excelfile_exists = await _context.WT_M_Project
-                                .AnyAsync(p => p.FileName == model.fileName.FileName);
-
-                        if (excelfile_exists)
-                        {
-                            TempData["ErrorMessage"] = $"'{model.fileName.FileName}'Excelファイル名は既に存在します。";
-                            return View("Index");
-                        }
+                        success = false,
+                        type = "error",
+                        message = "無効なExcel形式です。必要な列：CustomerCD、OrderAmt です。"
+                    });
+                }
 
 
-                        //Check Data in Excel
-                        var customerCDValues = worksheet.Cells[2,        // Start Row
-                                                               1,        // CustomerCD Column
-                                                               worksheet.Dimension.Rows,
-                                                               1
-                                                               ]
-                                                                .Select(x => x.Text.Trim())
-                                                                .Where(x => !string.IsNullOrWhiteSpace(x))
-                                                                .ToList();
+                // Project Name Check
+                bool pj_exists = await _context.WT_M_Project
+                    .AnyAsync(p => p.ProjectName == model.ProjectName);
+
+                if (pj_exists)
+                {
+                    return Json(new
+                    {
+                        success = false,
+                        type = "error",
+                        message = $"'{model.ProjectName}'プロジェクト名は既に存在します。"
+                    });
+                }
 
 
-                        if (!customerCDValues.Any())
-                        {
-                            TempData["ErrorMessage"] = "Excelファイルにデータがありません。";
-                            return RedirectToAction("Index");
-                        }
-                        else
-                        {
-                            ProjectCD = GenerateProjectCD();
-
-                            
-                            for (int row = 2; row <= worksheet.Dimension.End.Row; row++)
-                            {
-                                string customerCd = worksheet.Cells[row, 1].Text.Trim();
-                               
-
-                                if (string.IsNullOrWhiteSpace(customerCd))
-                                {
-                                    continue;
-
-                                }
-                                else
-                                {
-                                    //Check CustomerCd 
-                                    bool exists = await _context.WT_M_Customer
-                                       .AnyAsync(c => c.CustomerCd == customerCd);
-
-                                    if (!exists)
-                                    {
-                                        notFoundCustomerCd.Add(customerCd);
-                                        continue;                                       
-
-                                    }
+                // Excel File Check
+                bool excelfile_exists = await _context.WT_M_Project
+                    .AnyAsync(p => p.FileName == model.fileName.FileName);
 
 
-                                    //Check CustomerCd Duplicate? in insert table
-                                    bool cusCD_duplicate = await _context.WT_M_Project
-                                        .AnyAsync(c => c.CustomerCd == customerCd
-                                                    && c.ProjectCd == ProjectCD);
-                                    if(cusCD_duplicate )
-                                    {                                        
-                                        continue;                                        
-                                    }
-
-                                    if(string.IsNullOrWhiteSpace(worksheet.Cells[row, 2].Text))
-                                    {
-                                        model.OrderAmt = 0;
-                                    }
-                                    else
-                                    {
-                                        //Check OrderAmout is Character?
-                                        if (!decimal.TryParse(worksheet.Cells[row, 2].Text, out decimal orderAmt))
-                                        {
-                                            order_amt_errorList.Add(worksheet.Cells[row, 2].Text);
-                                            continue;
-                                        }
-
-                                        int ord_Amt = int.Parse(worksheet.Cells[row, 2].Text);
-                                        model.OrderAmt = ord_Amt;
-                                    }
-                                    
-
-                                    model.CustomerCd = customerCd;
-                                   
-                                    model.ProjectCd = ProjectCD;
-                                  
-
-                                    await _importExcelService.ImportExcelAsync(model);
-
-                                }
-                               
+                if (excelfile_exists)
+                {
+                    return Json(new
+                    {
+                        success = false,
+                        type = "error",
+                        message = $"'{model.fileName.FileName}'Excelファイル名は既に存在します。"
+                    });
+                }
 
 
-                            }
-
-                            //ErrorMessage For Warning 
-                            if (order_amt_errorList.Any())
-                            {
-                                warningMessages.Add(string.Join(", ", order_amt_errorList.Distinct()) + "数字が無効です。");
-
-                            }
-                            if (notFoundCustomerCd.Any())
-                            {
-                                warningMessages.Add(string.Join(", ", notFoundCustomerCd.Distinct()) + "はテーブルに登録されていません。");
-
-                            }
-                            if (warningMessages.Any())
-                            {
-                               
-                                TempData["WarningMessage"] = string.Join("<br><br>", warningMessages);
-                               
-
-                            }
-                            //Success Message
-                            else 
-                            {
-                               
-                                TempData["SuccessMessage"] = $"インポートが完了しました。";
-                                //TempData["SuccessMessage"] = $"'{model.fileName.FileName}'インポートが完了しました。";
+                ProjectCD = GenerateProjectCD();
 
 
+                DataTable dt = new DataTable();
 
-                            }
+                dt.Columns.Add("ProjectCD", typeof(string));
+                dt.Columns.Add("CustomerCD", typeof(string));
+                dt.Columns.Add("ProjectName", typeof(string));
+                dt.Columns.Add("OrderAmt", typeof(int));
+                dt.Columns.Add("FileName", typeof(string));
 
 
-                        }
+                for (int row = 2; row <= worksheet.Dimension.End.Row; row++)
+                {
+                    string customerCd = worksheet.Cells[row, 1].Text.Trim();
 
+
+                    if (string.IsNullOrWhiteSpace(customerCd))
+                    {
+                        continue;
                     }
 
 
+                    bool exists = await _context.WT_M_Customer
+                        .AnyAsync(c => c.CustomerCd == customerCd);
+
+
+                    if (!exists)
+                    {
+                        notFoundCustomerCd.Add(customerCd);
+                        continue;
+                    }
+
+
+                    int orderAmt = 0;
+
+
+                    if (!string.IsNullOrWhiteSpace(worksheet.Cells[row, 2].Text))
+                    {
+                        if (!int.TryParse(
+                            worksheet.Cells[row, 2].Text,
+                            out orderAmt))
+                        {
+                            order_amt_errorList.Add(
+                                worksheet.Cells[row, 2].Text);
+
+                            continue;
+                        }
+                    }
+
+
+                    dt.Rows.Add(
+                        ProjectCD,
+                        customerCd,
+                        model.ProjectName,
+                        orderAmt,
+                        model.fileName.FileName
+                    );
                 }
-                    catch (Exception ex)
+
+
+                await _importExcelService.ImportExcelAsync(dt);
+                await _importExcelService.WT_Logging_Insert(model);
+
+
+
+                // Warning
+                if (order_amt_errorList.Any())
                 {
-                    TempData["ErrorMessage"] = ex.Message;
-                    return View("Index");
-
+                    warningMessages.Add(
+                        string.Join(", ",
+                        order_amt_errorList.Distinct())
+                        + " 数字が無効です。");
                 }
 
 
-                }         
-            
-            return RedirectToAction("Index");        
+                if (notFoundCustomerCd.Any())
+                {
+                    warningMessages.Add(
+                        string.Join(", ",
+                        notFoundCustomerCd.Distinct())
+                        + " はテーブルに登録されていません。");
+                }
 
 
-            
+
+                if (warningMessages.Any())
+                {
+                    return Json(new
+                    {
+                        success = true,
+                        type = "warning",
+                        message = "インポート完了しました。",
+                        warnings = warningMessages
+                    });
+                }
+
+
+                return Json(new
+                {
+                    success = true,
+                    type = "success",
+                    message = "インポートが完了しました。"
+                });
+
+
+            }
+            catch (Exception ex)
+            {
+                return Json(new
+                {
+                    success = false,
+                    message = ex.Message
+                });
+            }
         }
 
+        
         public string GenerateProjectCD()
         {
             var today = DateTime.Today;

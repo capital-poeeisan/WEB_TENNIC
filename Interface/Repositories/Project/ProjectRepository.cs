@@ -31,6 +31,27 @@ namespace WEB_TENNIC.Repositories.Project
 
         }
 
+        public async Task<int> WT_Logging_Delete(ProjectViewModel m)
+        {
+            var result = await _context.Database.ExecuteSqlRawAsync(
+                "EXEC WT_Logging_Insert " +
+                "@ProjectCD={0},@CustomerCD={1}," +
+                "@OrderAmt={2},@Note={3},@FileName={4}," +
+                "@CreateDateTime={5},@UpdateDateTime={6},@DeleteDateTime={7},@EndFlag={8}",
+                m.ProjectCD,
+                null,
+                null,
+                null,
+                m.FileName,
+                null,
+                null,
+                DateTime.Now.ToString(),
+                null
+                );
+
+            return result;
+        }
+
         public async Task<bool> DeleteProjectName(string id)
         {
             var project = await _context.WT_M_Project
@@ -46,6 +67,8 @@ namespace WEB_TENNIC.Repositories.Project
             return true;
 
         }
+
+    
 
     }
 }

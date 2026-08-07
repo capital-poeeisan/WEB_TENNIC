@@ -3,240 +3,97 @@
 <script src="~/lib/bootstrap/dist/js/bootstrap.min.js"></script>
 <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
 
- <!-- Page Heading -->
+
+<!-- Page Heading -->
 <div class="d-sm-flex align-items-center justify-content-between mb-4">
 
     <h3 class="mb-0 text-primary fw-semibold" id="pg-header">
         <i class="fas fa-file-excel me-2"></i>
-       Excel Import
+        Excel Import
     </h3>
 
 </div>
 
 <div class="card shadow  py-2 px-1">
     <div class="card-body " style="padding-top:0px!important;">
-        
-            <div class="card-body">
-                <div class="row justify-content-center">
-                    <div class="col-lg-7 col-md-9">                         
 
-                        @if (@TempData["ErrorMessage"] != null)
-                        {                          
+        <div class="card-body">
+            <div class="row justify-content-center">
+                <div class="col-lg-7 col-md-9">
 
-                        <script>
-                                Swal.fire({
-                                title: 'エラー!',
-                                html: '@TempData["ErrorMessage"]',
-                                confirmButtonText: 'はい',
-                                width: '360px',
-                                customClass: {
-                                    popup: 'my-popup',
-                                    title: 'my-title',
-                                    confirmButton: 'my-button'
-                                },
-                                buttonsStyling: false
-                            }).then((result) => {
-                                if (result.isConfirmed) {
+                    <!-- Project Name -->
+                    <div class="row-cols-1">
+                        <label class="col-md-3 col-form-label fw-semibold">
+                            プログラム名
+                        </label>
 
-                                let input = document.getElementById("ProjectName");
-
-                                input.focus();
-
-                               
-                                input.setSelectionRange(input.value.length, input.value.length);
-                            }
-                            });
-                        </script>
-                           
-                        }                   
-                    
-                        
-                        @if (TempData["WarningMessage"] != null)
-                    {
-                        <script>                        
-
-                            Swal.fire({                                
-                            title: '警告！',
-                            html: '@Html.Raw(TempData["WarningMessage"])',
-                            confirmButtonText: 'はい',
-                            width: '360px',
-                            customClass: {
-                                  popup: 'my-popup',
-                                  title: 'title-warting',
-                                  confirmButton: 'warning-btn'
-                             }
-                            }).then(() => {
-                                Swal.fire({
-                                     title: '成功!',
-                                     html: "インポートが完了しました。",
-                                     confirmButtonText: 'はい',
-                                     width: '360px',
-                                     customClass: {
-                                         popup: 'my-popup',
-                                         title: 'my-title-success',
-                                         confirmButton: 'success-btn'
-                                     },
-                                     buttonsStyling: false
-                                });
-                                 });
-                        </script>
-                    }
-          
-                    
-                        @if (TempData["SuccessMessage"] != null)
-                        {
-                        <script>                           
-                                Swal.fire({
-                                 title: '成功!',
-                                 html: "インポートが完了しました。",
-                                 confirmButtonText: 'はい',
-                                 width: '360px',
-                                 customClass: {
-                                         popup: 'my-popup',
-                                         title: 'my-title-success',
-                                         confirmButton: 'success-btn'
-                                     },
-                                 buttonsStyling: false
-                            });
-                        </script>
-                        }
-
-                  
-
-                    <form asp-action="UploadExcel" enctype="multipart/form-data" id="uploadForm" method="post" >
-
-                            <!-- Project Name -->
-                            <div class="row-cols-1">
-                            <label class="col-md-3 col-form-label fw-semibold">
-                                プログラム名
-                                </label>
-
-                            <input type="text" asp-for="ProjectName"
-                                   autofocus
-                                   class="col-md-6 form-control"
-                                   id="ProjectName"
-                                   name="ProjectName"
-                                   maxlength="50"                                                                
-
-                            >
-                            @if (TempData["ProjectName"] != null)
-                            {
-                                <script>                               
-
-                                            Swal.fire({
-                                           title: "警告！",
-                                           html: "プログラム名を入力してください。",
-                                           confirmButtonText: 'はい',
-                                           width: '360px',
-                                           customClass: {
-                                               popup: 'my-popup',
-                                               title: 'title-warting',
-                                               confirmButton: 'warning-btn'
-                                           },
-                                           buttonsStyling: false
-                                       }).then(() => {
-                                              $("#ProjectName").focus();
-                                       });
-                                              
-                                </script>
-                            }
-
-                            </div>
-
-                            <!-- Excel File -->
-                            <div class="row-cols-1">
-                            <label class="col-md-3 col-form-label fw-semibold">
-                                Excelファイル
-                                </label>
-
-                                <div class="input-group col-md-6">
-
-                                    <input type="text" 
-                                           id="fileName"
-                                           class="form-control"
-                                           placeholder="Excelファイルを選択してください。"
-                                           readonly                      
-                                    >                              
-
-                                    <button class="btn btn-light border"
-                                            type="button"
-                                            id="browseBtn"
-                                            onclick="document.getElementById('excelFile').click()">
-                                    <i class="bi bi-three-dots" style="font:bold;font-size:large;align-items:center;">...</i>
-                                    </button>
-                               
-
-                                </div>
-                            @if (TempData["fileName"] != null)
-                            {
-                                <script>
-                                      Swal.fire({
-                                        title: "警告！",
-                                        html: "Excelファイルをインポートしてください。",
-                                        confirmButtonText: 'はい',
-                                        width: '360px',
-                                        customClass: {
-                                            popup: 'my-popup',
-                                            title: 'title-warting',
-                                            confirmButton: 'warning-btn'
-                                        },
-                                        buttonsStyling: false
-                                    }).then(() => {
-                                        $("#fileName").focus();
-                                       
-                                    });
-                                                
-                                </script>
-                            }
-                           
-                            <span id="fileNameError" class="text-danger"></span>
-                                <input type="file"
-                                       id="excelFile"
-                                       accept=".xlsx,.xls"
-                                       name="fileName"
-                                       hidden
-                                       onchange="checkExcelFile(this)"
-                                                                     
-                                   >
-                            </div>
-                            <div class="d-flex justify-content-center gap-3 mt-3">
-                                <div class="card-footer bg-light border-0 text-center">
-                                <a class="btn btn-outline-secondary px-4 fw-semibold" href="@Url.Action("Index", "ProjectList")">
-                                    戻る
-                                    </a>
-                                <button id="btnSave" type="submit" class="btn btn-success  px-4 fw-semibold ">
-                                        登録
-                                    </button>
-                                </div>
-                            </div>
-                           
-                           
-                        </form>
-
-
-                        @if (ViewBag.Errors != null)
-                        {
-                            <div class="alert alert-danger">
-                                <ul>
-                                    @foreach (var error in ViewBag.Errors)
-                                    {
-                                        <li>@error</li>
-                                    }
-                                </ul>
-                            </div>
-                        }
+                        <input type="text" asp-for="ProjectName"
+                               class="col-md-6 form-control"
+                               id="ProjectName"
+                               name="ProjectName"
+                               maxlength="50">
 
                     </div>
+                
+
+                    <!-- Excel File -->
+                    <div class="row-cols-1">
+                        <label class="col-md-3 col-form-label fw-semibold">
+                            Excelファイル
+                        </label>
+
+                        <div class="input-group col-md-6">
+
+                            <input type="text"
+                                   autofocus
+                                   id="fileName"
+                                   class="form-control"
+                                   placeholder="Excelファイルを選択してください。"
+                                   readonly>
+
+                            <button class="btn btn-light border"
+                                    type="button"
+                                    id="browseBtn"
+                                    onclick="document.getElementById('excelFile').click()">
+                                <i class="bi bi-three-dots" style="font:bold;font-size:large;align-items:center;">...</i>
+                            </button>
+
+
+                        </div>
+
+
+                        <span id="fileNameError" class="text-danger"></span>
+                        <input type="file"
+                               id="excelFile"
+                               accept=".xlsx,.xls"
+                               name="fileName"
+                               hidden
+                               onchange="checkExcelFile(this)">
+                    </div>
+                    <div class="d-flex justify-content-center gap-3 mt-3">
+                        <div class="card-footer bg-light border-0 text-center">
+                            <a class="btn btn-outline-secondary px-4 fw-semibold" href="@Url.Action("Index", "ProjectList")">
+                                戻る
+                            </a>
+                            <button id="btnSave" type="button" class="btn btn-success  px-4 fw-semibold ">
+                                修正
+                            </button>
+                        </div>
+                    </div>
+
+
+
                 </div>
-          
+            </div>
+
         </div>
-       
+
     </div>
 </div>
 
 
 <script>
-    
+
 
 
         function checkExcelFile(input) {
@@ -247,7 +104,7 @@
         var fileName = file.name;
         var extension = fileName.split('.').pop().toLowerCase();
 
-        if (extension !== "xlsx" && extension !== "xls") { 
+        if (extension !== "xlsx" && extension !== "xls") {
                             Swal.fire({
                             title: 'エラー!',
                             html: 'Excelファイルを選択してください。',
@@ -259,8 +116,8 @@
                                 confirmButton: 'my-button'
                             },
                             buttonsStyling: false
-                        }); 
-                       
+                        });
+
 
             input.value = "";
             document.getElementById("fileName").value = "";
@@ -269,5 +126,106 @@
 
         document.getElementById("fileName").value = fileName;
     }
+
+
+
+        $("#btnSave").click(function () {
+            var file = $("#excelFile")[0].files[0];
+
+            var formData = new FormData();
+
+            formData.append("ProjectName", $("#ProjectName").val());
+            // formData.append("ProjectCd", $("#ProjectCd").val());
+            formData.append("fileName", file);
+
+            // alert($("#ProjectCd").val());
+
+            $.ajax({
+                url: '/ImportExcel/UploadExcel',
+                type: 'POST',
+                data: formData,
+                processData: false,
+                contentType: false,
+
+                success: function (res) {
+
+                    if (!res.success) {
+
+                        Swal.fire({
+                            title: 'エラー!',
+                            html: res.message,
+                            confirmButtonText: 'はい',
+                            width: '360px',
+                            customClass: {
+                                        popup: 'my-popup',
+                                        title: 'my-title',
+                                        confirmButton: 'my-button'
+                                    },buttonsStyling: false
+
+
+                        });
+
+                        return;
+                    }
+
+
+                     if (res.warnings && res.warnings.length > 0) {
+
+                        Swal.fire({
+                            title: '警告!',
+                            html: res.warnings.join("<br><br>"),
+                            confirmButtonText: 'はい',
+                            width: '360px',
+                            customClass: {
+                                      popup: 'my-popup',
+                                      title: 'title-warting',
+                                      confirmButton: 'warning-btn'
+                                 },buttonsStyling: false
+                        })
+                        .then(() => {
+
+                            Swal.fire({
+                                title: '成功!',
+                                html: res.message,
+                                confirmButtonText: 'はい',
+                                width: '360px',
+                                    customClass: {
+                                        popup: 'my-popup',
+                                        title: 'my-title-success',
+                                        confirmButton: 'success-btn'
+                                    },
+                                    buttonsStyling: false
+                            })
+                            .then(() => {
+                                location.href='/ProjectList/Index';
+                            });
+
+                        });
+
+                    }
+                    else {
+
+                        Swal.fire({
+                            title: '成功!',
+                            html: res.message,
+                            confirmButtonText: 'はい',
+                            width: '360px',
+                                    customClass: {
+                                        popup: 'my-popup',
+                                        title: 'my-title-success',
+                                        confirmButton: 'success-btn'
+                                    },
+                                    buttonsStyling: false
+                        })
+                        .then(() => {
+                            location.href='/ProjectList/Index';
+                        });
+
+                    }
+
+                }
+            });
+
+    });
 </script>
 
