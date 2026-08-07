@@ -39,7 +39,7 @@ namespace WEB_TENNIC.Controllers
                 return Json(new
                 {
                     success = false,
-                    message = "Please select a project."
+                    message = "プロジェクト名を選択してください。"
                 });
             }
             var data = _service.GetData(model.ProjectCd, model.StaffCD);
@@ -53,7 +53,7 @@ namespace WEB_TENNIC.Controllers
                 return BadRequest(new
                 {
                     success = false,
-                    message = "Please select a project."
+                    message = "プロジェクト名を選択してください。"
                 });
             }
 
@@ -62,7 +62,7 @@ namespace WEB_TENNIC.Controllers
                 return BadRequest(new
                 {
                     success = false,
-                    message = "There is no data to save."
+                    message = "データがありません。"
                 });
             }
             try
