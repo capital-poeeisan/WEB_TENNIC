@@ -28,6 +28,7 @@
                         </label>
 
                         <input type="text" asp-for="ProjectName"
+                                autofocus
                                class="col-md-6 form-control"
                                id="ProjectName"
                                name="ProjectName"
@@ -45,7 +46,6 @@
                         <div class="input-group col-md-6">
 
                             <input type="text"
-                                   autofocus
                                    id="fileName"
                                    class="form-control"
                                    placeholder="Excelファイルを選択してください。"
@@ -131,7 +131,39 @@
 
         $("#btnSave").click(function () {
             var file = $("#excelFile")[0].files[0];
+            var projectName = $("#ProjectName").val().trim();
 
+            if (projectName === "") {
+
+              document.activeElement?.blur();
+               Swal.fire({
+                 title:"警告！",
+                 html:"プロジェクト名を選択してください。",
+                 confirmButtonText: 'はい',
+                 width: '360px',
+                 customClass: {
+                     popup: 'my-popup',
+                      title: 'title-warting',
+                       confirmButton: 'warning-btn'
+                 },
+               buttonsStyling: false }).then(() => {
+               $("#ProjectName").focus();});
+                               return;
+                }
+                   
+            if (!file) { 
+                             document.activeElement?.blur();
+                            Swal.fire({ 
+                                title: '警告!',
+                                html: 'Excelファイルを選択してください。',
+                                confirmButtonText: 'はい', width: '360px',
+                                customClass: { popup: 'my-popup', title: 'title-warting', confirmButton: 'warning-btn' },
+                                buttonsStyling: false }).then(() => 
+                                { 
+                                    $("#fileName").focus();
+                                });
+                                return; 
+                            }
             var formData = new FormData();
 
             formData.append("ProjectName", $("#ProjectName").val());
@@ -179,7 +211,7 @@
                             customClass: {
                                       popup: 'my-popup',
                                       title: 'title-warting',
-                                      confirmButton: 'warning-btn'
+                                      confirmButton: 'warning-bn'
                                  },buttonsStyling: false
                         })
                         .then(() => {
