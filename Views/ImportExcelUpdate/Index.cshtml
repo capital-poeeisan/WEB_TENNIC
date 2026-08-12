@@ -132,6 +132,40 @@
         $("#btnSave").click(function () {
             var file = $("#excelFile")[0].files[0];
 
+             var projectName = $("#ProjectName").val().trim();
+
+            if (projectName === "") {
+
+              document.activeElement?.blur();
+               Swal.fire({
+                 title:"警告！",
+                 html:"プロジェクト名を選択してください。",
+                 confirmButtonText: 'はい',
+                 width: '360px',
+                 customClass: {
+                     popup: 'my-popup',
+                      title: 'title-warting',
+                       confirmButton: 'warning-btn'
+                 },
+               buttonsStyling: false }).then(() => {
+               $("#ProjectName").focus();});
+                               return;
+                }
+
+            if (!file) {
+                             document.activeElement?.blur();
+                            Swal.fire({
+                                title: '警告!',
+                                html: 'Excelファイルを選択してください。',
+                                confirmButtonText: 'はい', width: '360px',
+                                customClass: { popup: 'my-popup', title: 'title-warting', confirmButton: 'warning-btn' },
+                                buttonsStyling: false }).then(() =>
+                                {
+                                    $("#fileName").focus();
+                                });
+                                return;
+                            }
+
             var formData = new FormData();
 
             formData.append("ProjectName", $("#ProjectName").val());
