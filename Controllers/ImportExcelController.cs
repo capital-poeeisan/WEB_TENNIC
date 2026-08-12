@@ -122,6 +122,7 @@ namespace WEB_TENNIC.Controllers
 
 
                 ProjectCD = GenerateProjectCD();
+                model.ProjectCd = ProjectCD;
 
 
                 DataTable dt = new DataTable();
@@ -170,7 +171,7 @@ namespace WEB_TENNIC.Controllers
                             continue;
                         }
                     }
-
+                   
 
                     dt.Rows.Add(
                         ProjectCD,
