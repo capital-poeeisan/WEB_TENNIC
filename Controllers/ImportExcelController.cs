@@ -1,7 +1,9 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using ExcelDataReader;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using OfficeOpenXml;
 using System.Data;
+using System.Text;
 using WEB_TENNIC.Data;
 using WEB_TENNIC.Interface.Service.ImportExcel;
 using WEB_TENNIC.Models.ViewModels;
@@ -65,21 +67,51 @@ namespace WEB_TENNIC.Controllers
 
             try
             {
-                ExcelPackage.License.SetNonCommercialPersonal("CKM");
+                //ExcelPackage.License.SetNonCommercialPersonal("CKM");
+
+                //using var stream = new MemoryStream();
+                //await model.fileName.CopyToAsync(stream);
+
+                //using var package = new ExcelPackage(stream);
+                //var worksheet = package.Workbook.Worksheets[0];
+
+
+                //// Header Check
+                //string header1 = worksheet.Cells[1, 1].Text.Trim();
+                //string header2 = worksheet.Cells[1, 2].Text.Trim();
+
+                //if (header1 != "CustomerCD" || header2 != "OrderAmt")
+                //{
+                //    return Json(new
+                //    {
+                //        success = false,
+                //        type = "error",
+                //        message = "無効なExcel形式です。必要な列：CustomerCD、OrderAmt です。"
+                //    });
+                //}
+
+                Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
 
                 using var stream = new MemoryStream();
                 await model.fileName.CopyToAsync(stream);
+                stream.Position = 0;
 
-                using var package = new ExcelPackage(stream);
+                using var reader = ExcelReaderFactory.CreateReader(stream);
 
-                var worksheet = package.Workbook.Worksheets[0];
+                var result = reader.AsDataSet(new ExcelDataSetConfiguration
+                {
+                    ConfigureDataTable = _ => new ExcelDataTableConfiguration
+                    {
+                        UseHeaderRow = true
+                    }
+                });
+                DataTable dt_excel = result.Tables[0];
 
+                //Header Check
 
-                // Header Check
-                string header1 = worksheet.Cells[1, 1].Text.Trim();
-                string header2 = worksheet.Cells[1, 2].Text.Trim();
-
-                if (header1 != "CustomerCD" || header2 != "OrderAmt")
+                bool isValidHeader = dt_excel.Columns.Contains("CustomerCD") &&
+                                     dt_excel.Columns.Contains("OrderAmt");
+                if (!isValidHeader)
                 {
                     return Json(new
                     {
@@ -134,59 +166,74 @@ namespace WEB_TENNIC.Controllers
                 dt.Columns.Add("FileName", typeof(string));
 
 
-                for (int row = 2; row <= worksheet.Dimension.End.Row; row++)
+                //for (int row = 2; row <= worksheet.Dimension.End.Row; row++)
+                //{
+                //    string customerCd = worksheet.Cells[row, 1].Text.Trim();
+                if (dt_excel.Rows.Count > 0)
                 {
-                    string customerCd = worksheet.Cells[row, 1].Text.Trim();
-
-
-                    if (string.IsNullOrWhiteSpace(customerCd))
+                    for (int row = 0; row <= dt_excel.Rows.Count - 1; row++)
                     {
-                        continue;
-                    }
+                        string customerCd = dt_excel.Rows[row]["CustomerCD"].ToString().Trim();
 
 
-                    bool exists = await _context.WT_M_Customer
-                        .AnyAsync(c => c.CustomerCd == customerCd);
-
-
-                    if (!exists)
-                    {
-                        notFoundCustomerCd.Add(customerCd);
-                        continue;
-                    }
-
-
-                    int orderAmt = 0;
-
-
-                    if (!string.IsNullOrWhiteSpace(worksheet.Cells[row, 2].Text))
-                    {
-                        if (!int.TryParse(
-                            worksheet.Cells[row, 2].Text,
-                            out orderAmt))
+                        if (string.IsNullOrWhiteSpace(customerCd))
                         {
-                            order_amt_errorList.Add(
-                                worksheet.Cells[row, 2].Text);
-
                             continue;
                         }
-                    }
-                   
 
-                    dt.Rows.Add(
-                        ProjectCD,
-                        customerCd,
-                        model.ProjectName,
-                        orderAmt,
-                        model.fileName.FileName
-                    );
+
+                        bool exists = await _context.WT_M_Customer
+                            .AnyAsync(c => c.CustomerCd == customerCd);
+
+
+                        if (!exists)
+                        {
+                            notFoundCustomerCd.Add(customerCd);
+                            continue;
+                        }
+
+
+                        int orderAmt = 0;
+
+
+                        if (!string.IsNullOrWhiteSpace(dt_excel.Rows[row]["OrderAmt"].ToString()))
+                        {
+                            if (!int.TryParse(
+                                dt_excel.Rows[row]["OrderAmt"].ToString(),
+                                out orderAmt))
+                            {
+                                order_amt_errorList.Add(
+                                    dt_excel.Rows[row]["OrderAmt"].ToString());
+
+                                continue;
+                            }
+                        }
+
+
+                        dt.Rows.Add(
+                            ProjectCD,
+                            customerCd,
+                            model.ProjectName,
+                            orderAmt,
+                            model.fileName.FileName
+                        );
+                    }
+
+
+                    await _importExcelService.ImportExcelAsync(dt);
+                    await _importExcelService.WT_Logging_Insert(model);
+
                 }
 
-
-                await _importExcelService.ImportExcelAsync(dt);
-                await _importExcelService.WT_Logging_Insert(model);
-
-
+                else
+                {
+                    return Json(new
+                    {
+                        success = false,
+                        type = "error",
+                        message = $"'{model.fileName.FileName}'Excelにデータがないよ"
+                    });
+                }
 
                 // Warning
                 if (order_amt_errorList.Any())
