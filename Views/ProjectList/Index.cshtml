@@ -71,7 +71,9 @@
 
                             <td class="text-center text-nowrap">
                                 <a class="btn btn-outline-success btn-sm me-2 fw-semibold"
-                                   onclick="location.href='@Url.Action("Index", "ProjectDetail", new { projectCd = item.ProjectCD })'">
+                                   asp-controller="ProjectDetail"
+                                   asp-action="Index"
+                                   asp-route-projectCd="@item.ProjectCD">
                                     明細
                                 </a>
                                 <a class="btn btn-outline-primary btn-sm me-2 fw-semibold"
