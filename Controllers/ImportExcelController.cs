@@ -1,4 +1,4 @@
-﻿using ExcelDataReader;
+﻿
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using OfficeOpenXml;
@@ -67,6 +67,24 @@ namespace WEB_TENNIC.Controllers
 
             try
             {
+
+                var uploadsFolder = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "uploads");
+                if (!Directory.Exists(uploadsFolder))
+                    Directory.CreateDirectory(uploadsFolder);
+
+                // Save file to server
+                var filePath = Path.Combine(uploadsFolder, Path.GetFileName(model.fileName.FileName));
+                using (var streamm = new FileStream(filePath, FileMode.Create))
+                {
+                    await model.fileName.CopyToAsync(streamm);
+                }
+
+                // Read Excel file from server path
+                ExcelPackage.License.SetNonCommercialPersonal("CKM");
+                var package = new ExcelPackage(new FileInfo(filePath));
+                var worksheet = package.Workbook.Worksheets[0];
+
+
                 //ExcelPackage.License.SetNonCommercialPersonal("CKM");
 
                 //using var stream = new MemoryStream();
@@ -76,42 +94,11 @@ namespace WEB_TENNIC.Controllers
                 //var worksheet = package.Workbook.Worksheets[0];
 
 
-                //// Header Check
-                //string header1 = worksheet.Cells[1, 1].Text.Trim();
-                //string header2 = worksheet.Cells[1, 2].Text.Trim();
-
-                //if (header1 != "CustomerCD" || header2 != "OrderAmt")
-                //{
-                //    return Json(new
-                //    {
-                //        success = false,
-                //        type = "error",
-                //        message = "無効なExcel形式です。必要な列：CustomerCD、OrderAmt です。"
-                //    });
-                //}
-
-                Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
-
-                using var stream = new MemoryStream();
-                await model.fileName.CopyToAsync(stream);
-                stream.Position = 0;
-
-                using var reader = ExcelReaderFactory.CreateReader(stream);
-
-                var result = reader.AsDataSet(new ExcelDataSetConfiguration
-                {
-                    ConfigureDataTable = _ => new ExcelDataTableConfiguration
-                    {
-                        UseHeaderRow = true
-                    }
-                });
-                DataTable dt_excel = result.Tables[0];
-
                 //Header Check
+                string header1 = worksheet.Cells[1, 1].Text.Trim();
+                string header2 = worksheet.Cells[1, 2].Text.Trim();
 
-                bool isValidHeader = dt_excel.Columns.Contains("CustomerCD") &&
-                                     dt_excel.Columns.Contains("OrderAmt");
-                if (!isValidHeader)
+                if (header1 != "CustomerCD" || header2 != "OrderAmt")
                 {
                     return Json(new
                     {
@@ -120,6 +107,37 @@ namespace WEB_TENNIC.Controllers
                         message = "無効なExcel形式です。必要な列：CustomerCD、OrderAmt です。"
                     });
                 }
+
+                ////Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
+
+                ////using var stream = new MemoryStream();
+                ////await model.fileName.CopyToAsync(stream);
+                ////stream.Position = 0;
+
+                ////using var reader = ExcelReaderFactory.CreateReader(stream);
+
+                ////var result = reader.AsDataSet(new ExcelDataSetConfiguration
+                ////{
+                ////    ConfigureDataTable = _ => new ExcelDataTableConfiguration
+                ////    {
+                ////        UseHeaderRow = true
+                ////    }
+                ////});
+                ////DataTable dt_excel = result.Tables[0];
+
+                //////Header Check
+
+                ////bool isValidHeader = dt_excel.Columns.Contains("CustomerCD") &&
+                ////                     dt_excel.Columns.Contains("OrderAmt");
+                ////if (!isValidHeader)
+                ////{
+                ////    return Json(new
+                ////    {
+                ////        success = false,
+                ////        type = "error",
+                ////        message = "無効なExcel形式です。必要な列：CustomerCD、OrderAmt です。"
+                ////    });
+                ////}
 
 
                 // Project Name Check
@@ -169,14 +187,14 @@ namespace WEB_TENNIC.Controllers
                 //for (int row = 2; row <= worksheet.Dimension.End.Row; row++)
                 //{
                 //    string customerCd = worksheet.Cells[row, 1].Text.Trim();
-                if (dt_excel.Rows.Count > 0)
-                {
-                    for (int row = 0; row <= dt_excel.Rows.Count - 1; row++)
+                //if (dt_excel.Rows.Count > 0)
+                //{
+                    for (int row = 2; row <= worksheet.Dimension.End.Row; row++)
                     {
-                        string customerCd = dt_excel.Rows[row]["CustomerCD"].ToString().Trim();
+                        string customerCd = worksheet.Cells[row, 1].Text.Trim();
 
 
-                        if (string.IsNullOrWhiteSpace(customerCd))
+                    if (string.IsNullOrWhiteSpace(customerCd))
                         {
                             continue;
                         }
@@ -196,14 +214,14 @@ namespace WEB_TENNIC.Controllers
                         int orderAmt = 0;
 
 
-                        if (!string.IsNullOrWhiteSpace(dt_excel.Rows[row]["OrderAmt"].ToString()))
+                        if (!string.IsNullOrWhiteSpace(worksheet.Cells[row, 2].Text))
                         {
                             if (!int.TryParse(
-                                dt_excel.Rows[row]["OrderAmt"].ToString(),
+                               worksheet.Cells[row, 2].Text,
                                 out orderAmt))
                             {
                                 order_amt_errorList.Add(
-                                    dt_excel.Rows[row]["OrderAmt"].ToString());
+                                    worksheet.Cells[row, 2].Text);
 
                                 continue;
                             }
@@ -219,12 +237,13 @@ namespace WEB_TENNIC.Controllers
                         );
                     }
 
+                if (dt.Rows.Count > 0)
+                {
 
                     await _importExcelService.ImportExcelAsync(dt);
                     await _importExcelService.WT_Logging_Insert(model);
 
                 }
-
                 else
                 {
                     return Json(new
@@ -233,7 +252,22 @@ namespace WEB_TENNIC.Controllers
                         type = "error",
                         message = $"'{model.fileName.FileName}'Excelにデータがないよ"
                     });
+
                 }
+
+
+
+                //}
+
+                //else
+                //{
+                //    return Json(new
+                //    {
+                //        success = false,
+                //        type = "error",
+                //        message = $"'{model.fileName.FileName}'Excelにデータがないよ"
+                //    });
+                //}
 
                 // Warning
                 if (order_amt_errorList.Any())
