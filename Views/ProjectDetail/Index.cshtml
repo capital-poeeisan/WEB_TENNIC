@@ -95,7 +95,7 @@
 
                         return;
                 }
-                $.get("/ProjectDetail/GetStaff",
+                $.get('@Url.Action("GetStaff", "ProjectDetail")',
                 {
                     projectCd:projectCd
                 },
@@ -121,7 +121,7 @@
             $("#btnShow").click(function(){
                  var currentEndFlag = $("#EndFlag").is(":checked");
                 $.ajax({
-                    url:"/ProjectDetail/GetData",
+                    url: '@Url.Action("GetData", "ProjectDetail")',
                     type:"POST",
                     data:$("#detailform").serialize(),
                     success:function(result){
@@ -228,7 +228,6 @@
                     saveProject();
                 }
             });
-
         });
 
             $(document).on("keydown", ".remark", function (e) {
@@ -258,7 +257,6 @@
             $('#btnShowAll').addClass("dt-paging-button page-item active");
                         }); 
 
-
             var projectCd = $("#ProjectCd").val();
             if (projectCd) {
                 $("#ProjectCd").trigger("change");
@@ -268,8 +266,26 @@
           
         });
 
+        
         function addShowAllButton() {
+
+            var table = $('#progressTable').DataTable();
+            var rowCount = table.rows().count();
+
+            // No data
+            if (rowCount === 0) {
+                $('#progressTable_wrapper #btnShowAll').remove();
+                $('#progressTable_wrapper .dt-paging').hide();
+                $('#progressTable_wrapper .dt-info').hide();
+                return;
+            }
+
+            // Has data
+            $('#progressTable_wrapper .dt-paging').show();
+            $('#progressTable_wrapper .dt-info').show();
+
             if ($('#progressTable_wrapper #btnShowAll').length === 0) {
+
                 $('#progressTable_wrapper .dt-paging ul').append(`
                     <li class="dt-paging-button page-item">
                         <button id="btnShowAll"
@@ -281,6 +297,7 @@
                 `);
             }
         }
+        
             
         function initializeDataTables() {
             // Destroy old Progress DataTable
