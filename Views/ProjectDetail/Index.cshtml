@@ -392,7 +392,7 @@
             });
         });
             $.ajax({
-                url: "/ProjectDetail/Save",
+                url: '@Url.Action("Save", "ProjectDetail")',
                 type: "POST",
                 data: JSON.stringify(data),
                 contentType: "application/json",
