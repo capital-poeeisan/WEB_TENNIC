@@ -175,7 +175,8 @@
             // alert($("#ProjectCd").val());
 
             $.ajax({
-                url: '/ImportExcelUpdate/UploadExcel',
+              
+               url: '@Url.Action("UploadExcel", "ImportExcelUpdate")',
                 type: 'POST',
                 data: formData,
                 processData: false,
@@ -231,7 +232,7 @@
                                     buttonsStyling: false
                             })
                             .then(() => {
-                                location.href='/ProjectList/Index';
+                               location.href = '@Url.Action("Index", "ProjectList")';
                             });
 
                         });
@@ -252,7 +253,7 @@
                                     buttonsStyling: false
                         })
                         .then(() => {
-                            location.href='/ProjectList/Index';
+                           location.href = '@Url.Action("Index", "ProjectList")';
                         });
 
                     }

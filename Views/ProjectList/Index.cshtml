@@ -172,8 +172,8 @@
         width: 100px;
         text-align: center;
     }
-
     .btn-search {
+
         /* min-width: 90px; */
         background-color: #0c63e4 !important;
     }
@@ -264,7 +264,7 @@
 
                 if (result.isConfirmed) {
                     $.ajax({
-                url:"/ProjectList/DeleteProject/"+projectCD,
+                url: '@Url.Action("DeleteProject", "ProjectList")/' + projectCD,
                 type: "POST",   
                 contentType: "application/json",
                 success: function () {
@@ -311,6 +311,22 @@
              
            });
           function addAllButton() {
+               var table = $('#projectTable').DataTable();
+            var rowCount = table.rows().count();
+
+            // No data
+            if (rowCount === 0) {
+                $('#projectTable_wrapper #btnShowAll').remove();
+                $('#projectTable_wrapper .dt-paging').hide();
+                $('#projectTable_wrapper .dt-info').hide();
+                return;
+            }
+
+            // Has data
+            $('#projectTable_wrapper .dt-paging').show();
+            $('#projectTable_wrapper .dt-info').show();
+
+
                     if ($('#btnShowAll').length === 0) {
                         $('.dt-paging ul').append(`
                             <li class="dt-paging-button page-item">

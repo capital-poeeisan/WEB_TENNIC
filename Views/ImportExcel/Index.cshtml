@@ -81,22 +81,14 @@
                             </button>
                         </div>
                     </div>
-
-
-
                 </div>
             </div>
-
         </div>
-
     </div>
 </div>
 
 
 <script>
-
-
-
         function checkExcelFile(input) {
 
         if (input.files.length === 0)
@@ -174,7 +166,8 @@
             // alert($("#ProjectCd").val());
 
             $.ajax({
-                url: '/ImportExcel/UploadExcel',
+                
+              url: '@Url.Action("UploadExcel", "ImportExcel")',
                 type: 'POST',
                 data: formData,
                 processData: false,
@@ -230,7 +223,8 @@
                                     buttonsStyling: false
                             })
                             .then(() => {
-                                location.href='/ProjectList/Index';
+                               
+                                location.href = '@Url.Action("Index", "ProjectList")';
                             });
 
                         });
@@ -251,7 +245,7 @@
                                     buttonsStyling: false
                         })
                         .then(() => {
-                            location.href='/ProjectList/Index';
+                            location.href = '@Url.Action("Index", "ProjectList")';
                         });
 
                     }
