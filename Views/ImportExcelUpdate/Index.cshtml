@@ -24,7 +24,7 @@
                         <!-- Project Name -->
                         <div class="row-cols-1">
                             <label class="col-md-3 col-form-label fw-semibold">
-                                プログラム名
+                            プロジェクト名
                             </label>
 
                         <input type="text" asp-for="ProjectName"
@@ -44,12 +44,13 @@
 
                             <div class="input-group col-md-6">
 
-                                <input type="text" 
-                                       autofocus
+                            <input type="text" asp-for="F_name"
+                                       autofocus                                       
                                        id="fileName"
                                        class="form-control"
                                        placeholder="Excelファイルを選択してください。"
                                        readonly>
+                            <label id="Fname" hidden>@Model.F_name</label>
 
                                 <button class="btn btn-light border"
                                         type="button"
@@ -152,25 +153,26 @@
                                return;
                 }
 
-            if (!file) {
-                             document.activeElement?.blur();
-                            Swal.fire({
-                                title: '警告!',
-                                html: 'Excelファイルを選択してください。',
-                                confirmButtonText: 'はい', width: '360px',
-                                customClass: { popup: 'my-popup', title: 'title-warting', confirmButton: 'warning-btn' },
-                                buttonsStyling: false }).then(() =>
-                                {
-                                    $("#fileName").focus();
-                                });
-                                return;
-                            }
+            // if (!file) {
+            //                  document.activeElement?.blur();
+            //                 Swal.fire({
+            //                     title: '警告!',
+            //                     html: 'Excelファイルを選択してください。',
+            //                     confirmButtonText: 'はい', width: '360px',
+            //                     customClass: { popup: 'my-popup', title: 'title-warting', confirmButton: 'warning-btn' },
+            //                     buttonsStyling: false }).then(() =>
+            //                     {
+            //                         $("#fileName").focus();
+            //                     });
+            //                     return;
+            //                 }
 
             var formData = new FormData();
 
             formData.append("ProjectName", $("#ProjectName").val());
             formData.append("ProjectCd", $("#ProjectCd").val());
             formData.append("fileName", file);
+            formData.append("F_name",$("#Fname").text());           
 
             // alert($("#ProjectCd").val());
 

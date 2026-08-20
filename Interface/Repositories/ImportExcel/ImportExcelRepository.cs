@@ -70,7 +70,7 @@ namespace WEB_TENNIC.Interface.Repositories.ImportExcel
                 null,
                 null,
                 null,
-                m.fileName.FileName,
+                m.F_name,
                 null,
                 DateTime.Now.ToString(),
                 null,
