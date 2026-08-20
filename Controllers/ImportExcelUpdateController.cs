@@ -122,9 +122,7 @@ namespace WEB_TENNIC.Controllers
                 //update file data
                 else if(model.fileName != null)
                 {
-                    ExcelPackage.License.SetNonCommercialPersonal("CKM");
-
-
+                   
                     if (model.fileName == null || model.fileName.Length == 0)
                     {
                         return Json(new
@@ -135,13 +133,46 @@ namespace WEB_TENNIC.Controllers
                         });
                     }
 
-
-                    using var stream = new MemoryStream();
-                    await model.fileName.CopyToAsync(stream);
-
-                    using var package = new ExcelPackage(stream);
-
+                    var uploadsFolder = Path.Combine(
+                    Directory.GetCurrentDirectory(),
+                    "wwwroot",
+                    "uploads"
+                                );
+                    if (!Directory.Exists(uploadsFolder))
+                    {
+                        Directory.CreateDirectory(uploadsFolder);
+                    }
+                    // Folder ထဲမှာရှိနေတဲ့ အရင် FileName
+                    string oldFileName = model.F_name;
+                    // User အသစ် Upload လုပ်တဲ့ FileName
+                    string newFileName = model.fileName.FileName;
+                    // အရင် File Path
+                    var oldFilePath = Path.Combine(uploadsFolder, oldFileName);
+                    // အသစ် File Path
+                    var newFilePath = Path.Combine(uploadsFolder, newFileName);
+                    // FileName မတူရင် အရင် File ကို Delete
+                    if (!string.Equals(oldFileName, newFileName,
+                        StringComparison.OrdinalIgnoreCase))
+                    {
+                        if (System.IO.File.Exists(oldFilePath))
+                        {
+                            System.IO.File.Delete(oldFilePath);
+                        }
+                    }
+                    // အသစ် File ကို Save / Overwrite
+                    using (var stream = new FileStream(
+                        newFilePath,
+                        FileMode.Create
+                    ))
+                    {
+                        await model.fileName.CopyToAsync(stream);
+                    }
+                    
+                    // Read Excel file from server path
+                    ExcelPackage.License.SetNonCommercialPersonal("CKM");
+                    var package = new ExcelPackage(new FileInfo(newFilePath));
                     var worksheet = package.Workbook.Worksheets[0];
+
 
                     if (worksheet.Dimension == null)
                     {

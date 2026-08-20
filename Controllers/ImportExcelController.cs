@@ -85,14 +85,6 @@ namespace WEB_TENNIC.Controllers
                 var worksheet = package.Workbook.Worksheets[0];
 
 
-                //ExcelPackage.License.SetNonCommercialPersonal("CKM");
-
-                //using var stream = new MemoryStream();
-                //await model.fileName.CopyToAsync(stream);
-
-                //using var package = new ExcelPackage(stream);
-                //var worksheet = package.Workbook.Worksheets[0];
-
 
                 //Header Check
                 string header1 = worksheet.Cells[1, 1].Text.Trim();
@@ -108,37 +100,7 @@ namespace WEB_TENNIC.Controllers
                     });
                 }
 
-                ////Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
-
-                ////using var stream = new MemoryStream();
-                ////await model.fileName.CopyToAsync(stream);
-                ////stream.Position = 0;
-
-                ////using var reader = ExcelReaderFactory.CreateReader(stream);
-
-                ////var result = reader.AsDataSet(new ExcelDataSetConfiguration
-                ////{
-                ////    ConfigureDataTable = _ => new ExcelDataTableConfiguration
-                ////    {
-                ////        UseHeaderRow = true
-                ////    }
-                ////});
-                ////DataTable dt_excel = result.Tables[0];
-
-                //////Header Check
-
-                ////bool isValidHeader = dt_excel.Columns.Contains("CustomerCD") &&
-                ////                     dt_excel.Columns.Contains("OrderAmt");
-                ////if (!isValidHeader)
-                ////{
-                ////    return Json(new
-                ////    {
-                ////        success = false,
-                ////        type = "error",
-                ////        message = "無効なExcel形式です。必要な列：CustomerCD、OrderAmt です。"
-                ////    });
-                ////}
-
+               
 
                 // Project Name Check
                 bool pj_exists = await _context.WT_M_Project
@@ -182,13 +144,7 @@ namespace WEB_TENNIC.Controllers
                 dt.Columns.Add("ProjectName", typeof(string));
                 dt.Columns.Add("OrderAmt", typeof(int));
                 dt.Columns.Add("FileName", typeof(string));
-
-
-                //for (int row = 2; row <= worksheet.Dimension.End.Row; row++)
-                //{
-                //    string customerCd = worksheet.Cells[row, 1].Text.Trim();
-                //if (dt_excel.Rows.Count > 0)
-                //{
+                                
                     for (int row = 2; row <= worksheet.Dimension.End.Row; row++)
                     {
                         string customerCd = worksheet.Cells[row, 1].Text.Trim();
@@ -254,20 +210,6 @@ namespace WEB_TENNIC.Controllers
                     });
 
                 }
-
-
-
-                //}
-
-                //else
-                //{
-                //    return Json(new
-                //    {
-                //        success = false,
-                //        type = "error",
-                //        message = $"'{model.fileName.FileName}'Excelにデータがないよ"
-                //    });
-                //}
 
                 // Warning
                 if (order_amt_errorList.Any())
