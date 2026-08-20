@@ -110,6 +110,7 @@ namespace WEB_TENNIC.Controllers
                         else
                         {
                             project.ProjectName = model.ProjectName;
+                            project.UpdateDateTime= DateTime.Now;
                             
 
                             await _context.SaveChangesAsync();
@@ -118,8 +119,8 @@ namespace WEB_TENNIC.Controllers
                        
                     }
                 }
-                //change also file data
-                else if(model.fileName != null && model.fileName.FileName == model.F_name)
+                //update file data
+                else if(model.fileName != null)
                 {
                     ExcelPackage.License.SetNonCommercialPersonal("CKM");
 
@@ -171,29 +172,22 @@ namespace WEB_TENNIC.Controllers
                         });
                     }
 
+                    // Excel File Check
+                    bool excelfile_exists = await _context.WT_M_Project
+                        .AnyAsync(p =>
+                            p.FileName == model.fileName.FileName &&
+                            p.ProjectCd != model.ProjectCd);
 
 
-                   
-
-
-
-                    //// Excel File Check
-                    //bool excelfile_exists = await _context.WT_M_Project
-                    //    .AnyAsync(p =>
-                    //        p.FileName == model.fileName.FileName &&
-                    //        p.ProjectCd != model.ProjectCd);
-
-
-                    //if (excelfile_exists)
-                    //{
-                    //    return Json(new
-                    //    {
-                    //        success = false,
-                    //        type = "error",
-                    //        message = $"'{model.fileName.FileName}'Excelファイル名は既に存在します。"
-                    //    });
-                    //}
-
+                    if (excelfile_exists)
+                    {
+                        return Json(new
+                        {
+                            success = false,
+                            type = "error",
+                            message = $"'{model.fileName.FileName}'Excelファイル名は既に存在します。"
+                        });
+                    }
 
 
                     DataTable dt = new DataTable();
@@ -261,6 +255,18 @@ namespace WEB_TENNIC.Controllers
                     if (dt.Rows.Count > 0)
                     {
                         await _importExcelService.ImportExcelAsync(dt);
+                        var update_Project = await _context.WT_M_Project
+                            .Where(x => x.ProjectCd == model.ProjectCd)
+                            .ToListAsync();
+                        if (update_Project != null) {
+                            foreach (var project in update_Project)
+                            {
+                                project.FileName = model.fileName.FileName;
+                                project.UpdateDateTime = DateTime.Now;
+                            }
+                            await _context.SaveChangesAsync();
+                        }                       
+
 
                         await _importExcelService.WT_Logging_Update(model);
                     }
@@ -299,16 +305,7 @@ namespace WEB_TENNIC.Controllers
 
 
                 }
-                else
-                {
-                    return Json(new
-                    {
-                        success = false,
-                        type = "error",
-                        message = $"you need to choose the same file name '{model.F_name}' for your data update."
-                    });
-
-                }
+                
 
                 return Json(new
                 {
