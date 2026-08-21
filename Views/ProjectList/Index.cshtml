@@ -84,10 +84,10 @@
                                     削除
                                 </a>
                                 <a class="btn btn-outline-primary  btn-sm me-2 btnDownloadPrj "
-                                   data-id="@item.ProjectCD" >
-                                    <i class="fas fa-download"></i>
+                                   data-id="@item.ProjectCD" data-filename="@item.FileName" >
+                                   <i class="fas fa-download"></i>
                                 </a>
-                                <label id="filename" hidden>@item.FileName</label>
+                               @*  <label id="filename" hidden>@item.FileName</label> *@
                             </td>
                         
                         </tr>
@@ -318,60 +318,89 @@
 
         });
 
+                $(document).on("click", ".btnDownloadPrj", async function () {
 
-                 $(document).on("click", ".btnDownloadPrj", function (){
-                     // alert('hello');
                     var id = $(this).data("id");
-                    var filename = $("#filename").text();
+                    var filename = $(this).data("filename");
                     // alert(filename);
-                   
+
+                try {                    
+                    const handle = await window.showSaveFilePicker({
+                        suggestedName: filename,
+                        types: [
+                            {
+                                description: "Excel File",
+                                accept: {
+                                    "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet": [".xlsx"]
+                                }
+                            }
+                        ]
+                    });
+
                     $.ajax({
-                    url: '@Url.Action("DownloadProject", "ProjectList")/' +id,
-                    type: "POST",                    
-                    xhrFields: {
-                                responseType: 'blob'
-                                },
-                    success: function (data, btnDownloadPrj, xhr) {
+                        url: '@Url.Action("DownloadProject", "ProjectList")/' + id,
+                        type: "POST",
+                        xhrFields: {
+                            responseType: "blob"
+                        },
 
-                        // alert("AJAX SUCCESS");                 
+                        success: async function (data) {
 
-                    var url = window.URL.createObjectURL(data);
+                            const writable = await handle.createWritable();
 
-                    var a = document.createElement("a");
+                            await writable.write(data);
 
-                    a.href = url;
-                    a.download = filename;
+                            await writable.close();
 
-                    document.body.appendChild(a);
+                             Swal.fire({
+                                      title: '成功!',
+                                      html: "ダウンロード成功。",
+                                      confirmButtonText: "はい",
+                                             width: '360px',
+                                             customClass: {
+                                                 popup: 'my-popup',
+                                                 title: 'my-title-success',
+                                                 confirmButton: 'success-btn'
+                                             },
+                                             buttonsStyling: false
+                                                }).then(() => {
+                                          location.reload();
+                                              });
 
-                    a.click();
+                        },
 
-                    document.body.removeChild(a);
+                        error: function () {
 
-                    window.URL.revokeObjectURL(url);
-                    },
+                             Swal.fire({
+                                title: "エラー",
+                                html: "ファイルがないよ。",
+                                   confirmButtonText: 'はい',
+                                         width: '360px',
+                                         customClass: {
+                                             popup: 'my-popup',
+                                             title: 'my-title',
+                                             confirmButton: 'my-button'
+                                         },
+                                         buttonsStyling: false
+                            }).then(() => {
+                                  location.reload();
+                                      });
 
-                    error: function (xhr, status, error) {                     
+                        }
+                    });
+
+                } catch (err) {
+               
+                if (err.name === "AbortError") {
+                    return;
+                }
+
+                console.error(err);
+            }
+        });
 
 
-                                    Swal.fire({
-                                        title: 'エラー!',
-                                        html: 'ファイルがないよ。',
-                                        confirmButtonText: 'はい',
-                                        width: '360px',
-                                        customClass: {
-                                            popup: 'my-popup',
-                                            title: 'my-title',
-                                            confirmButton: 'my-button'
-                                        },
-                                        buttonsStyling: false
-                                    });
-
-                                },
-                               
-                            });
-
-                            });
+              
 
              
            });

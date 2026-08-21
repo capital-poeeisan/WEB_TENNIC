@@ -92,46 +92,46 @@ namespace WEB_TENNIC.Controllers
                         "uploads"
                     );
 
-                    var filePath = Path.Combine(
-                        uploadsFolder,
-                       filename
-                    );
+                var filePath = Path.Combine(
+                    uploadsFolder,
+                   filename
+                );
 
-                    // File not found
-                    if (!System.IO.File.Exists(filePath))
-                    {
-                        return Json(new
-                        {
-                            success = false,
-                            message = "ファイルがないよ。"
-                        });
-                    }
-
-                    // read file to byte array 
-                    var fileBytes = await System.IO.File.ReadAllBytesAsync(filePath);
-
-                    // return  Download  file
-                    return File(
-                        fileBytes,
-                        "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
-                        filename
-                    );
-
-                }
-
-                catch (Exception ex)
+                // File not found
+                if (!System.IO.File.Exists(filePath))
                 {
                     return Json(new
                     {
                         success = false,
-                        message = ex.Message
+                        message = "ファイルがないよ。"
                     });
                 }
-            
+
+                // read file to byte array 
+                var fileBytes = await System.IO.File.ReadAllBytesAsync(filePath);
+
+                // return  Download  file
+                return File(
+                    fileBytes,
+                    "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+                    filename
+                );
+
             }
 
-           
-        
+            catch (Exception ex)
+            {
+                return Json(new
+                {
+                    success = false,
+                    message = ex.Message
+                });
+            }
+
+        }
+
+
+
 
 
     }
