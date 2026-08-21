@@ -325,17 +325,7 @@
                     // alert(filename);
 
                 try {                    
-                    const handle = await window.showSaveFilePicker({
-                        suggestedName: filename,
-                        types: [
-                            {
-                                description: "Excel File",
-                                accept: {
-                                    "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet": [".xlsx"]
-                                }
-                            }
-                        ]
-                    });
+                    
 
                     $.ajax({
                         url: '@Url.Action("DownloadProject", "ProjectList")/' + id,
@@ -345,6 +335,18 @@
                         },
 
                         success: async function (data) {
+
+                            const handle = await window.showSaveFilePicker({
+                            suggestedName: filename,
+                            types: [
+                                {
+                                    description: "Excel File",
+                                    accept: {
+                                        "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet": [".xlsx"]
+                                    }
+                                }
+                                    ]
+                                });
 
                             const writable = await handle.createWritable();
 
