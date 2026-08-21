@@ -142,15 +142,15 @@ namespace WEB_TENNIC.Controllers
                     {
                         Directory.CreateDirectory(uploadsFolder);
                     }
-                    // Folder ထဲမှာရှိနေတဲ့ အရင် FileName
+                    
                     string oldFileName = model.F_name;
-                    // User အသစ် Upload လုပ်တဲ့ FileName
+                  
                     string newFileName = model.fileName.FileName;
-                    // အရင် File Path
+                    
                     var oldFilePath = Path.Combine(uploadsFolder, oldFileName);
-                    // အသစ် File Path
+                    
                     var newFilePath = Path.Combine(uploadsFolder, newFileName);
-                    // FileName မတူရင် အရင် File ကို Delete
+                    
                     if (!string.Equals(oldFileName, newFileName,
                         StringComparison.OrdinalIgnoreCase))
                     {
@@ -159,7 +159,7 @@ namespace WEB_TENNIC.Controllers
                             System.IO.File.Delete(oldFilePath);
                         }
                     }
-                    // အသစ် File ကို Save / Overwrite
+                    
                     using (var stream = new FileStream(
                         newFilePath,
                         FileMode.Create
