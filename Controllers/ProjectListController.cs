@@ -75,6 +75,64 @@ namespace WEB_TENNIC.Controllers
 
         }
 
+        [HttpPost]
+        public async Task<IActionResult> DownloadProject(string id)
+        {
+            try
+            {
+                var PP = _context.WT_M_Project
+                         .Where(x => x.ProjectCd == id)
+                         .Select(u => new { u.FileName }).FirstOrDefault();
+                string filename = PP.FileName;
+
+                // wwwroot/uploads/FileName.xlsx
+                var uploadsFolder = Path.Combine(
+                        Directory.GetCurrentDirectory(),
+                        "wwwroot",
+                        "uploads"
+                    );
+
+                    var filePath = Path.Combine(
+                        uploadsFolder,
+                       filename
+                    );
+
+                    // File not found
+                    if (!System.IO.File.Exists(filePath))
+                    {
+                        return Json(new
+                        {
+                            success = false,
+                            message = "ファイルがないよ。"
+                        });
+                    }
+
+                    // read file to byte array 
+                    var fileBytes = await System.IO.File.ReadAllBytesAsync(filePath);
+
+                    // return  Download  file
+                    return File(
+                        fileBytes,
+                        "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+                        filename
+                    );
+
+                }
+
+                catch (Exception ex)
+                {
+                    return Json(new
+                    {
+                        success = false,
+                        message = ex.Message
+                    });
+                }
+            
+            }
+
+           
+        
+
 
     }
 }

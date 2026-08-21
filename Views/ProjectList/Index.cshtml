@@ -45,9 +45,9 @@
                         <th class="text-center" style="width:5%;">No.</th>
                         <th style="width:40%;">プロジェクト名</th>
                         <th class="text-start" style="width:35%;">ファイル名</th>
-                        <th class="text-center" style="width:10%;">終了</th>
-                        <th class="text-center" style="width:10%;"></th>
-                      @*   <th class="text-center" style="width:5%;"></th> *@
+                        <th class="text-center" style="width:5%;">終了</th>
+                        <th class="text-center" style="width:15%;"></th>
+                    
                     </tr>
                 </thead>
 
@@ -83,6 +83,11 @@
                                 <a class="btn btn-outline-danger btn-sm me-2 fw-bold btnDeletePrj"  data-projectcd="@item.ProjectCD">
                                     削除
                                 </a>
+                                <a class="btn btn-outline-primary  btn-sm me-2 btnDownloadPrj "
+                                   data-id="@item.ProjectCD" >
+                                    <i class="fas fa-download"></i>
+                                </a>
+                                <label id="filename" hidden>@item.FileName</label>
                             </td>
                         
                         </tr>
@@ -308,8 +313,67 @@
 
         });
 
+
+                 $(document).on("click", ".btnDownloadPrj", function (){
+                     // alert('hello');
+                    var id = $(this).data("id");
+                    var filename = $("#filename").text();
+                    // alert(filename);
+                   
+                    $.ajax({
+                    url: '@Url.Action("DownloadProject", "ProjectList")/' +id,
+                    type: "POST",                    
+                    xhrFields: {
+                                responseType: 'blob'
+                                },
+                    success: function (data, btnDownloadPrj, xhr) {
+
+                        // alert("AJAX SUCCESS");                 
+
+                    var url = window.URL.createObjectURL(data);
+
+                    var a = document.createElement("a");
+
+                    a.href = url;
+                    a.download = filename;
+
+                    document.body.appendChild(a);
+
+                    a.click();
+
+                    document.body.removeChild(a);
+
+                    window.URL.revokeObjectURL(url);
+                    },
+
+                    error: function (xhr, status, error) {                     
+
+
+                                    Swal.fire({
+                                        title: 'エラー!',
+                                        html: 'ファイルがないよ。',
+                                        confirmButtonText: 'はい',
+                                        width: '360px',
+                                        customClass: {
+                                            popup: 'my-popup',
+                                            title: 'my-title',
+                                            confirmButton: 'my-button'
+                                        },
+                                        buttonsStyling: false
+                                    });
+
+                                },
+                               
+                            });
+
+                            });
+
              
            });
+
+
+
+
           function addAllButton() {
                var table = $('#projectTable').DataTable();
             var rowCount = table.rows().count();
