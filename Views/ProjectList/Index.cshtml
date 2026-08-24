@@ -1,5 +1,9 @@
 ﻿@model List<WEB_TENNIC.Models.ViewModels.ProjectViewModel>
-
+<style>
+    .bg-light-reg {
+        background-color: #fff;
+    }
+</style>
 <!-- Page Heading -->
 <div class="d-sm-flex align-items-center justify-content-between mb-4">
 
@@ -98,7 +102,7 @@
       
         <div class="d-flex justify-content-center gap-3 mt-3">
 
-            <div class="card-footer bg-light border-0 text-center">
+            <div class="card-footer bg-light-reg border-0 text-center">
                 <a class="btn btn-outline-secondary px-4 fw-semibold" onclick="location.href='@Url.Action("Index", "ProjectList")'">
                     クリア
                 </a>
