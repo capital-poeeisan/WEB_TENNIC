@@ -56,11 +56,18 @@ namespace WEB_TENNIC.Controllers
                 ProjectViewModel model = new ProjectViewModel();
                 model.ProjectCD = m.ProjectCd;
                 model.FileName = m.FileName;
+                string file_name = m.FileName;
 
 
                 await _service.DeleteProjectName(id);
                 
                 await _service.WT_Logging_Delete(model);
+
+                DeleteFile(file_name);
+
+
+
+
 
                 return Json(new { success = true });
             }
@@ -126,6 +133,27 @@ namespace WEB_TENNIC.Controllers
                     success = false,
                     message = ex.Message
                 });
+            }
+
+        }
+
+        public void DeleteFile(string file_name)
+        {
+            var uploadsFolder = Path.Combine(
+                       Directory.GetCurrentDirectory(),
+                       "wwwroot",
+                       "uploads"
+                   );
+            var filePath = Path.Combine(
+                    uploadsFolder,
+                   file_name);
+
+            if (!string.IsNullOrEmpty(filePath))
+            {
+                if (System.IO.File.Exists(filePath))
+                {
+                    System.IO.File.Delete(filePath);
+                }
             }
 
         }
