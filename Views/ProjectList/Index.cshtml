@@ -260,7 +260,7 @@
                   
                   var message = "本当に削除しますか？";
                 Swal.fire({
-                     title: "確認？",
+                 title: "確認？",
                  showCancelButton: true,
                  confirmButtonText: "削除",
                  cancelButtonText: "キャンセル",
@@ -321,11 +321,38 @@
 
 
         });
-                $(document).on("click", ".btnDownloadPrj", async function () {
+
+               
+                $(document).on("click", ".btnDownloadPrj", async function ()
+                {
 
                     var id = $(this).data("id");
                     var filename = $(this).data("filename");
+
                     try {
+                        
+                        const result = await 
+                        Swal.fire({
+                             title: "確認？",
+                             showCancelButton: true,
+                             confirmButtonText: "削除",
+                             cancelButtonText: "キャンセル",
+                             html:"ダウンロードしますか？",
+                             confirmButtonText: 'はい',
+                             width: '360px',
+                             customClass: {
+                                     popup: 'my-popup',
+                                     title: 'title-question',
+                                     confirmButton: 'confirm-btn',
+                                     cancelButton:'cancecl-btn'
+                               },
+                            buttonsStyling: false
+                        });
+                        
+                        if (!result.isConfirmed) {
+                            return;
+                        }
+
                         // Open file picker
                         const handle = await window.showSaveFilePicker({
                             suggestedName: filename,

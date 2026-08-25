@@ -82,8 +82,14 @@ namespace WEB_TENNIC.Controllers
             try
             {
                 var projectData = await _context.WT_M_Project
-                .Where(x => x.ProjectCd == id)
-                .ToListAsync();
+                                    .Where(x => x.ProjectCd == id)
+                                    .Select(x => new
+                                    {
+                                        x.CustomerCd,
+                                        x.OrderAmt,
+                                        x.FileName
+                                    })
+                                    .ToListAsync();
 
                 if (!projectData.Any())
                 {
