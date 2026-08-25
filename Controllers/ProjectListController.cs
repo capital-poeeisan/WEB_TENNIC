@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using OfficeOpenXml;
 using System.Threading.Tasks;
 using WEB_TENNIC.Data;
 using WEB_TENNIC.Models.ViewModels;
@@ -55,18 +56,11 @@ namespace WEB_TENNIC.Controllers
                            .FirstOrDefault();
                 ProjectViewModel model = new ProjectViewModel();
                 model.ProjectCD = m.ProjectCd;
-                model.FileName = m.FileName;
-                string file_name = m.FileName;
-
-
-                await _service.DeleteProjectName(id);
-                
+                model.FileName = m.FileName;                
+                await _service.DeleteProjectName(id);                
                 await _service.WT_Logging_Delete(model);
 
-                DeleteFile(file_name);
-
-
-
+               
 
 
                 return Json(new { success = true });
@@ -87,41 +81,46 @@ namespace WEB_TENNIC.Controllers
         {
             try
             {
-                var PP = _context.WT_M_Project
-                         .Where(x => x.ProjectCd == id)
-                         .Select(u => new { u.FileName }).FirstOrDefault();
-                string filename = PP.FileName;
+                var projectData = await _context.WT_M_Project
+                .Where(x => x.ProjectCd == id)
+                .ToListAsync();
 
-                // wwwroot/uploads/FileName.xlsx
-                var uploadsFolder = Path.Combine(
-                        Directory.GetCurrentDirectory(),
-                        "wwwroot",
-                        "uploads"
-                    );
-
-                var filePath = Path.Combine(
-                    uploadsFolder,
-                   filename
-                );
-
-                // File not found
-                if (!System.IO.File.Exists(filePath))
+                if (!projectData.Any())
                 {
-                    return Json(new
-                    {
-                        success = false,
-                        message = "ファイルがないよ。"
-                    });
+                    return NotFound("データが見つかりません。");
+                }
+                
+                string fileName = projectData.First().FileName;
+
+                // Excel Create
+                ExcelPackage.License.SetNonCommercialPersonal("CKM");
+
+                using var package = new ExcelPackage();
+
+                var worksheet = package.Workbook.Worksheets.Add("Sheet1");
+
+                // Header
+                worksheet.Cells[1, 1].Value = "CustomerCD";
+                worksheet.Cells[1, 2].Value = "OrderAmt";
+
+                // Data
+                int row = 2;
+                foreach (var item in projectData)
+                {
+                    worksheet.Cells[row, 1].Value = item.CustomerCd;
+                    worksheet.Cells[row, 2].Value = item.OrderAmt;
+
+                    row++;
                 }
 
                 // read file to byte array 
-                var fileBytes = await System.IO.File.ReadAllBytesAsync(filePath);
+                var fileBytes = package.GetAsByteArray();
 
                 // return  Download  file
                 return File(
                     fileBytes,
                     "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
-                    filename
+                    fileName
                 );
 
             }
@@ -137,30 +136,7 @@ namespace WEB_TENNIC.Controllers
 
         }
 
-        public void DeleteFile(string file_name)
-        {
-            var uploadsFolder = Path.Combine(
-                       Directory.GetCurrentDirectory(),
-                       "wwwroot",
-                       "uploads"
-                   );
-            var filePath = Path.Combine(
-                    uploadsFolder,
-                   file_name);
-
-            if (!string.IsNullOrEmpty(filePath))
-            {
-                if (System.IO.File.Exists(filePath))
-                {
-                    System.IO.File.Delete(filePath);
-                }
-            }
-
-        }
-
-
-
-
+     
 
     }
 }

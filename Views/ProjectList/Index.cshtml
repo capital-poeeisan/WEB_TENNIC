@@ -321,26 +321,13 @@
 
 
         });
-
                 $(document).on("click", ".btnDownloadPrj", async function () {
 
                     var id = $(this).data("id");
                     var filename = $(this).data("filename");
-                    // alert(filename);
-
-                try {                    
-                    
-
-                    $.ajax({
-                        url: '@Url.Action("DownloadProject", "ProjectList")/' + id,
-                        type: "POST",
-                        xhrFields: {
-                            responseType: "blob"
-                        },
-
-                        success: async function (data) {
-
-                            const handle = await window.showSaveFilePicker({
+                    try {
+                        // Open file picker
+                        const handle = await window.showSaveFilePicker({
                             suggestedName: filename,
                             types: [
                                 {
@@ -349,64 +336,75 @@
                                         "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet": [".xlsx"]
                                     }
                                 }
-                                    ]
+                            ]
+                        }); 
+                        
+                        $.ajax({
+                            url: '@Url.Action("DownloadProject", "ProjectList")',
+                            type: "POST",
+
+                            data: {
+                                id: id
+                            },
+
+                            xhrFields: {
+                                responseType: "blob"
+                            },
+
+                            success: async function (data) {
+
+                                const writable = await handle.createWritable();
+
+                                await writable.write(data);
+
+                                await writable.close();
+
+                                Swal.fire({
+                                    title: '成功!',
+                                    html: "ダウンロードが完了しました。",
+                                    confirmButtonText: "はい",
+                                    width: '360px',
+                                    customClass: {
+                                        popup: 'my-popup',
+                                        title: 'my-title-success',
+                                        confirmButton: 'success-btn'
+                                    },
+                                    buttonsStyling: false
+                                }).then(() => {
+                                    location.reload();
                                 });
+                            },
 
-                            const writable = await handle.createWritable();
+                            error: function (xhr) {
 
-                            await writable.write(data);
+                                console.log("status =", xhr.status);
+                                console.log("response =", xhr.response);
 
-                            await writable.close();
+                                Swal.fire({
+                                    title: "エラー",
+                                    html: "ファイルがないよ。",
+                                    confirmButtonText: 'はい',
+                                    width: '360px',
+                                    customClass: {
+                                        popup: 'my-popup',
+                                        title: 'my-title',
+                                        confirmButton: 'my-button'
+                                    },
+                                    buttonsStyling: false
+                                });
+                            }
+                        });
 
-                             Swal.fire({
-                                      title: '成功!',
-                                      html: "ダウンロードが完了しました。",
-                                      confirmButtonText: "はい",
-                                             width: '360px',
-                                             customClass: {
-                                                 popup: 'my-popup',
-                                                 title: 'my-title-success',
-                                                 confirmButton: 'success-btn'
-                                             },
-                                             buttonsStyling: false
-                                                }).then(() => {
-                                          location.reload();
-                                              });
-
-                        },
-
-                        error: function () {
-
-                             Swal.fire({
-                                title: "エラー",
-                                html: "ファイルがないよ。",
-                                   confirmButtonText: 'はい',
-                                         width: '360px',
-                                         customClass: {
-                                             popup: 'my-popup',
-                                             title: 'my-title',
-                                             confirmButton: 'my-button'
-                                         },
-                                         buttonsStyling: false
-                            }).then(() => {
-                                  location.reload();
-                                      });
-
+                    } catch (err) {                
+                        if (err.name === "AbortError") {
+                            return;
                         }
-                    });
-
-                } catch (err) {
-               
-                if (err.name === "AbortError") {
-                    return;
-                }
-
-                console.error(err);
-            }
-        });
+                        console.error(err);
+                    }
 
 
-              
+
+                });             
 
              
            });
