@@ -194,6 +194,11 @@
 
                 success: function (res) {
 
+                    if(res.type=="no_change")
+                    {                       
+                         location.href = '@Url.Action("Index", "ProjectList")';
+                    }
+
                     if (!res.success) {
 
                         Swal.fire({

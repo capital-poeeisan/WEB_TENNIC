@@ -77,6 +77,15 @@ namespace WEB_TENNIC.Controllers
 
                     if (project != null)
                     {
+                        if(project.ProjectName==model.ProjectName)
+                        {
+                            return Json(new
+                            {
+                                success = true,
+                                type = "no_change"
+                            });
+                           
+                        }
                         project.ProjectName = model.ProjectName;
                         project.UpdateDateTime = DateTime.Now;
 
