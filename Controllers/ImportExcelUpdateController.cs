@@ -169,13 +169,13 @@ namespace WEB_TENNIC.Controllers
                             }
                         }
 
+                        var customers = await _context.WT_M_Customer
+                                        .FromSqlInterpolated($@"
+                                        SELECT *
+                                        FROM dbo.F_Customer(GETDATE(), {customerCD})
+                                    ").ToListAsync();
 
-                        bool customer = await _context.WT_M_Customer
-                                        .AnyAsync(c =>
-                                        c.CustomerCd == customerCD.Trim());
-
-
-                        if (!customer)
+                        if (customers.Count == 0)
                         {
                             notFoundCustomerCd.Add(customerCD);
 
@@ -311,7 +311,7 @@ namespace WEB_TENNIC.Controllers
             // Excel File Update
             if (model.fileName != null)
             {
-                if (model.fileName.Length == 0)
+                if (model.fileName.FileName.Length == 0)
                 {
                     return new ValidationResultModel
                     {

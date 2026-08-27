@@ -105,13 +105,17 @@ namespace WEB_TENNIC.Controllers
                         continue;
                     }
 
+                    //bool exists =await _context.WT_M_Customer
+                    //             .AnyAsync(c =>
+                    //             c.CustomerCd == customerCd);
+                    var customers = await _context.WT_M_Customer
+                                    .FromSqlInterpolated($@"
+                                        SELECT *
+                                        FROM dbo.F_Customer(GETDATE(), {customerCd})
+                                    ")
+                                    .ToListAsync();
 
-                    bool exists =await _context.WT_M_Customer
-                                 .AnyAsync(c =>
-                                 c.CustomerCd == customerCd);
-
-
-                    if (!exists)
+                    if (customers.Count==0)
                     {
                         notFoundCustomerCd.Add(customerCd);
                         continue;
