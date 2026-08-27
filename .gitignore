@@ -11,3 +11,6 @@
 /bin/Debug/net8.0
 /obj
 /bin/Release/net8.0
+/node_modules/@kurkle/color
+/node_modules/chart.js
+/node_modules/.package-lock.json
