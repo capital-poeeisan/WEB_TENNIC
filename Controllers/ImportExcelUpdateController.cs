@@ -52,6 +52,14 @@ namespace WEB_TENNIC.Controllers
             List<string> notFoundCustomerCd = new();
             List<string> order_amt_errorList = new();
             List<string> warningMessages = new();
+            DataTable dt = new DataTable();
+
+            dt.Columns.Add("ProjectCD", typeof(string));
+            dt.Columns.Add("CustomerCD", typeof(string));
+            dt.Columns.Add("ProjectName", typeof(string));
+            dt.Columns.Add("OrderAmt", typeof(int));
+            dt.Columns.Add("FileName", typeof(string));
+
 
             try
             {
@@ -86,10 +94,8 @@ namespace WEB_TENNIC.Controllers
                             });
                            
                         }
-                        project.ProjectName = model.ProjectName;
-                        project.UpdateDateTime = DateTime.Now;
 
-                        await _context.SaveChangesAsync();
+                        await _importExcelService.ImportExcelAsync(dt, model.ProjectCd, model.ProjectName);
                         await _importExcelService.WT_Logging_Update(model);
                     }
                 }
@@ -137,16 +143,7 @@ namespace WEB_TENNIC.Controllers
 
 
                     int rowCount = worksheet.Dimension.Rows;
-
-
-                    DataTable dt = new DataTable();
-
-                    dt.Columns.Add("ProjectCD",typeof(string));
-                    dt.Columns.Add("CustomerCD",typeof(string));
-                    dt.Columns.Add("ProjectName",typeof(string));
-                    dt.Columns.Add("OrderAmt",typeof(int));
-                    dt.Columns.Add("FileName",typeof(string));
-
+                    
                     // Excel Data Check
                     for (int row = 2;row <= rowCount;row++)
                     {
@@ -210,7 +207,7 @@ namespace WEB_TENNIC.Controllers
 
 
                     // Import
-                    await _importExcelService.ImportExcelAsync(dt);
+                    await _importExcelService.ImportExcelAsync(dt, model.ProjectCd, model.ProjectName);
 
 
                     // Update Project FileName

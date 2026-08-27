@@ -151,7 +151,7 @@ namespace WEB_TENNIC.Controllers
                 }
 
 
-                await _importExcelService.ImportExcelAsync(dt);
+                await _importExcelService.ImportExcelAsync(dt,model.ProjectCd,model.ProjectName);
 
                 await _importExcelService.WT_Logging_Insert(model);
 

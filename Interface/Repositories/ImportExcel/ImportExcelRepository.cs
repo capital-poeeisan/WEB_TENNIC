@@ -13,27 +13,45 @@ namespace WEB_TENNIC.Interface.Repositories.ImportExcel
         {
             _context = context;
         }
-        public async Task<int> ImportExcelAsync(DataTable dt)
+        public async Task<int> ImportExcelAsync(DataTable dt, string P_cd, string P_name)
         {
-            dt = dt.AsEnumerable()
-               .GroupBy(r => new
-               {
-                   ProjectCD = r.Field<string>("ProjectCD"),
-                   CustomerCD = r.Field<string>("CustomerCD")
-               })
-               .Select(g => g.First())
-               .CopyToDataTable();
+            if (dt.Rows.Count > 0)
+            {
+                dt = dt.AsEnumerable()
+              .GroupBy(r => new
+              {
+                  ProjectCD = r.Field<string>("ProjectCD"),
+                  CustomerCD = r.Field<string>("CustomerCD")
+              })
+              .Select(g => g.First())
+              .CopyToDataTable();
+            }
+           
 
-            var parameter = new SqlParameter("@Projects", dt)
+            var projectsParameter = new SqlParameter("@Projects", dt)
             {
                 SqlDbType = SqlDbType.Structured,
                 TypeName = "dbo.WT_ProjectType"
             };
-            
+            var projectCDParameter = new SqlParameter(
+                    "@ProjectCD",
+                    P_cd
+                );
+
+            var projectNameParameter = new SqlParameter(
+                "@ProjectName",
+                P_name
+            );
             var result = await _context.Database.ExecuteSqlRawAsync(
-                "EXEC WT_M_Project_Insert_Update @Projects",
-                parameter
-               
+                    @"EXEC WT_M_Project_Insert_Update 
+                    @Projects,
+                    @ProjectCD,
+                    @ProjectName",
+
+                    projectsParameter,
+                    projectCDParameter,
+                    projectNameParameter
+
             );
 
             return result;

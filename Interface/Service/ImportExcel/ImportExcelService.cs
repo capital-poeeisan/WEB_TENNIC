@@ -14,9 +14,9 @@ namespace WEB_TENNIC.Interface.Service.ImportExcel
         {
             _repository = repository;
         }
-        public async Task<int> ImportExcelAsync(DataTable dt)
+        public async Task<int> ImportExcelAsync(DataTable dt, string P_cd, string P_name)
         {
-            return await _repository.ImportExcelAsync(dt);
+            return await _repository.ImportExcelAsync(dt,  P_cd,  P_name);
         }
 
         public async Task<int> WT_Logging_Insert(ImportExcelViewModel m)
