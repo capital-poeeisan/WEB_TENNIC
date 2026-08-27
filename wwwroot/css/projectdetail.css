@@ -23,11 +23,11 @@
 }
 .progress-card.has-data {
        max-height: calc(100vh - 351px);
-    }
+}
 
 
     /* Card body */
-    .progress-card .card-body {
+.progress-card .card-body {
         flex: 1;
         min-height: 0;
         padding: 0;
@@ -35,11 +35,11 @@
     }
 
 
-.progress-scroll {
+/*.progress-scroll {
     height: 100%;
     overflow-y: auto;
     overflow-x: hidden;
-}
+}*/
 /* Fixed table header */
 #progressTable thead th {
     position: sticky;
@@ -106,10 +106,55 @@
         text-overflow: ellipsis;
     }
 
+    /* =========================
+   Summary Card
+   ========================= */
+
+.summary-card {
+    display: flex;
+    flex-direction: column;
+    height: auto;
+}
+
+
+    /* When there is data, limit the card height */
+    .summary-card.has-data {
+        /*height: calc(100vh - 400px);*/
+        max-height: calc(100vh - 350px);
+    }
+
+    /* =========================
+   Summary Card Body
+   ========================= */
+
+    .summary-card .card-body {
+        padding: 0 !important;
+        min-height: 0;
+        overflow-y: auto;
+        overflow-x: hidden;
+    }
+
+    /* =========================
+   Summary Table Scroll
+   ========================= */
+
+    .summary-card .table-responsive {
+        width: 100%;
+        height: 100%;
+        overflow-x: auto !important;
+        overflow-y: auto !important;
+        -webkit-overflow-scrolling: touch;
+    }
+
+/* =========================
+   Summary Table
+   ========================= */
+
 #summaryTable {
     width: 100% !important;
     font-size: 0.88rem;
     table-layout: fixed !important;
+    margin: 0;
 }
 
     #summaryTable th,
@@ -120,28 +165,33 @@
         text-overflow: ellipsis;
     }
 
+        /* Staff name */
         #summaryTable th:nth-child(1),
         #summaryTable td:nth-child(1) {
             width: 100px !important;
         }
 
+        /* All Shop */
         #summaryTable th:nth-child(2),
         #summaryTable td:nth-child(2) {
             width: 50px !important;
             text-align: center;
         }
 
+        /* Shop */
         #summaryTable th:nth-child(3),
         #summaryTable td:nth-child(3) {
             width: 50px !important;
             text-align: center;
         }
 
+        /* Percentage */
         #summaryTable th:nth-child(4),
         #summaryTable td:nth-child(4) {
             width: 50px !important;
             text-align: center;
         }
+
 
       .col-custom{
           width:120px;
@@ -221,4 +271,78 @@
 .select2-container--default .select2-selection__placeholder {
     font-size: 14px;
     color: #6c757d !important;
+}
+
+
+
+.pie-card {
+    height: 320px;
+    min-height: 320px;
+    margin-top: 8px;
+    border: 1px solid #dee2e6;
+    border-radius: 10px;
+    overflow: hidden;
+    background: #fff;
+}
+
+
+/* =========================
+   Header
+   ========================= */
+
+.pie-card .card-header {
+    height: 45px;
+    min-height: 45px;
+    display: flex;
+    align-items: center;
+    padding: 0 5px;
+    font-weight: 600;
+    font-size: 1rem;
+    border-bottom: 1px solid #dee2e6;
+}
+
+
+/* =========================
+   Body
+   ========================= */
+
+.pie-card-body {
+    height: 315px;
+    min-height: 315px;
+    padding: 3px !important;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: visible;
+}
+
+
+/* =========================
+   Chart Container
+   ========================= */
+
+.chart-container {
+    position: relative;
+    width: 310px;
+    height: 310px;
+    max-width: 100%;
+    max-height: 100%;
+    margin: auto;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: visible;
+}
+
+
+/* =========================
+   Pie Canvas
+   ========================= */
+
+#staffPieChart {
+    display: block;
+    width: 310px !important;
+    height: 310px !important;
+    max-width: 100%;
+    max-height: 100%;
 }
