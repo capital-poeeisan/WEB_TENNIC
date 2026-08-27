@@ -80,6 +80,7 @@ namespace WEB_TENNIC.Interface.Services
                 .GetStaffList(projectCd);
 
                 model.StaffList = staffs
+               .OrderByDescending(s => s.StaffCD)
                .Select(s => new SelectListItem
                {
                    Value = s.StaffCD,

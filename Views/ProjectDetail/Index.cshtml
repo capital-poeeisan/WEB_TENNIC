@@ -158,10 +158,11 @@
 
                         }
                         $("#tableArea").html(result);
-                         $("#EndFlag").prop("checked", currentEndFlag); 
+                         $("#EndFlag").prop("checked", currentEndFlag);
                                
                          setProgressReadonly();
                         initializeDataTables();
+                        initializeStaffPieChart();
                     }
                 });
             });
@@ -457,6 +458,246 @@
 
                 }
 
+            });
+        }
+
+
+
+
+
+                Chart.register(ChartDataLabels);
+                        function initializeStaffPieChart() {
+
+            const canvas = document.getElementById("staffPieChart");
+
+            if (!canvas) return;
+
+            // Destroy existing chart
+            const existingChart = Chart.getChart(canvas);
+
+            if (existingChart) {
+                existingChart.destroy();
+            }
+
+            let labels = [];
+            let data = [];
+
+            // Get data from Summary table
+            $("#summaryTable tbody tr").each(function () {
+
+                let staffName = $(this)
+                    .find("td:eq(0)")
+                    .text()
+                    .trim();
+
+                let shop = parseInt(
+                    $(this)
+                        .find("td:eq(2)")
+                        .text()
+                        .trim()
+                        .replace(/,/g, "")
+                ) || 0;
+
+                // Only show staff whose Shop > 0
+                if (shop > 0) {
+
+                    labels.push(staffName);
+                    data.push(shop);
+                }
+            });
+
+            // No data
+            if (data.length === 0) {
+                return;
+            }
+
+            // Create Pie Chart
+            new Chart(canvas, {
+
+                type: 'pie',
+
+                data: {
+
+                    labels: labels,
+
+                    datasets: [{
+
+                        data: data,
+
+                        borderWidth: 1
+                    }]
+                },
+
+                options: {
+
+                    responsive: true,
+
+                    maintainAspectRatio: false,
+
+                    layout: {
+                        padding: 5
+                    },
+
+                    plugins: {
+
+                        // Hide normal legend
+                        legend: {
+                            display: false
+                        },
+
+                        // Staff names inside pie
+                                    datalabels: {
+
+            display: true,
+
+            color: '#ffffff',
+
+            anchor: 'center',
+            align: 'center',
+
+            clamp: true,
+            clip: false,
+
+            textAlign: 'center',
+
+            // Rotate label according to the direction of the pie slice
+            rotation: function (context) {
+
+                const chart = context.chart;
+                const index = context.dataIndex;
+
+                const meta = chart.getDatasetMeta(0);
+                const arc = meta.data[index];
+
+                if (!arc) {
+                    return 0;
+                }
+
+                // Middle angle of this slice
+                let angle =
+                    (arc.startAngle + arc.endAngle) / 2;
+
+                // Convert radians to degrees
+                let degrees =
+                    angle * 180 / Math.PI;
+
+                // Keep text upright.
+                // Prevent labels from appearing upside down.
+                if (degrees > 90) {
+                    degrees -= 180;
+                }
+
+                if (degrees < -90) {
+                    degrees += 180;
+                }
+
+                return degrees;
+            },
+
+            font: function (context) {
+
+                const chart = context.chart;
+                const index = context.dataIndex;
+
+                const meta = chart.getDatasetMeta(0);
+                const arc = meta.data[index];
+
+                if (!arc) {
+                    return {
+                        size: 13,
+                        weight: 'bold'
+                    };
+                }
+
+                const angle =
+                    arc.endAngle - arc.startAngle;
+
+                const degrees =
+                    angle * 180 / Math.PI;
+
+                let size = 13;
+
+                if (degrees < 35) {
+                    size = 11;
+                }
+                else if (degrees < 50) {
+                    size = 12;
+                }
+                else {
+                    size = 13;
+                }
+
+                return {
+                    size: size,
+                    weight: 'bold'
+                };
+            },
+
+            formatter: function (value, context) {
+
+                let name =
+                    context.chart.data.labels[
+                        context.dataIndex
+                    ];
+
+                name = name.trim();
+
+                if (name.length <= 7) {
+                    return name;
+                }
+
+                if (name.length <= 14) {
+
+                    const middle =
+                        Math.ceil(name.length / 2);
+
+                    return [
+                        name.substring(0, middle),
+                        name.substring(middle)
+                    ];
+                }
+
+                return [
+                    name.substring(0, 7),
+                    name.substring(7)
+                ];
+            }
+        },
+
+
+                        // Tooltip
+                        tooltip: {
+
+                            callbacks: {
+
+                                label: function (context) {
+
+                                    let total =
+                                        context.dataset.data.reduce(
+                                            (a, b) => a + b,
+                                            0
+                                        );
+
+                                    let value =
+                                        context.raw;
+
+                                    let percent =
+                                        (
+                                            (value / total) *
+                                            100
+                                        ).toFixed(1);
+
+                                    return context.label +
+                                        ": " +
+                                        value +
+                                        " (" +
+                                        percent +
+                                        "%)";
+                                }
+                            }
+                        }
+                    }
+                }
             });
         }
     </script>
