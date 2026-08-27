@@ -96,7 +96,36 @@ namespace WEB_TENNIC.Controllers
                 List<string> notFoundCustomerCd = new();
                 List<string> order_amt_errorList = new();
 
+                //Check CustomerCD
+                var customerCds = new List<string>();                
 
+                for (int row = 2; row <= worksheet.Dimension.End.Row; row++)
+                {
+                    string customerCd = worksheet.Cells[row, 1].Text.Trim();
+
+                    if (!string.IsNullOrWhiteSpace(customerCd))
+                    {
+                        customerCds.Add(customerCd);
+                    }
+                }
+
+                var distinctCustomerCds = customerCds.Distinct().ToList();//Remove Duplicate Data
+
+                //var customers = await _context.WT_M_Customer
+                //                .Where(x => distinctCustomerCds.Contains(x.CustomerCd))
+                //                .Select(x => x.CustomerCd)
+                //                .ToListAsync();
+
+                var customers = await _context.WT_M_Customer
+                                .FromSqlRaw(@"
+                                    SELECT *
+                                    FROM dbo.WT_F_Customer(GETDATE())
+                                ")
+                                .ToListAsync();
+
+                var customerSet = customers.Select(x => x.CustomerCd).ToHashSet();
+
+                //Loop Excel file
                 for (int row = 2;row <= worksheet.Dimension.End.Row;row++)
                 {
                     string customerCd = worksheet.Cells[row, 1].Text.Trim();
@@ -105,22 +134,12 @@ namespace WEB_TENNIC.Controllers
                         continue;
                     }
 
-                    //bool exists =await _context.WT_M_Customer
-                    //             .AnyAsync(c =>
-                    //             c.CustomerCd == customerCd);
-                    var customers = await _context.WT_M_Customer
-                                    .FromSqlInterpolated($@"
-                                        SELECT *
-                                        FROM dbo.F_Customer(GETDATE(), {customerCd})
-                                    ")
-                                    .ToListAsync();
 
-                    if (customers.Count==0)
+                    if (!customerSet.Contains(customerCd))
                     {
                         notFoundCustomerCd.Add(customerCd);
                         continue;
                     }
-
 
                     int orderAmt = 0;
 
