@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using OfficeOpenXml;
 using System.Threading.Tasks;
 using WEB_TENNIC.Data;
 using WEB_TENNIC.Models.ViewModels;
@@ -55,12 +56,12 @@ namespace WEB_TENNIC.Controllers
                            .FirstOrDefault();
                 ProjectViewModel model = new ProjectViewModel();
                 model.ProjectCD = m.ProjectCd;
-                model.FileName = m.FileName;
-
-
-                await _service.DeleteProjectName(id);
-                
+                model.FileName = m.FileName;                
+                await _service.DeleteProjectName(id);                
                 await _service.WT_Logging_Delete(model);
+
+               
+
 
                 return Json(new { success = true });
             }
@@ -75,6 +76,73 @@ namespace WEB_TENNIC.Controllers
 
         }
 
+        [HttpPost]
+        public async Task<IActionResult> DownloadProject(string id)
+        {
+            try
+            {
+                var projectData = await _context.WT_M_Project
+                                    .Where(x => x.ProjectCd == id)
+                                    .Select(x => new
+                                    {
+                                        x.CustomerCd,
+                                        x.OrderAmt,
+                                        x.FileName
+                                    })
+                                    .ToListAsync();
+
+                if (!projectData.Any())
+                {
+                    return NotFound("データが見つかりません。");
+                }
+                
+                string fileName = projectData.First().FileName;
+
+                // Excel Create
+                ExcelPackage.License.SetNonCommercialPersonal("CKM");
+
+                using var package = new ExcelPackage();
+
+                var worksheet = package.Workbook.Worksheets.Add("Sheet1");
+
+                // Header
+                worksheet.Cells[1, 1].Value = "CustomerCD";
+                worksheet.Cells[1, 2].Value = "OrderAmt";
+
+                // Data
+                int row = 2;
+                foreach (var item in projectData)
+                {
+                    worksheet.Cells[row, 1].Value = item.CustomerCd;
+                    worksheet.Cells[row, 2].Value = item.OrderAmt;
+
+                    row++;
+                }
+
+                // read file to byte array 
+                var fileBytes = package.GetAsByteArray();
+
+                // return  Download  file
+                return File(
+                    fileBytes,
+                    "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+                    fileName
+                );
+
+            }
+
+            catch (Exception ex)
+            {
+                return Json(new
+                {
+                    success = false,
+                    message = ex.Message
+                });
+            }
+
+        }
+
+     
 
     }
 }

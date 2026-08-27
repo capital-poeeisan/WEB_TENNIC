@@ -1,5 +1,9 @@
 ﻿@model List<WEB_TENNIC.Models.ViewModels.ProjectViewModel>
-
+<style>
+    .bg-light-reg {
+        background-color: #fff;
+    }
+</style>
 <!-- Page Heading -->
 <div class="d-sm-flex align-items-center justify-content-between mb-4">
 
@@ -45,9 +49,9 @@
                         <th class="text-center" style="width:5%;">No.</th>
                         <th style="width:40%;">プロジェクト名</th>
                         <th class="text-start" style="width:35%;">ファイル名</th>
-                        <th class="text-center" style="width:10%;">終了</th>
-                        <th class="text-center" style="width:10%;"></th>
-                      @*   <th class="text-center" style="width:5%;"></th> *@
+                        <th class="text-center" style="width:5%;">終了</th>
+                        <th class="text-center" style="width:15%;"></th>
+                    
                     </tr>
                 </thead>
 
@@ -83,6 +87,11 @@
                                 <a class="btn btn-outline-danger btn-sm me-2 fw-bold btnDeletePrj"  data-projectcd="@item.ProjectCD">
                                     削除
                                 </a>
+                                <a class="btn btn-outline-primary  btn-sm me-2 btnDownloadPrj "
+                                   data-id="@item.ProjectCD" data-filename="@item.FileName" >
+                                   <i class="fas fa-download"></i>
+                                </a>
+                               @*  <label id="filename" hidden>@item.FileName</label> *@
                             </td>
                         
                         </tr>
@@ -93,7 +102,7 @@
       
         <div class="d-flex justify-content-center gap-3 mt-3">
 
-            <div class="card-footer bg-light border-0 text-center">
+            <div class="card-footer bg-light-reg border-0 text-center">
                 <a class="btn btn-outline-secondary px-4 fw-semibold" onclick="location.href='@Url.Action("Index", "ProjectList")'">
                     クリア
                 </a>
@@ -178,6 +187,11 @@
         background-color: #0c63e4 !important;
     }
 
+    .btnDownloadPrj {
+        min-width: 46px;
+        height: 31px;
+    }
+
 </style>
 
 
@@ -246,7 +260,7 @@
                   
                   var message = "本当に削除しますか？";
                 Swal.fire({
-                     title: "確認？",
+                 title: "確認？",
                  showCancelButton: true,
                  confirmButtonText: "削除",
                  cancelButtonText: "キャンセル",
@@ -308,8 +322,123 @@
 
         });
 
+               
+                $(document).on("click", ".btnDownloadPrj", async function ()
+                {
+
+                    var id = $(this).data("id");
+                    var filename = $(this).data("filename");
+
+                    try {
+                        
+                        const result = await 
+                        Swal.fire({
+                             title: "確認？",
+                             showCancelButton: true,
+                             confirmButtonText: "削除",
+                             cancelButtonText: "キャンセル",
+                             html:"ダウンロードしますか？",
+                             confirmButtonText: 'はい',
+                             width: '360px',
+                             customClass: {
+                                     popup: 'my-popup',
+                                     title: 'title-question',
+                                     confirmButton: 'confirm-btn',
+                                     cancelButton:'cancecl-btn'
+                               },
+                            buttonsStyling: false
+                        });
+                        
+                        if (!result.isConfirmed) {
+                            return;
+                        }
+
+                        // Open file picker
+                        const handle = await window.showSaveFilePicker({
+                            suggestedName: filename,
+                            types: [
+                                {
+                                    description: "Excel File",
+                                    accept: {
+                                        "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet": [".xlsx"]
+                                    }
+                                }
+                            ]
+                        }); 
+                        
+                        $.ajax({
+                            url: '@Url.Action("DownloadProject", "ProjectList")',
+                            type: "POST",
+
+                            data: {
+                                id: id
+                            },
+
+                            xhrFields: {
+                                responseType: "blob"
+                            },
+
+                            success: async function (data) {
+
+                                const writable = await handle.createWritable();
+
+                                await writable.write(data);
+
+                                await writable.close();
+
+                                Swal.fire({
+                                    title: '成功!',
+                                    html: "ダウンロードが完了しました。",
+                                    confirmButtonText: "はい",
+                                    width: '360px',
+                                    customClass: {
+                                        popup: 'my-popup',
+                                        title: 'my-title-success',
+                                        confirmButton: 'success-btn'
+                                    },
+                                    buttonsStyling: false
+                                }).then(() => {
+                                    location.reload();
+                                });
+                            },
+
+                            error: function (xhr) {
+
+                                console.log("status =", xhr.status);
+                                console.log("response =", xhr.response);
+
+                                Swal.fire({
+                                    title: "エラー",
+                                    html: "ファイルがないよ。",
+                                    confirmButtonText: 'はい',
+                                    width: '360px',
+                                    customClass: {
+                                        popup: 'my-popup',
+                                        title: 'my-title',
+                                        confirmButton: 'my-button'
+                                    },
+                                    buttonsStyling: false
+                                });
+                            }
+                        });
+
+                    } catch (err) {                
+                        if (err.name === "AbortError") {
+                            return;
+                        }
+                        console.error(err);
+                    }
+
+
+
+                });             
+
              
            });
+
+
+
+
           function addAllButton() {
                var table = $('#projectTable').DataTable();
             var rowCount = table.rows().count();
