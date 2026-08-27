@@ -43,49 +43,69 @@
                             </tr>
                         </thead>
                         <tbody>
-                            @for (int i = 0; i < Model.ProjectProgress.Count; i++)
+                            @{
+                                int no = 1;
+                            }
+
+                            @foreach (var item in Model.ProjectProgress)
                             {
                                 <tr>
                                     <td class="text-center fw-semibold">
 
-
                                         <input type="hidden"
                                                class="customerCD"
-                                               asp-for="ProjectProgress[i].CustomerCD" />
+                                               name="ProjectProgress[@(no - 1)].CustomerCD"
+                                               value="@item.CustomerCD" />
+
                                         <input type="hidden"
                                                class="staffCD"
-                                               asp-for="ProjectProgress[i].StaffCD" />
-                                        @(i + 1)
+                                               name="ProjectProgress[@(no - 1)].StaffCD"
+                                               value="@item.StaffCD" />
+
+                                        @no
                                     </td>
+
                                     <td>
                                         <input type="hidden"
                                                class="shopName"
-                                               asp-for="ProjectProgress[i].ShopName" />
-                                        <span>
+                                               name="ProjectProgress[@(no - 1)].ShopName"
+                                               value="@item.ShopName" />
 
-                                            @Model.ProjectProgress[i].ShopName
+                                        <span>
+                                            @item.ShopName
                                         </span>
                                     </td>
-                                    <td class="text-end" data-order="@Model.ProjectProgress[i].Amount">
+
+                                    <td class="text-end"
+                                        data-order="@item.Amount">
+
                                         <input type="hidden"
                                                class="amount"
-                                               asp-for="ProjectProgress[i].Amount" />
-                                       
-                                        @(Model.ProjectProgress[i].Amount?.ToString("N0")) 
+                                               name="ProjectProgress[@(no - 1)].Amount"
+                                               value="@item.Amount" />
+
+                                        @(item.Amount?.ToString("N0"))
                                     </td>
+
                                     <td class="text-center">
-                                        <input   asp-for="ProjectProgress[i].Active"
+                                        <input type="checkbox"
                                                class="form-check-input active"
-                                               />
+                                               name="ProjectProgress[@(no - 1)].Active"
+                                               value="true"
+                                               @(item.Active ? "checked" : "") />
                                     </td>
-                                    <td >
-                                        <input asp-for="ProjectProgress[i].Remark" 
+
+                                    <td>
+                                        <input type="text"
                                                class="form-control form-control-sm remark"
+                                               name="ProjectProgress[@(no - 1)].Remark"
+                                               value="@item.Remark"
                                                maxlength="150"
-                                               autocomplete="off"
-                                               />
+                                               autocomplete="off" />
                                     </td>
                                 </tr>
+
+                                no++;
                             }
                         </tbody>
                     </table>

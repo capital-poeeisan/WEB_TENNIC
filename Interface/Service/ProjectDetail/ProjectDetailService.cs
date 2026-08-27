@@ -1,4 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.EntityFrameworkCore;
+using WEB_TENNIC.Data;
 using WEB_TENNIC.Interface.Repositories;
 using WEB_TENNIC.Models.ViewModels;
 
@@ -7,28 +9,29 @@ namespace WEB_TENNIC.Interface.Services
     public class ProjectDetailService: IProjectDetailService
     {
         private readonly IProjectDetailRepository _repository;
+        private readonly AppDbContext _context;
 
-        public ProjectDetailService(IProjectDetailRepository repository)
+        public ProjectDetailService(IProjectDetailRepository repository, AppDbContext context)
         {
+            _context=context;
             _repository = repository;
-        } 
+        }
 
-
-        public ProjectDetailViewModel GetProjectList(string projectCd)
+        public async Task<ProjectDetailViewModel> GetProjectList(string projectCd)
         {
             var model = new ProjectDetailViewModel();
-            // =========================
-            // Project Dropdown
-            // =========================
-            model.IsProjectLocked = false;
-            var projects = _repository.GetProjects();
+
+           
             if (!string.IsNullOrEmpty(projectCd))
             {
-                var selectedProject = projects.FirstOrDefault(p =>
-                    p.DeleteDateTime == null &&
-                    p.ProjectCd == projectCd);
+                var selectedProject = await _context.WT_M_Project
+                    .AsNoTracking()
+                    .FirstOrDefaultAsync(p =>
+                        p.DeleteDateTime == null &&
+                        p.ProjectCd == projectCd);
 
-                if (selectedProject != null && selectedProject.EndFlag == 1)
+                if (selectedProject != null &&
+                    selectedProject.EndFlag == 1)
                 {
                     model.ProjectCd = selectedProject.ProjectCd;
                     model.EndFlag = true;
@@ -48,28 +51,36 @@ namespace WEB_TENNIC.Interface.Services
                 }
             }
 
-            //normal state
-            model.ProjectList = projects
-       .Where(p => p.DeleteDateTime == null && p.EndFlag == 0)
-       .AsEnumerable()
-       .GroupBy(p => new { p.ProjectCd, p.ProjectName })
-       .Select(g => g.First())
-       .OrderByDescending(p => p.ProjectCd)
-       .Select(p => new SelectListItem
-       {
-           Value = p.ProjectCd,
-           Text = p.ProjectName
-       })
-       .ToList();
+            // projectCd == null 
+            var projects = await _context.WT_M_Project
+                            .AsNoTracking()
+                            .Where(p =>
+                                p.DeleteDateTime == null &&
+                                p.EndFlag == 0)
+                            .Select(p => new
+                            {
+                                p.ProjectCd,
+                                p.ProjectName
+                            })
+                            .Distinct()
+                            .OrderByDescending(p => p.ProjectCd)
+                            .ToListAsync();
 
-            // Auto select latest ProjectCd
+            model.ProjectList = projects
+                .Select(p => new SelectListItem
+                {
+                    Value = p.ProjectCd,
+                    Text = p.ProjectName
+                })
+                .ToList();
+
             if (model.ProjectList.Any())
             {
                 model.ProjectCd = model.ProjectList.First().Value;
             }
 
             return model;
-        } 
+        }
 
         public ProjectDetailViewModel GetStaffList(string projectCd)
         {
