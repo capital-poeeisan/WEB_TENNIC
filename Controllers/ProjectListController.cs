@@ -21,11 +21,23 @@ namespace WEB_TENNIC.Controllers
         
         public async Task<IActionResult> Index(int EndFlag)
         {
-            ViewBag.EndFlag = EndFlag;
-            var  data = await _service.GetProjectList(EndFlag);
-            
+            try
+            {
+                ViewBag.EndFlag = EndFlag;
+                var data = await _service.GetProjectList(EndFlag);
 
-            return View(data);
+
+                return View(data);
+
+            }
+            catch (Exception ex)
+            {
+
+                Console.WriteLine(ex); 
+                return View();
+
+            }
+           
             
         }
 
