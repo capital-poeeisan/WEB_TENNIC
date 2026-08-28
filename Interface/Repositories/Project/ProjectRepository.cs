@@ -37,15 +37,13 @@ namespace WEB_TENNIC.Repositories.Project
                 "EXEC WT_Logging_Insert " +
                 "@ProjectCD={0},@CustomerCD={1}," +
                 "@OrderAmt={2},@Note={3},@FileName={4}," +
-                "@CreateDateTime={5},@UpdateDateTime={6},@DeleteDateTime={7},@EndFlag={8}",
+                "@DateTimeFlg={5},@EndFlag={6}",
                 m.ProjectCD,
                 null,
                 null,
                 null,
                 m.FileName,
-                null,
-                null,
-                DateTime.Now.ToString(),
+                3,
                 null
                 );
 
@@ -54,15 +52,16 @@ namespace WEB_TENNIC.Repositories.Project
 
         public async Task<bool> DeleteProjectName(string id)
         {
-            var project = await _context.WT_M_Project
-                .FirstOrDefaultAsync(x => x.ProjectCd == id);
+            var projectCdParam = new SqlParameter(
+                 "@ProjectCd",
+                 id
+             );
 
-            if (project == null)
-                return false;
+            await _context.Database.ExecuteSqlRawAsync(
+                "EXEC WT_M_Project_Delete @ProjectCd",
+                projectCdParam
+            );
 
-            project.DeleteDateTime = DateTime.Now;
-
-            await _context.SaveChangesAsync();
 
             return true;
 
