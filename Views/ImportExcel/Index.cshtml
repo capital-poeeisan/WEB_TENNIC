@@ -91,6 +91,37 @@
     </div>
 </div>
 
+<div id="loadingOverlay" style="display:none;">
+    <div class="loading-box">
+        <div class="spinner-border text-primary" role="status"></div>
+
+        <div class="mt-3">
+            <strong>処理中です。</strong>
+            <br />
+            <small>しばらくお待ちください。</small>
+        </div>
+    </div>
+</div>
+
+<style>
+    #loadingOverlay {
+        position: fixed;
+        inset: 0;
+        background: rgba(0, 0, 0, 0.45);
+        z-index: 9999;
+        justify-content: center;
+        align-items: center;
+    }
+
+    .loading-box {
+        background: #fff;
+        padding: 30px 50px;
+        border-radius: 10px;
+        text-align: center;
+        min-width: 300px;
+    }
+</style>
+
 
 <script>
         function checkExcelFile(input) {
@@ -126,137 +157,183 @@
 
 
 
-        $("#btnSave").click(function () {
-            var file = $("#excelFile")[0].files[0];
-             var projectName = $("#ProjectName").val().trim();
+          $(document).on("click", "#btnSave", function (e) {
 
-            if (projectName === "") {
+          e.preventDefault();
+       
 
-              document.activeElement?.blur();
-               Swal.fire({
-                 title:"警告！",
-                 html:"プロジェクト名を選択してください。",
-                 confirmButtonText: 'はい',
-                 width: '360px',
-                 customClass: {
-                     popup: 'my-popup',
-                      title: 'title-warting',
-                       confirmButton: 'warning-btn'
-                 },
-               buttonsStyling: false }).then(() => {
-               $("#ProjectName").focus();});
-                               return;
+        var file = $("#excelFile")[0].files[0];
+        var projectName = $("#ProjectName").val().trim();
+
+        if (projectName === "") {
+
+            document.activeElement?.blur();
+
+            Swal.fire({
+                title: "警告！",
+                html: "プロジェクト名を選択してください。",
+                confirmButtonText: 'はい',
+                width: '360px',
+                customClass: {
+                    popup: 'my-popup',
+                    title: 'title-warting',
+                    confirmButton: 'warning-btn'
+                },
+                buttonsStyling: false
+            }).then(() => {
+                $("#ProjectName").focus();
+            });
+
+            return;
+        }
+
+        if (!file) {
+
+            document.activeElement?.blur();
+
+            Swal.fire({
+                title: '警告!',
+                html: 'Excelファイルを選択してください。',
+                confirmButtonText: 'はい',
+                width: '360px',
+                customClass: {
+                    popup: 'my-popup',
+                    title: 'title-warting',
+                    confirmButton: 'warning-btn'
+                },
+                buttonsStyling: false
+            }).then(() => {
+                $("#fileName").focus();
+            });
+
+            return;
+        }
+
+        var formData = new FormData();
+
+        formData.append("ProjectName", $("#ProjectName").val());
+        formData.append("ProjectCd", $("#ProjectCd").val());
+        formData.append("fileName", file);
+
+        // alert("ProjectCd = " + $("#ProjectCd").val());
+
+        $.ajax({
+            url: '@Url.Action("UploadExcel", "ImportExcelUpdate")',
+            type: 'POST',
+            data: formData,
+            processData: false,
+            contentType: false,
+
+            beforeSend: function () {
+                $("#loadingOverlay").css("display", "flex");
+                $("#btnSave").prop("disabled", true);
+            },
+
+            success: function (res) {
+
+                if (res.type == "no_change") {
+                    location.href = '@Url.Action("Index", "ProjectList")';
+                    return;
                 }
 
-            if (!file) {
-                             document.activeElement?.blur();
-                            Swal.fire({
-                                title: '警告!',
-                                html: 'Excelファイルを選択してください。',
-                                confirmButtonText: 'はい', width: '360px',
-                                customClass: { popup: 'my-popup', title: 'title-warting', confirmButton: 'warning-btn' },
-                                buttonsStyling: false }).then(() =>
-                                {
-                                    $("#fileName").focus();
-                                });
-                                return;
-                            }
-            var formData = new FormData();
+                if (!res.success) {
 
-            formData.append("ProjectName", $("#ProjectName").val());
-            // formData.append("ProjectCd", $("#ProjectCd").val());
-            formData.append("fileName", file);
+                    Swal.fire({
+                        title: 'エラー!',
+                        html: res.message,
+                        confirmButtonText: 'はい',
+                        width: '360px',
+                        customClass: {
+                            popup: 'my-popup',
+                            title: 'my-title',
+                            confirmButton: 'my-button'
+                        },
+                        buttonsStyling: false
+                    });
 
-            // alert($("#ProjectCd").val());
+                    return;
+                }
 
-            $.ajax({
-                
-              url: '@Url.Action("UploadExcel", "ImportExcel")',
-                type: 'POST',
-                data: formData,
-                processData: false,
-                contentType: false,
+                if (res.warnings && res.warnings.length > 0) {
 
-                success: function (res) {
-
-                    if (!res.success) {
-
-                        Swal.fire({
-                            title: 'エラー!',
-                            html: res.message,
-                            confirmButtonText: 'はい',
-                            width: '360px',
-                            customClass: {
-                                        popup: 'my-popup',
-                                        title: 'my-title',
-                                        confirmButton: 'my-button'
-                                    },buttonsStyling: false
-
-
-                        });
-
-                        return;
-                    }
-
-
-                     if (res.warnings && res.warnings.length > 0) {
-
-                        Swal.fire({
-                            title: '警告!',
-                            html: res.warnings.join("<br><br>"),
-                            confirmButtonText: 'はい',
-                            width: '360px',
-                            customClass: {
-                                      popup: 'my-popup',
-                                      title: 'title-warting',
-                                      confirmButton: 'warning-btn'
-                                 },buttonsStyling: false
-                        })
-                        .then(() => {
-
-                            Swal.fire({
-                                title: '成功!',
-                                html: res.message,
-                                confirmButtonText: 'はい',
-                                width: '360px',
-                                    customClass: {
-                                        popup: 'my-popup',
-                                        title: 'my-title-success',
-                                        confirmButton: 'success-btn'
-                                    },
-                                    buttonsStyling: false
-                            })
-                            .then(() => {
-                               
-                                location.href = '@Url.Action("Index", "ProjectList")';
-                            });
-
-                        });
-
-                    }
-                    else {
+                    Swal.fire({
+                        title: '警告!',
+                        html: res.warnings.join("<br><br>"),
+                        confirmButtonText: 'はい',
+                        width: '360px',
+                        customClass: {
+                            popup: 'my-popup',
+                            title: 'title-warting',
+                            confirmButton: 'warning-btn'
+                        },
+                        buttonsStyling: false
+                    }).then(() => {
 
                         Swal.fire({
                             title: '成功!',
                             html: res.message,
                             confirmButtonText: 'はい',
                             width: '360px',
-                                    customClass: {
-                                        popup: 'my-popup',
-                                        title: 'my-title-success',
-                                        confirmButton: 'success-btn'
-                                    },
-                                    buttonsStyling: false
-                        })
-                        .then(() => {
+                            customClass: {
+                                popup: 'my-popup',
+                                title: 'my-title-success',
+                                confirmButton: 'success-btn'
+                            },
+                            buttonsStyling: false
+                        }).then(() => {
                             location.href = '@Url.Action("Index", "ProjectList")';
                         });
 
-                    }
+                    });
 
+                } else {
+
+                    Swal.fire({
+                        title: '成功!',
+                        html: res.message,
+                        confirmButtonText: 'はい',
+                        width: '360px',
+                        customClass: {
+                            popup: 'my-popup',
+                            title: 'my-title-success',
+                            confirmButton: 'success-btn'
+                        },
+                        buttonsStyling: false
+                    }).then(() => {
+                        location.href = '@Url.Action("Index", "ProjectList")';
+                    });
                 }
-            });
+            },
+             complete: function () {
 
+               
+                $("#loadingOverlay").hide();
+               
+                $("#btnSave").prop("disabled", false);
+            },
+
+
+            error: function () {
+
+                Swal.fire({
+                    title: 'エラー!',
+                    html: 'データの更新中にエラーが発生しました。',
+                    confirmButtonText: 'はい',
+                    width: '360px',
+                    customClass: {
+                        popup: 'my-popup',
+                        title: 'my-title',
+                        confirmButton: 'my-button'
+                    },
+                    buttonsStyling: false
+                });
+            },
+
+            complete: function () {
+                $("#loadingOverlay").hide();
+                $("#btnSave").prop("disabled", false);
+            }
+        });
     });
 </script>
 
