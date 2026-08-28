@@ -63,15 +63,13 @@ namespace WEB_TENNIC.Interface.Repositories.ImportExcel
                 "EXEC WT_Logging_Insert " +
                 "@ProjectCD={0},@CustomerCD={1}," +
                 "@OrderAmt={2},@Note={3},@FileName={4}," +
-                "@CreateDateTime={5},@UpdateDateTime={6},@DeleteDateTime={7},@EndFlag={8}",
+                "@DateTimeFlg={5},@EndFlag={6}",
                 m.ProjectCd,
                 null,
                 null,
                 null,
                 m.fileName.FileName,
-                DateTime.Now.ToString(),
-                null,
-                null,
+                1,
                 null
                 );
 
@@ -81,51 +79,21 @@ namespace WEB_TENNIC.Interface.Repositories.ImportExcel
         {
             var result = await _context.Database.ExecuteSqlRawAsync(
                 "EXEC WT_Logging_Insert " +
-                "@ProjectCD={0},@CustomerCD={1}," +
+                 "@ProjectCD={0},@CustomerCD={1}," +
                 "@OrderAmt={2},@Note={3},@FileName={4}," +
-                "@CreateDateTime={5},@UpdateDateTime={6},@DeleteDateTime={7},@EndFlag={8}",
+                "@DateTimeFlg={5},@EndFlag={6}",
                 m.ProjectCd,
                 null,
                 null,
                 null,
                 m.F_name,
-                null,
-                DateTime.Now.ToString(),
-                null,
+                2,
                 null
                 );
 
             return result;
         }
-        //public async Task<int> Update_ImportExcelAsync(DataTable dt)
-        //{
-        //    if (dt.Rows.Count > 0)
-        //    {
-        //        dt = dt.AsEnumerable()
-        //         .GroupBy(r => new
-        //         {
-        //             ProjectCD = r.Field<string>("ProjectCD"),
-        //             CustomerCD = r.Field<string>("CustomerCD")
-        //         })
-        //         .Select(g => g.First())
-        //         .CopyToDataTable();
-        //    }
-
-        //    var parameter = new SqlParameter("@Projects", dt)
-        //    {
-        //        SqlDbType = SqlDbType.Structured,
-        //        TypeName = "dbo.WT_ProjectType"
-        //    };
-
-        //    var result = await _context.Database.ExecuteSqlRawAsync(
-        //        "EXEC WT_M_Project_Insert_Update @Projects",
-        //        parameter
-
-        //    );
-
-        //    return result;
-        //}
-
+        
 
     }
 }

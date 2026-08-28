@@ -12,9 +12,9 @@ namespace WEB_TENNIC.Controllers
         {
             _service = service;
         }
-        public IActionResult Index(string projectCD)
+        public async Task<IActionResult> Index(string projectCD)
         {
-            var model = _service.GetProjectList(projectCD);
+            var model = await _service.GetProjectList(projectCD);
             return View(model);
         }
         

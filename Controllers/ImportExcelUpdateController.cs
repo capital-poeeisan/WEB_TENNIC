@@ -140,11 +140,34 @@ namespace WEB_TENNIC.Controllers
                                 "無効なExcel形式です。必要な列：CustomerCD、OrderAmt です。"
                         });
                     }
+                    //Check CustomerCD
+                    var customerCds = new List<string>();
+
+                    for (int row = 2; row <= worksheet.Dimension.End.Row; row++)
+                    {
+                        string customerCd = worksheet.Cells[row, 1].Text.Trim();
+
+                        if (!string.IsNullOrWhiteSpace(customerCd))
+                        {
+                            customerCds.Add(customerCd);
+                        }
+                    }
+
+                    var distinctCustomerCds = customerCds.Distinct().ToList();//Remove Duplicate Data
+
+                    var customers = await _context.WT_M_Customer
+                                .FromSqlRaw(@"
+                                    SELECT *
+                                    FROM dbo.WT_F_Customer(GETDATE())
+                                ")
+                                .ToListAsync();
+
+                    var customerSet = customers.Select(x => x.CustomerCd).ToHashSet();
 
 
                     int rowCount = worksheet.Dimension.Rows;
                     
-                    // Excel Data Check
+                    // Loop Excel File
                     for (int row = 2;row <= rowCount;row++)
                     {
                         string customerCD =worksheet.Cells[row, 1].Text.Trim();
@@ -153,7 +176,11 @@ namespace WEB_TENNIC.Controllers
                         {
                             continue;
                         }
-
+                        if (!customerSet.Contains(customerCD))
+                        {
+                            notFoundCustomerCd.Add(customerCD);
+                            continue;
+                        }
 
                         int orderAmt = 0;
 
@@ -169,18 +196,7 @@ namespace WEB_TENNIC.Controllers
                             }
                         }
 
-                        var customers = await _context.WT_M_Customer
-                                        .FromSqlInterpolated($@"
-                                        SELECT *
-                                        FROM dbo.F_Customer(GETDATE(), {customerCD})
-                                    ").ToListAsync();
-
-                        if (customers.Count == 0)
-                        {
-                            notFoundCustomerCd.Add(customerCD);
-
-                            continue;
-                        }
+                        
 
 
                         dt.Rows.Add(
