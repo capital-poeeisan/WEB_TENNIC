@@ -353,18 +353,18 @@
                             return;
                         }
 
-                        // Open file picker
-                        const handle = await window.showSaveFilePicker({
-                            suggestedName: filename,
-                            types: [
-                                {
-                                    description: "Excel File",
-                                    accept: {
-                                        "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet": [".xlsx"]
-                                    }
-                                }
-                            ]
-                        }); 
+                        // // Open file picker
+                        // const handle = await window.showSaveFilePicker({
+                        //     suggestedName: filename,
+                        //     types: [
+                        //         {
+                        //             description: "Excel File",
+                        //             accept: {
+                        //                 "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet": [".xlsx"]
+                        //             }
+                        //         }
+                        //     ]
+                        // }); 
                         
                         $.ajax({
                             url: '@Url.Action("DownloadProject", "ProjectList")',
@@ -380,11 +380,25 @@
 
                             success: async function (data) {
 
-                                const writable = await handle.createWritable();
+                                // const writable = await handle.createWritable();
 
-                                await writable.write(data);
+                                // await writable.write(data);
 
-                                await writable.close();
+                                // await writable.close();
+                                var url = window.URL.createObjectURL(data);
+
+                                var a = document.createElement("a");
+
+                                a.href = url;
+                                a.download = filename;
+
+                                document.body.appendChild(a);
+
+                                a.click();
+
+                                document.body.removeChild(a);
+
+                                window.URL.revokeObjectURL(url);
 
                                 Swal.fire({
                                     title: '成功!',
