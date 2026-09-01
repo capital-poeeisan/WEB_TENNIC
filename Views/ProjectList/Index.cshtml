@@ -400,20 +400,20 @@
 
                                 window.URL.revokeObjectURL(url);
 
-                                Swal.fire({
-                                    title: '成功!',
-                                    html: "ダウンロードが完了しました。",
-                                    confirmButtonText: "はい",
-                                    width: '360px',
-                                    customClass: {
-                                        popup: 'my-popup',
-                                        title: 'my-title-success',
-                                        confirmButton: 'success-btn'
-                                    },
-                                    buttonsStyling: false
-                                }).then(() => {
-                                    location.reload();
-                                });
+                                // Swal.fire({
+                                //     title: '成功!',
+                                //     html: "ダウンロードが完了しました。",
+                                //     confirmButtonText: "はい",
+                                //     width: '360px',
+                                //     customClass: {
+                                //         popup: 'my-popup',
+                                //         title: 'my-title-success',
+                                //         confirmButton: 'success-btn'
+                                //     },
+                                //     buttonsStyling: false
+                                // }).then(() => {
+                                //     location.reload();
+                                // });
                             },
 
                             error: function (xhr) {
