@@ -1,0 +1,126 @@
+﻿.bg-light-reg {
+    background-color: #fff;
+}
+
+.table-scroll1 {
+    height: calc(100vh - 300px);
+    overflow-y: auto;
+    overflow-x: auto;
+}
+
+    .table-scroll thead th {
+        position: sticky;
+        top: 0;
+        z-index: 10;
+        background: #d9ebe4;
+    }
+
+.table {
+    white-space: nowrap;
+}
+
+.F_check {
+    display: flex;
+    align-items: center;
+    margin-bottom: 0;
+}
+
+#chkEndFlag {
+    margin-top: 0;
+    width: 1.3rem;
+    height: 1.3rem;
+    cursor: pointer;
+}
+
+
+
+.toolbar {
+    padding-left: 12px !important;
+    padding-right: 12px !important;
+}
+
+.px-2 {
+    padding-top: 1rem !important;
+    padding-right: 1rem !important;
+    padding-left: 1rem !important;
+}
+
+/*#projectTable th:nth-child(1),
+#projectTable td:nth-child(1) {*/
+    /*width: 60px;*/
+    /*text-align: center;
+}
+
+#projectTable th:nth-child(3),
+#projectTable td:nth-child(3) {*/
+   /* width: 100px;*/
+    /*text-align: left;
+}
+
+#projectTable th:nth-child(4),
+#projectTable td:nth-child(4) {*/
+   /* width: 100px;*/
+    /*text-align: center;
+}*/
+
+.btn-search {
+    /* min-width: 90px; */
+    background-color: #0c63e4 !important;
+}
+
+.btnDownloadPrj {
+    min-width: 46px;
+    height: 31px;
+}
+.card-body-padding {
+    padding-top: 0px !important;
+}
+#chk_label1 {
+    align-items: center !important;
+    margin-left: 6px;
+    font-weight: bold;
+}
+
+.project-table .col-no {
+    width: 5%;
+}
+
+.project-table .col-project {
+    width: 40%;
+}
+
+.project-table .col-file {
+    width: 35%;
+}
+
+.project-table .col-end {
+    width: 5%;
+}
+
+.project-table .col-action {
+    width: 15%;
+}
+.font-style {
+    font: bold;
+    font-size: large;
+    align-items: center;
+}
+/*
+    Import Excel
+*/
+#loadingOverlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.45);
+    z-index: 9999;
+    justify-content: center;
+    align-items: center;
+}
+
+.loading-box {
+        background: #fff;
+        padding: 30px 50px;
+        border-radius: 10px;
+        text-align: center;
+        min-width: 300px;
+    }

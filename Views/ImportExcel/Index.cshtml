@@ -1,12 +1,4 @@
 ﻿@model WEB_TENNIC.Models.ViewModels.ImportExcelViewModel
-<link href="~/css/bootstrap.min.css" rel="stylesheet" />
-<script src="~/lib/bootstrap/dist/js/bootstrap.min.js"></script>
-<script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
-<style>
-    .bg-light-reg {
-        background-color: #fff;
-    }
-</style>
 
 <!-- Page Heading -->
 <div class="d-sm-flex align-items-center justify-content-between mb-4">
@@ -19,7 +11,7 @@
 </div>
 
 <div class="card shadow  py-2 px-1">
-    <div class="card-body " style="padding-top:0px!important;">
+    <div class="card-body card-body-padding" >
 
         <div class="card-body">
             <div class="row justify-content-center">
@@ -60,7 +52,7 @@
                                     type="button"
                                     id="browseBtn"
                                     onclick="document.getElementById('excelFile').click()">
-                                <i class="bi bi-three-dots" style="font:bold;font-size:large;align-items:center;">...</i>
+                                <i class="bi bi-three-dots font-style" >...</i>
                             </button>
 
 
@@ -103,28 +95,8 @@
     </div>
 </div>
 
-<style>
-    #loadingOverlay {
-        position: fixed;
-        inset: 0;
-        background: rgba(0, 0, 0, 0.45);
-        z-index: 9999;
-        justify-content: center;
-        align-items: center;
-    }
-
-    .loading-box {
-        background: #fff;
-        padding: 30px 50px;
-        border-radius: 10px;
-        text-align: center;
-        min-width: 300px;
-    }
-</style>
-
-
 <script>
-        function checkExcelFile(input) {
+      function checkExcelFile(input) {
 
         if (input.files.length === 0)
             return;
@@ -133,18 +105,18 @@
         var extension = fileName.split('.').pop().toLowerCase();
 
         if (extension !== "xlsx" && extension !== "xls") {
-                            Swal.fire({
-                            title: 'エラー!',
-                            html: 'Excelファイルを選択してください。',
-                            confirmButtonText: 'はい',
-                            width: '360px',
-                            customClass: {
-                                popup: 'my-popup',
-                                title: 'my-title',
-                                confirmButton: 'my-button'
-                            },
-                            buttonsStyling: false
-                        });
+            Swal.fire({
+                title: 'エラー!',
+                html: 'Excelファイルを選択してください。',
+                confirmButtonText: 'はい',
+                width: '360px',
+                customClass: {
+                    popup: 'my-popup',
+                    title: 'my-title',
+                    confirmButton: 'my-button'
+                },
+                buttonsStyling: false
+            });
 
 
             input.value = "";
@@ -155,12 +127,11 @@
         document.getElementById("fileName").value = fileName;
     }
 
+     $(document).ready(function () { 
+      $(document).on("click", "#btnSave", function (e) {
 
+        e.preventDefault();
 
-          $(document).on("click", "#btnSave", function (e) {
-
-          e.preventDefault();
-       
 
         var file = $("#excelFile")[0].files[0];
         var projectName = $("#ProjectName").val().trim();
@@ -171,7 +142,7 @@
 
             Swal.fire({
                 title: "警告！",
-                html: "プロジェクト名を選択してください。",
+                html: "プロジェクト名を入力してください。",
                 confirmButtonText: 'はい',
                 width: '360px',
                 customClass: {
@@ -304,11 +275,11 @@
                     });
                 }
             },
-             complete: function () {
+            complete: function () {
 
-               
+
                 $("#loadingOverlay").hide();
-               
+
                 $("#btnSave").prop("disabled", false);
             },
 
@@ -335,5 +306,14 @@
             }
         });
     });
+     }); 
+
+ 
+
+  
 </script>
+
+
+
+
 
