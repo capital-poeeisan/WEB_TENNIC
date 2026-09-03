@@ -118,8 +118,8 @@ namespace WEB_TENNIC.Controllers
                 var worksheet = package.Workbook.Worksheets.Add("Sheet1");
 
                 // Header
-                worksheet.Cells[1, 1].Value = "CustomerCD";
-                worksheet.Cells[1, 2].Value = "OrderAmt";
+                worksheet.Cells[1, 1].Value = "得意先CD";
+                worksheet.Cells[1, 2].Value = "目標等";
 
                 // Data
                 int row = 2;

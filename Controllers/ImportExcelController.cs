@@ -1,4 +1,5 @@
 ﻿
+using ClosedXML.Excel;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using OfficeOpenXml;
@@ -325,8 +326,37 @@ namespace WEB_TENNIC.Controllers
                 Success = true
             };
         }
-        
 
+        [HttpGet]
+        public IActionResult DownloadExcel()
+        {
+            using var workbook = new XLWorkbook();
+
+            var worksheet = workbook.Worksheets.Add("Sheet");
+
+
+            worksheet.Cell("A1").Value = "得意先CD";
+            worksheet.Cell("B1").Value = "目標等";
+
+
+            var headerRange = worksheet.Range("A1:B1");
+            headerRange.Style.Font.Bold = true;
+
+
+            using var stream = new MemoryStream();
+
+            workbook.SaveAs(stream);
+            stream.Position = 0;
+            string datetime = DateTime.Now.ToString("yyyyMMdd_HHmm");
+
+
+
+            return File(
+                stream.ToArray(),
+                "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+                "ExcelImport" + datetime + ".xlsx"
+            );
+        }
 
 
     }

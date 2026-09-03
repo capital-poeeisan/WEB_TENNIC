@@ -124,3 +124,8 @@
         text-align: center;
         min-width: 300px;
     }
+
+.btn-download {
+    color: #fff;
+    background-color: #FFC000;
+}
