@@ -64,8 +64,8 @@ namespace WEB_TENNIC.Controllers
                 string header2 =
                     worksheet.Cells[1, 2].Text.Trim();
 
-                if (header1 != "CustomerCD" ||
-                    header2 != "OrderAmt")
+                if (header1 != "得意先CD" ||
+                    header2 != "目標等")
                 {                   
 
                     return Json(new
@@ -73,7 +73,7 @@ namespace WEB_TENNIC.Controllers
                         success = false,
                         type = "error",
                         message =
-                            "無効なExcel形式です。必要な列：CustomerCD、OrderAmt です。"
+                            "無効なExcel形式です。必要な列：得意先CD、目標等 です。"
                     });
                 }
 
@@ -94,7 +94,7 @@ namespace WEB_TENNIC.Controllers
 
 
                 List<string> notFoundCustomerCd = new();
-                List<string> order_amt_errorList = new();
+                //List<string> order_amt_errorList = new();
 
                 //Check CustomerCD
                 var customerCds = new List<string>();                
@@ -129,6 +129,7 @@ namespace WEB_TENNIC.Controllers
                 for (int row = 2;row <= worksheet.Dimension.End.Row;row++)
                 {
                     string customerCd = worksheet.Cells[row, 1].Text.Trim();
+                    
                     if (string.IsNullOrWhiteSpace(customerCd))
                     {
                         continue;
@@ -147,18 +148,24 @@ namespace WEB_TENNIC.Controllers
                     {
                         if (!int.TryParse(worksheet.Cells[row, 2].Text,out orderAmt))
                         {
-                            order_amt_errorList.Add(worksheet.Cells[row, 2].Text);
-                            continue;
+                            orderAmt = 0;
+                            //order_amt_errorList.Add(worksheet.Cells[row, 2].Text);
+                            //continue;
                         }
                     }
+                    else
+                    {
+                        orderAmt = 0;
+                    }
+                    
 
-                    dt.Rows.Add(
-                        projectCD,
-                        customerCd,
-                        model.ProjectName,
-                        orderAmt,
-                        model.fileName.FileName
-                    );
+                        dt.Rows.Add(
+                            projectCD,
+                            customerCd,
+                            model.ProjectName,
+                            orderAmt,
+                            model.fileName.FileName
+                        );
                 }
 
 
@@ -182,14 +189,14 @@ namespace WEB_TENNIC.Controllers
                 List<string> warningMessages = new();
 
 
-                if (order_amt_errorList.Any())
-                {
-                    warningMessages.Add(
-                        string.Join(", ",
-                            order_amt_errorList.Distinct())
-                        + " 数字が無効です。"
-                    );
-                }
+                //if (order_amt_errorList.Any())
+                //{
+                //    warningMessages.Add(
+                //        string.Join(", ",
+                //            order_amt_errorList.Distinct())
+                //        + " 数字が無効です。"
+                //    );
+                //}
 
 
                 if (notFoundCustomerCd.Any())

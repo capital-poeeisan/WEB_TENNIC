@@ -50,7 +50,7 @@ namespace WEB_TENNIC.Controllers
         public async Task<IActionResult> UploadExcel(ImportExcelViewModel model)
         {
             List<string> notFoundCustomerCd = new();
-            List<string> order_amt_errorList = new();
+            //List<string> order_amt_errorList = new();
             List<string> warningMessages = new();
             DataTable dt = new DataTable();
 
@@ -130,14 +130,14 @@ namespace WEB_TENNIC.Controllers
                     string header2 = worksheet.Cells[1, 2].Text.Trim();
 
 
-                    if (header1 != "CustomerCD" || header2 != "OrderAmt")
+                    if (header1 != "得意先CD" || header2 != "目標等")
                     {
                         return Json(new
                         {
                             success = false,
                             type = "error",
                             message =
-                                "無効なExcel形式です。必要な列：CustomerCD、OrderAmt です。"
+                                "無効なExcel形式です。必要な列：得意先CD、目標等 です。"
                         });
                     }
                     //Check CustomerCD
@@ -191,9 +191,14 @@ namespace WEB_TENNIC.Controllers
                         {
                             if (!int.TryParse(orderAmtText,out orderAmt))
                             {
-                                order_amt_errorList.Add(orderAmtText);
-                                continue;
+                                orderAmt = 0;
+                                //order_amt_errorList.Add(orderAmtText);
+                                //continue;
                             }
+                        }
+                        else
+                        {
+                            orderAmt = 0;
                         }
 
                         
@@ -246,11 +251,11 @@ namespace WEB_TENNIC.Controllers
                     await _importExcelService.WT_Logging_Update(model);
 
 
-                    // Warning
-                    if (order_amt_errorList.Any())
-                    {
-                        warningMessages.Add(string.Join(", ",order_amt_errorList.Distinct())+ "数字が無効です。");
-                    }
+                    //// Warning
+                    //if (order_amt_errorList.Any())
+                    //{
+                    //    warningMessages.Add(string.Join(", ",order_amt_errorList.Distinct())+ "数字が無効です。");
+                    //}
 
 
                     if (notFoundCustomerCd.Any())
