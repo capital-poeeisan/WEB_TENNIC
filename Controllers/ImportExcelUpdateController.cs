@@ -311,10 +311,14 @@ namespace WEB_TENNIC.Controllers
             // Project Name Change
             if (model.F_name != null && model.fileName == null)
             {
+                //bool pj_exists = await _context.WT_M_Project
+                //    .AnyAsync(p =>
+                //        p.ProjectName == model.ProjectName &&
+                //        p.ProjectCd != model.ProjectCd);
                 bool pj_exists = await _context.WT_M_Project
-                    .AnyAsync(p =>
-                        p.ProjectName == model.ProjectName &&
-                        p.ProjectCd != model.ProjectCd);
+               .AnyAsync(p =>
+                EF.Functions.Collate(p.ProjectName, "Japanese_BIN2") == model.ProjectName &&
+                p.ProjectCd != model.ProjectCd);
 
                 if (pj_exists)
                 {
@@ -344,12 +348,18 @@ namespace WEB_TENNIC.Controllers
 
 
                 // Excel File Duplicate Check
+                //bool excelfile_exists =
+                //    await _context.WT_M_Project
+                //        .AnyAsync(p =>
+                //            p.FileName == model.fileName.FileName &&
+                //            p.ProjectCd != model.ProjectCd &&
+                //            p.DeleteDateTime == null);
                 bool excelfile_exists =
-                    await _context.WT_M_Project
-                        .AnyAsync(p =>
-                            p.FileName == model.fileName.FileName &&
-                            p.ProjectCd != model.ProjectCd &&
-                            p.DeleteDateTime == null);
+                await _context.WT_M_Project
+               .AnyAsync(p =>
+                EF.Functions.Collate(p.FileName, "Japanese_BIN2") == model.fileName.FileName &&
+                p.ProjectCd != model.ProjectCd &&
+                p.DeleteDateTime == null);
 
                 if (excelfile_exists)
                 {
