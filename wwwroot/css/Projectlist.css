@@ -126,6 +126,8 @@
     }
 
 .btn-download {
-    color: #fff;
-    background-color: #FFC000;
+    --bs-btn-bg: #FFC000;
+    --bs-btn-border-color: #FFC000;
+    --bs-btn-hover-bg: #FFC000;
+    --bs-btn-hover-border-color: #FFC000;
 }
