@@ -10,10 +10,9 @@
 
 </div>
 
-<div class="card shadow  py-2 px-1">
-    <div class="card-body card-body-padding" >
-
-       @*  <div class="card-body"> *@
+<div class="card shadow-sm table-card">
+    <div class="card-body progress-card card-body-padding">
+      
             <div class="row justify-content-center">
                 <div class="col-lg-7 col-md-9">
                    
@@ -67,25 +66,21 @@
                                    hidden
                                    onchange="checkExcelFile(this)">
                         </div>
-                        <div class="d-flex justify-content-center gap-3 mt-3">
-                            <div class="card-footer bg-light-reg border-0 text-center">
-                                <a class="btn btn-outline-secondary px-4 fw-semibold" href="@Url.Action("Index", "ProjectList")">
+                <div class="text-end mt-3" style="padding:19px;">
+                  
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="card-footer bg-light border-0 text-center">
+                        <a class="btn btn-outline-secondary px-4 fw-semibold" href="@Url.Action("Index", "ProjectList")">
                                     戻る
                         </a>&nbsp;&nbsp;&nbsp;&nbsp;
                                 <button id="btnSave" type="button" class="btn btn-success  px-4 fw-semibold ">
                                     修正
                                 </button>
-                            </div>
-                        </div>               
+     </div>                            
 
-
-                  
-                </div>
-            </div>
-
-        @* </div> *@
-
-    </div>
 </div>
 
 <div id="loadingOverlay" style="display:none;">
