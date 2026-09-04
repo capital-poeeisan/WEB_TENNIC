@@ -86,11 +86,11 @@
 }
 
 .project-table .col-project {
-    width: 40%;
+    width: 60%;
 }
 
 .project-table .col-file {
-    width: 35%;
+    width: 5%;
 }
 
 .project-table .col-end {
@@ -98,7 +98,7 @@
 }
 
 .project-table .col-action {
-    width: 15%;
+    width: 25%;
 }
 .font-style {
     font: bold;

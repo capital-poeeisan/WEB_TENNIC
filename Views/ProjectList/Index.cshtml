@@ -44,7 +44,7 @@
                     <tr>
                         <th class="text-center col-no">No.</th>
                         <th class="col-project">プロジェクト名</th>
-                        <th class="text-start col-file">ファイル名</th>
+                        <th class="text-start col-file" hidden>ファイル名</th>
                         <th class="text-center col-end">終了</th>
                         <th class="text-center col-action"></th>
                     </tr>
@@ -62,7 +62,7 @@
                             </td>
 
                             <td class="text-truncate"
-                                title="@item.FileName">
+                                title="@item.FileName" hidden>
                                 @item.FileName
                             </td>
 
@@ -102,7 +102,7 @@
                     クリア
                 </a>
                 <button id="btnSave" type="button" onclick="location.href='@Url.Action("Index", "ImportExcel")'" class="btn btn-success  px-4 ms-3 fw-semibold ">
-                    新しい Project
+                 プロジェクトを作る
                 </button>
             </div>
 
