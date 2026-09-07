@@ -10,8 +10,8 @@
 
 </div>
 
-<div class="card shadow  py-2 px-1">
-    <div class="card-body card-body-padding">
+<div class="card shadow-sm table-card">
+    <div class="card-body progress-card card-body-padding">
        
         <div class="d-flex align-items-center gap-3 mt-3 card-body-padding">
             <form asp-action="Index" method="get" id="searchForm" class="form-check F_check me-3">
@@ -37,14 +37,14 @@
 
             </form>
         </div>
-        <div class="table-responsive table-scroll1">
+        <div class="table-responsive  table-scroll1">
             <table id="projectTable"
-                   class="table project-table table-hover table-bordered align-middle table-striped mb-0">
+                   class="table project-table  table-hover table-bordered align-middle table-striped mb-0">
                 <thead class="table-success">
                     <tr>
                         <th class="text-center col-no">No.</th>
                         <th class="col-project">プロジェクト名</th>
-                        <th class="text-start col-file">ファイル名</th>
+                        <th class="text-start col-file" hidden>ファイル名</th>
                         <th class="text-center col-end">終了</th>
                         <th class="text-center col-action"></th>
                     </tr>
@@ -62,7 +62,7 @@
                             </td>
 
                             <td class="text-truncate"
-                                title="@item.FileName">
+                                title="@item.FileName" hidden>
                                 @item.FileName
                             </td>
 
@@ -94,21 +94,22 @@
                 </tbody>
             </table>
         </div>
+    </div>
       
-        <div class="d-flex justify-content-center gap-3 mt-3">
+       @*  <div class="d-flex justify-content-center gap-3 mt-3"> *@
 
-            <div class="card-footer bg-light-reg border-0 text-center">
+        <div class="card-footer bg-light border-0 text-center">
                 <a class="btn btn-outline-secondary px-4 fw-semibold" onclick="location.href='@Url.Action("Index", "ProjectList")'">
                     クリア
                 </a>
                 <button id="btnSave" type="button" onclick="location.href='@Url.Action("Index", "ImportExcel")'" class="btn btn-success  px-4 ms-3 fw-semibold ">
-                    新しい Project
+                 プロジェクトを作る
                 </button>
             </div>
 
-        </div>
+       @*  </div> *@
 
-    </div>
+ 
 </div>
 
 
