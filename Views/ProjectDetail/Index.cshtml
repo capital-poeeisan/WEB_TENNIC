@@ -82,6 +82,51 @@
                      placeholder:"スタッフを選択してください",
             closeOnSelect: false
         });
+
+
+        
+        $.fn.dataTable.ext.order['dom-remark'] = function (settings, col) {
+
+            return this.api()
+                .column(col, { order: 'index' })
+                .nodes()
+                .map(function (td) {
+                    return $('.remark', td).val()?.trim() || '';
+                });
+        };
+
+
+       
+        const remarkCollator = new Intl.Collator('ja-JP', {
+            numeric: true,
+            sensitivity: 'base'
+        });
+
+        $.fn.dataTable.ext.type.order['remark-natural-asc'] = function (a, b) {
+
+            a = (a ?? '').toString().trim();
+            b = (b ?? '').toString().trim();
+
+            
+            if (a === '' && b === '') return 0;
+            if (a === '') return 1;
+            if (b === '') return -1;
+
+            return remarkCollator.compare(a, b);
+        };
+
+        $.fn.dataTable.ext.type.order['remark-natural-desc'] = function (a, b) {
+
+            a = (a ?? '').toString().trim();
+            b = (b ?? '').toString().trim();
+
+           
+            if (a === '' && b === '') return 0;
+            if (a === '') return 1;
+            if (b === '') return -1;
+
+            return remarkCollator.compare(b, a);
+        };
             initializeDataTables();
 
             $("#ProjectCd").change(function(){
@@ -307,13 +352,16 @@
                 `);
             }
         }
-        
-            
+
+      
+              
         function initializeDataTables() {
+
             // Destroy old Progress DataTable
             if ($.fn.DataTable.isDataTable('#progressTable')) {
                 $('#progressTable').DataTable().destroy();
             }
+
             // Initialize Progress Table
             var progressTable = $('#progressTable').DataTable({
                 paging: true,
@@ -324,24 +372,55 @@
                 lengthChange: true,
                 responsive: true,
                 autoWidth: false,
+
                 layout: {
                     topStart: null
                 },
+
+                // Default: no initial sorting
                 order: [],
+
                 columnDefs: [
                     {
-                        targets: 0,   // No column
+                        // No. column
+                        targets: 0,
                         orderable: false
-                    }
+                    },
+                    {
+                        // 対応済 checkbox column
+                        targets: 3,
+                        type: 'num',
+
+                        render: function (data, type, row, meta) {
+
+                            if (type === 'sort') {
+                                var checkbox = $(meta.settings.aoData[meta.row].nTr)
+                                    .find('.active');
+
+                                return checkbox.prop('checked') ? 1 : 0;
+                            }
+
+                            return data;
+                        }
+                    },
+                   {
+                        targets: 5,
+                           orderDataType: 'dom-remark',
+            type: 'remark-natural'
+                   
+                   }
                 ],
+
                 initComplete: function () {
-                 $("#progressTable tbody .remark:first").focus();
+                    $("#progressTable tbody .remark:first").focus();
                 }
             });
+           enableColumnResize("progressTable");
             // Destroy old Summary DataTable
             if ($.fn.DataTable.isDataTable('#summaryTable')) {
                 $('#summaryTable').DataTable().destroy();
             }
+
             // Initialize Summary Table
             $('#summaryTable').DataTable({
                 paging: false,
@@ -349,26 +428,37 @@
                 ordering: false,
                 info: false,
                 autoWidth: false,
+
                 layout: {
                     topStart: null
                 }
             });
+            enableColumnResize("summaryTable");
+            addShowAllButton();
 
-          addShowAllButton();
-        progressTable.on('draw', function () {
-            addShowAllButton();});
-                    $(document)
-                    .off('click','#btnShowAll')
-                    .on('click','#btnShowAll',function(){
-                     $('#progressTable')
-                         .DataTable()
-                         .page
-                         .len(-1)
-                         .draw();
-                          $('.dt-paging-button').removeClass('current active');
-                          $('#btnShowAll').addClass("dt-paging-button page-item active");
-                        });
+            progressTable.on('draw', function () {
+                addShowAllButton();
+            });
+
+            $(document)
+                .off('click', '#btnShowAll')
+                .on('click', '#btnShowAll', function () {
+
+                    $('#progressTable')
+                        .DataTable()
+                        .page
+                        .len(-1)
+                        .draw();
+
+                    $('.dt-paging-button')
+                        .removeClass('current active');
+
+                    $('#btnShowAll')
+                        .addClass("dt-paging-button page-item active");
+                });
         }
+       
+
 
         function saveProject() {
 
@@ -738,5 +828,168 @@
                 }
             });
         }
+
+         function enableColumnResize1(tableId) {
+
+            const table = document.getElementById(tableId);
+
+            if (!table) return;
+
+            const headers = table.querySelectorAll("thead th");
+
+            headers.forEach(function (th) {
+
+              
+                if (th.querySelector(".column-resizer")) return;
+
+                const resizer = document.createElement("div");
+
+                resizer.className = "column-resizer";
+
+                th.appendChild(resizer);
+
+                let startX;
+                let startWidth;
+
+                resizer.addEventListener("mousedown", function (e) {
+
+                    e.preventDefault();
+                    e.stopPropagation();
+
+                    startX = e.pageX;
+                    startWidth = th.offsetWidth;
+
+                    document.body.classList.add("resizing");
+
+                    function mouseMove(e) {
+
+                        const newWidth =
+                            startWidth + (e.pageX - startX);
+
+                        if (newWidth >= 50) {
+                            th.style.width = newWidth + "px";
+                        }
+                    }
+
+                    function mouseUp() {
+
+                        document.removeEventListener(
+                            "mousemove",
+                            mouseMove
+                        );
+
+                        document.removeEventListener(
+                            "mouseup",
+                            mouseUp
+                        );
+
+                        document.body.classList.remove("resizing");
+                    }
+
+                    document.addEventListener(
+                        "mousemove",
+                        mouseMove
+                    );
+
+                    document.addEventListener(
+                        "mouseup",
+                        mouseUp
+                    );
+                });
+            });
+        }
+
+
+               
+        function enableColumnResize(tableId) {
+
+            const table = document.getElementById(tableId);
+
+            if (!table) return;
+
+            const headers = table.querySelectorAll("thead th");
+
+            headers.forEach(function (th) {
+
+                // Don't add duplicate resizer
+                if (th.querySelector(".column-resizer")) return;
+
+                // Make sure header can contain absolute resizer
+                th.style.position = "relative";
+
+                const resizer = document.createElement("div");
+                resizer.className = "column-resizer";
+
+                th.appendChild(resizer);
+
+                let startX = 0;
+                let startWidth = 0;
+
+                resizer.addEventListener("mousedown", function (e) {
+
+                    e.preventDefault();
+                    e.stopPropagation();
+
+                    startX = e.pageX;
+                    startWidth = th.getBoundingClientRect().width;
+
+                    document.body.classList.add("resizing");
+
+                    function mouseMove(e) {
+
+                        const newWidth =
+                            startWidth + (e.pageX - startX);
+
+                        if (newWidth >= 50) {
+
+                            th.style.width = newWidth + "px";
+                            th.style.minWidth = newWidth + "px";
+
+                            // Apply width to corresponding TDs
+                            const columnIndex =
+                                Array.from(th.parentElement.children).indexOf(th);
+
+                            table.querySelectorAll("tbody tr").forEach(function (row) {
+
+                                const td = row.children[columnIndex];
+
+                                if (td) {
+                                    td.style.width = newWidth + "px";
+                                    td.style.minWidth = newWidth + "px";
+                                }
+                            });
+                        }
+                    }
+
+                    function mouseUp() {
+
+                        document.removeEventListener(
+                            "mousemove",
+                            mouseMove
+                        );
+
+                        document.removeEventListener(
+                            "mouseup",
+                            mouseUp
+                        );
+
+                        document.body.classList.remove("resizing");
+                    }
+
+                    document.addEventListener(
+                        "mousemove",
+                        mouseMove
+                    );
+
+                    document.addEventListener(
+                        "mouseup",
+                        mouseUp
+                    );
+                });
+            });
+        }
+        
+
+
     </script>
 }

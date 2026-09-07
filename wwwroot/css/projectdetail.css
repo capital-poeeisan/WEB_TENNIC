@@ -35,12 +35,7 @@
     }
 
 
-/*.progress-scroll {
-    height: 100%;
-    overflow-y: auto;
-    overflow-x: hidden;
-}*/
-/* Fixed table header */
+
 #progressTable thead th {
     position: sticky;
     top: 0;
@@ -79,7 +74,7 @@
    
     #progressTable th:nth-child(2),
     #progressTable td:nth-child(2) {
-        width: 120px;
+        width: 100px;
         white-space: nowrap;
         overflow: hidden;
         text-overflow: ellipsis;
@@ -97,18 +92,32 @@
         width: 52px;
     }
 
-    
     #progressTable th:nth-child(5),
     #progressTable td:nth-child(5) {
-        width: 220px;
+        width: 30px;
+    }
+
+    #progressTable th:nth-child(6),
+    #progressTable td:nth-child(6) {
+        width: 200px;
         white-space: nowrap;
         overflow: hidden;
         text-overflow: ellipsis;
     }
 
-    /* =========================
-   Summary Card
-   ========================= */
+    #progressTable thead th {
+        position: sticky;
+        top: 0;
+        z-index: 10;
+        background: #d1e7dd;
+        position: sticky;
+    }
+
+    
+body.resizing {
+    cursor: col-resize !important;
+    user-select: none;
+}
 
 .summary-card {
     display: flex;
@@ -117,16 +126,13 @@
 }
 
 
-    /* When there is data, limit the card height */
+   
     .summary-card.has-data {
         /*height: calc(100vh - 400px);*/
-        max-height: calc(100vh - 350px);
+        max-height: calc(100vh - 320px);
     }
 
-    /* =========================
-   Summary Card Body
-   ========================= */
-
+   
     .summary-card .card-body {
         padding: 0 !important;
         min-height: 0;
@@ -134,9 +140,7 @@
         overflow-x: hidden;
     }
 
-    /* =========================
-   Summary Table Scroll
-   ========================= */
+   
 
     .summary-card .table-responsive {
         width: 100%;
@@ -146,54 +150,52 @@
         -webkit-overflow-scrolling: touch;
     }
 
-/* =========================
-   Summary Table
-   ========================= */
 
 #summaryTable {
-    width: 100% !important;
+    width: 330px !important;
+    min-width: 330px ;
     font-size: 0.88rem;
-    table-layout: fixed !important;
+    table-layout: fixed;
     margin: 0;
 }
 
-    #summaryTable th,
-    #summaryTable td {
-        padding: 0.2rem !important;
+    #summaryTable th,#summaryTable td {
+        padding: 0.1rem !important;
         white-space: nowrap;
         overflow: hidden;
         text-overflow: ellipsis;
     }
 
-        /* Staff name */
-        #summaryTable th:nth-child(1),
-        #summaryTable td:nth-child(1) {
-            width: 100px !important;
+      
+ #summaryTable th:nth-child(1),
+ #summaryTable td:nth-child(1) {
+            width: 91px;
         }
 
-        /* All Shop */
-        #summaryTable th:nth-child(2),
-        #summaryTable td:nth-child(2) {
-            width: 50px !important;
-            text-align: center;
+
+   
+ #summaryTable th:nth-child(2),
+ #summaryTable td:nth-child(2) {
+     width: 90px ;
+     
+ }
+   
+
+ #summaryTable th:nth-child(3),
+ #summaryTable td:nth-child(3) {
+            width: 102px;
+           
         }
 
-        /* Shop */
-        #summaryTable th:nth-child(3),
-        #summaryTable td:nth-child(3) {
-            width: 50px !important;
-            text-align: center;
-        }
 
-        /* Percentage */
-        #summaryTable th:nth-child(4),
+ #summaryTable th:nth-child(4),
         #summaryTable td:nth-child(4) {
-            width: 50px !important;
+            width: 58px;
             text-align: center;
         }
 
 
-      .col-custom{
+.col-custom{
           width:120px;
           
       }
@@ -276,8 +278,8 @@
 
 
 .pie-card {
-    height: 320px;
-    min-height: 320px;
+    height: 300px;
+    min-height: 300px;
     margin-top: 8px;
     border: 1px solid #dee2e6;
     border-radius: 10px;
@@ -307,7 +309,7 @@
    ========================= */
 
 .pie-card-body {
-    height: 315px;
+    height: 290px;
     min-height: 315px;
     padding: 3px !important;
     display: flex;
@@ -345,4 +347,29 @@
     height: 310px !important;
     max-width: 100%;
     max-height: 100%;
+}
+
+
+#progressTable th,
+#summaryTable th {
+    position: relative;
+}
+
+.column-resizer {
+    position: absolute;
+    top: 0;
+    right: -3px;
+    width: 7px;
+    height: 100%;
+    cursor: col-resize;
+    z-index: 100;
+}
+
+    .column-resizer:hover {
+        background-color: rgba(0, 0, 0, 0.15);
+    }
+
+body.resizing {
+    cursor: col-resize !important;
+    user-select: none;
 }

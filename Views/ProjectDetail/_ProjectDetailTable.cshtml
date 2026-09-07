@@ -6,7 +6,7 @@
             <div class="card-header  d-flex justify-content-between align-items-center fw-semibold ">
                 <div class="fw-semibold">
                     <i class="fas fa-table me-2"></i>
-                    Progress Input
+                    結果の入力
                 </div>
 
                 <div>
@@ -32,11 +32,12 @@
                                     得意先名
                                 </th>
                                 <th class="text-end ">
-                                    数字
+                                    目標等
                                 </th>
                                 <th class="text-center">
-                                    アクティブ
-                                </th>
+                                    対応済
+                                </th>  
+                                <th class="text-end">結果</th>
                                 <th>
                                     備考
                                 </th>
@@ -95,6 +96,7 @@
                                                @(item.Active ? "checked" : "") />
                                     </td>
 
+                                    <td> 0</td>
                                     <td>
                                         <input type="text"
                                                class="form-control form-control-sm remark"
@@ -133,25 +135,25 @@
         <div class="card shadow-sm   table-card mb-2 summary-card @(Model.SummaryList?.Any() == true ? "has-data" : "")">
             <div class="card-header fw-semibold">
                 <i class="fas fa-chart-bar me-2"></i>
-                Summary
+                結果集計
             </div>
             <div class="card-body">
                 <div class="table-responsive table-scroll">
                     <table id="summaryTable"
-                           class="table table-sm table-hover table-bordered table-striped align-middle mb-0 ">
+                           class="table table-sm table-hover table-bordered table-striped  mb-0 ">
                         <thead class="table-info">
                             <tr>
                                 <th>
                                     スタッフ名
                                 </th>
-                                <th>
-                                    All Shop
+                                <th class="text-end">
+                                    担当得意先数
                                 </th>
-                                <th>
-                                    ◯ Shop
-                                </th>
-                                <th >
-                                    ◯ ❨%❩
+                                <th class="text-end">
+                                    対応済得意先数
+                                </th >
+                                <th class="text-end">
+                                    対応率
                                 </th>
                             </tr>
                         </thead>
@@ -160,26 +162,52 @@
                             {
                                 <tr>
                                     <td>
-
                                         @item.StaffName
-
                                     </td>
-                                    <td >
 
+                                    <td class="text-end">
                                         @item.AllShop
-
                                     </td>
-                                    <td>
 
+                                    <td class="text-end">
                                         @item.Shop
-
                                     </td>
-                                    <td >
+
+                                    <td class="text-end">
                                         @(item.Percentage?.ToString("0.##") ?? "0") %
                                     </td>
                                 </tr>
                             }
+
+                            @if (Model.SummaryList?.Any() == true)
+                            {
+                                var totalAllShop = Model.SummaryList.Sum(x => x.AllShop);
+                                var totalShop = Model.SummaryList.Sum(x => x.Shop);
+                                var totalPercentage = totalAllShop > 0
+                                ? (decimal)totalShop / totalAllShop * 100
+                                : 0;
+
+                                <tr class="fw-bold table-secondary">
+                                    <td>
+                                        合　計
+                                    </td>
+
+                                    <td class="text-end">
+                                        @totalAllShop
+                                    </td>
+
+                                    <td class="text-end">
+                                        @totalShop
+                                    </td>
+
+                                    <td class="text-end">
+                                        @totalPercentage?.ToString("0.##") %
+                                    </td>
+                                </tr>
+                            }
                         </tbody>
+                        
+
                     </table>
                 </div>
             </div>
