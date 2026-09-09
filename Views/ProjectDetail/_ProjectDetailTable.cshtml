@@ -34,7 +34,7 @@
                                 <th class="text-end ">
                                     目標等
                                 </th>
-                                <th class="text-center">
+                                <th class="text-end">
                                     対応済
                                 </th>  
                                 <th class="text-end">結果</th>
@@ -72,7 +72,7 @@
                                                name="ProjectProgress[@(no - 1)].ShopName"
                                                value="@item.ShopName" />
 
-                                        <span>
+                                        <span title="@item.ShopName">
                                             @item.ShopName
                                         </span>
                                     </td>
@@ -97,14 +97,20 @@
                                     </td>
                                    
                                     <td>
-                                        <input type="number"
+                                        <input type="text"
+                                               class="form-control form-control-sm text-end resultamt"
+                                               name="ProjectProgress[@(no - 1)].ResultAmt"
+                                               value="@(item.ResultAmt.ToString("#,##0"))"
+                                               inputmode="numeric"
+                                               autocomplete="off" />
+                                       @*  <input type="number"
                                                class="form-control form-control-sm text-end resultamt"
                                                name="ProjectProgress[@(no - 1)].ResultAmt"
                                                value="@item.ResultAmt"
                                                step="1"
                                                min="0"
                                                oninput="this.value = this.value.replace(/[^0-9]/g, '')"
-                                               autocomplete="off" />
+                                               autocomplete="off" /> *@
                                     </td>
                                     <td>
                                         <input type="text"
@@ -112,6 +118,7 @@
                                                name="ProjectProgress[@(no - 1)].Remark"
                                                value="@item.Remark"
                                                maxlength="150"
+                                               title="@item.Remark"
                                                autocomplete="off" />
                                     </td>
                                 </tr>
@@ -170,7 +177,7 @@
                             @foreach (var item in Model.SummaryList)
                             {
                                 <tr>
-                                    <td>
+                                    <td title="@item.StaffName">
                                         @item.StaffName
                                     </td>
 

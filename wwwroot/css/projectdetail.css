@@ -93,7 +93,12 @@
         overflow: hidden;
         text-overflow: ellipsis;
     }
-
+    #progressTable td:nth-child(2) span {
+            display: block;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
     
     #progressTable th:nth-child(3),
     #progressTable td:nth-child(3) {
@@ -108,7 +113,7 @@
 
     #progressTable th:nth-child(5),
     #progressTable td:nth-child(5) {
-        width: 30px;
+        width: 40px;
     }
 
     #progressTable th:nth-child(6),

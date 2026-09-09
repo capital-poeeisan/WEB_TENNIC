@@ -1,13 +1,14 @@
 ﻿@model WEB_TENNIC.Models.ViewModels.ProjectDetailViewModel
 <!-- Page Heading -->
-<div class="d-sm-flex align-items-center justify-content-between mb-3 ">
+<div class="d-sm-flex align-items-center justify-content-between mb-2">
 
-    <h3 class="mb-0 fw-bold textcolor-custom">
-        <i class="fas fa-chart-line me-2"></i>
+    <h3 class=" fw-bold textcolor-custom">
+        <i class="fas fa-chart-line"></i>
         結果を登録する
     </h3>
 </div>
-<!-- Search Card -->
+
+<div class="card shadow-sm p-2 pt-3">
 
 <form id="detailform" asp-action="Index" method="post">
     <!-- Project -->
@@ -63,8 +64,9 @@
     </div>
 
 </form>
-<div id="tableArea">
+    <div id="tableArea">
     <partial name="_ProjectDetailTable" />
+</div> 
 </div>
 @section Scripts {
     <script>
@@ -82,14 +84,23 @@
                      placeholder:"スタッフを選択してください",
             closeOnSelect: false
         });
-
-     $(document).on('keydown', '#progressTable input', function (e) {
+                       $(document).on('keydown', '#progressTable input', function (e) {
 
             if (e.key !== 'Enter') {
                 return;
             }
 
             e.preventDefault();
+
+            // Format ResultAmt when pressing Enter
+            if ($(this).hasClass('resultamt')) {
+
+                let value = this.value.replace(/,/g, '');
+
+                if (value) {
+                    this.value = Number(value).toLocaleString('en-US');
+                }
+            }
 
             const editableInputs = $('#progressTable')
                 .find('input.active, input.resultamt, input.remark')
@@ -104,15 +115,40 @@
             const nextInput = editableInputs.eq(currentIndex + 1);
 
             if (nextInput.length) {
-
                 nextInput.focus();
-
-                // Select existing value for number/text input
-                if (nextInput.is('input[type="text"], input[type="number"]')) {
-                    nextInput[0].select();
-                }
+                nextInput[0].select();
             }
         });
+     // $(document).on('keydown', '#progressTable input', function (e) {
+
+     //        if (e.key !== 'Enter') {
+     //            return;
+     //        }
+
+     //        e.preventDefault();
+
+     //        const editableInputs = $('#progressTable')
+     //            .find('input.active, input.resultamt, input.remark')
+     //            .filter(':visible:not(:disabled)');
+
+     //        const currentIndex = editableInputs.index(this);
+
+     //        if (currentIndex === -1) {
+     //            return;
+     //        }
+
+     //        const nextInput = editableInputs.eq(currentIndex + 1);
+
+     //        if (nextInput.length) {
+
+     //            nextInput.focus();
+
+     //            // Select existing value for number/text input
+     //            if (nextInput.is('input[type="text"], input[type="number"]')) {
+     //                nextInput[0].select();
+     //            }
+     //        }
+     //    });
         
      $.fn.dataTable.ext.order['dom-remark'] = function (settings, col) {
 
@@ -431,23 +467,27 @@
                             return data;
                         }
                     },
-                 {
-               
-                targets: 4,
-                type: 'num',
+                         {
+            targets: 4,
+            type: 'num',
 
-                render: function (data, type, row, meta) {
-                    if (type === 'sort') {
-                        var value = $(meta.settings.aoData[meta.row].nTr)
-                            .find('.resultamt')
-                            .val();
+            render: function (data, type, row, meta) {
 
-                        return parseInt(value, 10) || 0;
-                    }
+                if (type === 'sort') {
 
-                    return data;
+                    var value = $(meta.settings.aoData[meta.row].nTr)
+                        .find('.resultamt')
+                        .val();
+
+                    return parseInt(
+                        (value || '').replace(/,/g, ''),
+                        10
+                    ) || 0;
                 }
-            },
+
+                return data;
+            }
+        },
                    {
                         targets: 5,
                            orderDataType: 'dom-remark',
@@ -527,7 +567,7 @@
                 ShopName: row.find(".shopName").val(),
                 Amount: row.find(".amount").val(),
                 Active: row.find(".active").prop("checked"),
-                        ResultAmt:row.find(".resultamt").val()  || 0,
+                ResultAmt:(row.find(".resultamt").val() || "0").replace(/,/g, ""),
                 Remark: row.find(".remark").val()
             });
         });
