@@ -95,8 +95,17 @@
                                                value="true"
                                                @(item.Active ? "checked" : "") />
                                     </td>
-
-                                    <td> 0</td>
+                                   
+                                    <td>
+                                        <input type="number"
+                                               class="form-control form-control-sm text-end resultamt"
+                                               name="ProjectProgress[@(no - 1)].ResultAmt"
+                                               value="@item.ResultAmt"
+                                               step="1"
+                                               min="0"
+                                               oninput="this.value = this.value.replace(/[^0-9]/g, '')"
+                                               autocomplete="off" />
+                                    </td>
                                     <td>
                                         <input type="text"
                                                class="form-control form-control-sm remark"
@@ -193,11 +202,11 @@
                                     </td>
 
                                     <td class="text-end">
-                                        @totalAllShop
+                                        @totalAllShop?.ToString("#,##0")
                                     </td>
 
                                     <td class="text-end">
-                                        @totalShop
+                                        @totalShop?.ToString("#,##0")
                                     </td>
 
                                     <td class="text-end">

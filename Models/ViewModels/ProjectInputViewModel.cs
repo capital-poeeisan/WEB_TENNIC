@@ -7,7 +7,7 @@
         public string? StaffCD { get; set; }
 
         public bool Active { get; set; }
-
+        public int ResultAmt { get; set; }
         public string? Remark { get; set; }
 
 

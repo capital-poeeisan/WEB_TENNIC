@@ -33,25 +33,39 @@
         padding: 0;
         overflow: hidden;
     }
+    .progress-card .table-scroll {
+        height: 100%;
+        max-height: 100%;
+        overflow-y: auto !important;
+        overflow-x: auto !important;
+        position: relative;
+    }
 
 
 
-#progressTable thead th {
-    position: sticky;
-    top: 0;
-    z-index: 10;
-    background: #d1e7dd;
-}
 #progressTable {
     width: 100% !important;
     min-width: 610px;
     font-size: 0.88rem;
-    table-layout:fixed;
+    table-layout: fixed;
+    margin: 0 !important;
+    border-collapse: separate;
+    border-spacing: 0;
 }
 
-    #progressTable th {
-        white-space: nowrap;
+    #progressTable thead {
+        position: sticky;
+        top: 0;
+        z-index: 100;
     }
+
+        #progressTable thead th {
+            position: sticky !important;
+            top: 0 !important;
+            z-index: 101 !important;
+            background: #d1e7dd !important;
+            box-shadow: 0 1px 0 #adb5bd;
+        }
     #progressTable td {
         padding-left: 0.1rem;
         padding-right: 0.1rem;
@@ -105,13 +119,7 @@
         text-overflow: ellipsis;
     }
 
-    #progressTable thead th {
-        position: sticky;
-        top: 0;
-        z-index: 10;
-        background: #d1e7dd;
-        position: sticky;
-    }
+    
 
     
 body.resizing {
@@ -152,7 +160,7 @@ body.resizing {
 
 
 #summaryTable {
-    width: 330px !important;
+    width: 100% !important;
     min-width: 330px ;
     font-size: 0.88rem;
     table-layout: fixed;
@@ -280,7 +288,7 @@ body.resizing {
 .pie-card {
     height: 300px;
     min-height: 300px;
-    margin-top: 8px;
+    margin-top: 3px;
     border: 1px solid #dee2e6;
     border-radius: 10px;
     overflow: hidden;
@@ -288,9 +296,6 @@ body.resizing {
 }
 
 
-/* =========================
-   Header
-   ========================= */
 
 .pie-card .card-header {
     height: 45px;
@@ -304,13 +309,11 @@ body.resizing {
 }
 
 
-/* =========================
-   Body
-   ========================= */
+
 
 .pie-card-body {
-    height: 290px;
-    min-height: 315px;
+    height: 295px;
+    min-height: 295px;
     padding: 3px !important;
     display: flex;
     align-items: center;
@@ -326,7 +329,7 @@ body.resizing {
 .chart-container {
     position: relative;
     width: 310px;
-    height: 310px;
+    height: 290px;
     max-width: 100%;
     max-height: 100%;
     margin: auto;
@@ -344,7 +347,7 @@ body.resizing {
 #staffPieChart {
     display: block;
     width: 310px !important;
-    height: 310px !important;
+    height: 290px !important;
     max-width: 100%;
     max-height: 100%;
 }
@@ -372,4 +375,15 @@ body.resizing {
 body.resizing {
     cursor: col-resize !important;
     user-select: none;
+}
+
+
+.resultamt::-webkit-outer-spin-button,
+.resultamt::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
+.resultamt {
+    -moz-appearance: textfield;
 }

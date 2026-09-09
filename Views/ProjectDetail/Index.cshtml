@@ -69,23 +69,52 @@
 @section Scripts {
     <script>
         let isInitialLoad= true;
-        $(document).ready(function(){
+      $(document).ready(function(){
 
-            $('#ProjectCd').select2({
+     $('#ProjectCd').select2({
             width: '100%',
              placeholder:"Select Project",
 
         });
 
-            $('#StaffCD').select2({
+     $('#StaffCD').select2({
             width: '100%',
                      placeholder:"スタッフを選択してください",
             closeOnSelect: false
         });
 
+     $(document).on('keydown', '#progressTable input', function (e) {
 
+            if (e.key !== 'Enter') {
+                return;
+            }
+
+            e.preventDefault();
+
+            const editableInputs = $('#progressTable')
+                .find('input.active, input.resultamt, input.remark')
+                .filter(':visible:not(:disabled)');
+
+            const currentIndex = editableInputs.index(this);
+
+            if (currentIndex === -1) {
+                return;
+            }
+
+            const nextInput = editableInputs.eq(currentIndex + 1);
+
+            if (nextInput.length) {
+
+                nextInput.focus();
+
+                // Select existing value for number/text input
+                if (nextInput.is('input[type="text"], input[type="number"]')) {
+                    nextInput[0].select();
+                }
+            }
+        });
         
-        $.fn.dataTable.ext.order['dom-remark'] = function (settings, col) {
+     $.fn.dataTable.ext.order['dom-remark'] = function (settings, col) {
 
             return this.api()
                 .column(col, { order: 'index' })
@@ -94,10 +123,8 @@
                     return $('.remark', td).val()?.trim() || '';
                 });
         };
-
-
        
-        const remarkCollator = new Intl.Collator('ja-JP', {
+      const remarkCollator = new Intl.Collator('ja-JP', {
             numeric: true,
             sensitivity: 'base'
         });
@@ -126,10 +153,11 @@
             if (b === '') return -1;
 
             return remarkCollator.compare(b, a);
-        };
-            initializeDataTables();
+        }; 
 
-            $("#ProjectCd").change(function(){
+        initializeDataTables();
+
+        $("#ProjectCd").change(function(){
                 var projectCd=$(this).val();
                  var staff = $("#StaffCD");
                   staff.val(null).trigger("change");
@@ -169,7 +197,7 @@
                 });
             }); 
 
-            $("#btnShow").click(function(){ 
+         $("#btnShow").click(function(){ 
 
                  var projectCd = $("#ProjectCd").val();
 
@@ -292,21 +320,23 @@
                 }
             });
         });
+               
+        
+    
+        //     $(document).on("keydown", ".remark", function (e) {
+        //     if (e.key === "Enter") {
+        //         e.preventDefault();
 
-            $(document).on("keydown", ".remark", function (e) {
-            if (e.key === "Enter") {
-                e.preventDefault();
+        //         var remarks = $("#progressTable .remark");
+        //         var index = remarks.index(this);
 
-                var remarks = $("#progressTable .remark");
-                var index = remarks.index(this);
-
-                if (index < remarks.length - 1) {
-                    remarks.eq(index + 1).focus().select();
-                } else {
-                    $("#btnSave").focus();
-                }
-            }
-        });
+        //         if (index < remarks.length - 1) {
+        //             remarks.eq(index + 1).focus().select();
+        //         } else {
+        //             $("#btnSave").focus();
+        //         }
+        //     }
+        // });
 
           $(document).on("change", "#EndFlag", function () {
 
@@ -352,8 +382,6 @@
                 `);
             }
         }
-
-      
               
         function initializeDataTables() {
 
@@ -370,7 +398,7 @@
                 info: true,
                 pageLength: 15,
                 lengthChange: true,
-                responsive: true,
+                responsive: false,
                 autoWidth: false,
 
                 layout: {
@@ -403,6 +431,23 @@
                             return data;
                         }
                     },
+                 {
+               
+                targets: 4,
+                type: 'num',
+
+                render: function (data, type, row, meta) {
+                    if (type === 'sort') {
+                        var value = $(meta.settings.aoData[meta.row].nTr)
+                            .find('.resultamt')
+                            .val();
+
+                        return parseInt(value, 10) || 0;
+                    }
+
+                    return data;
+                }
+            },
                    {
                         targets: 5,
                            orderDataType: 'dom-remark',
@@ -412,10 +457,14 @@
                 ],
 
                 initComplete: function () {
-                    $("#progressTable tbody .remark:first").focus();
+                            $("#progressTable tbody .resultamt:first").focus();
                 }
             });
+
+
            enableColumnResize("progressTable");
+
+
             // Destroy old Summary DataTable
             if ($.fn.DataTable.isDataTable('#summaryTable')) {
                 $('#summaryTable').DataTable().destroy();
@@ -458,10 +507,8 @@
                 });
         }
        
-
-
         function saveProject() {
-
+                  
             var data={
                     ProjectCd:$("#ProjectCd").val(),
                     StaffCD:$("#StaffCD").val(),
@@ -473,16 +520,18 @@
 
         table.rows().every(function () {
             var row = $(this.node());
-
+                    
             data.ProjectProgress.push({
                 CustomerCD: row.find(".customerCD").val(),
                 StaffCD: row.find(".staffCD").val(),
                 ShopName: row.find(".shopName").val(),
                 Amount: row.find(".amount").val(),
                 Active: row.find(".active").prop("checked"),
+                        ResultAmt:row.find(".resultamt").val()  || 0,
                 Remark: row.find(".remark").val()
             });
         });
+                      
             $.ajax({
                 url: '@Url.Action("Save", "ProjectDetail")',
                 type: "POST",
@@ -507,7 +556,7 @@
 
                 },
                 error: function () {
-
+                           
                     Swal.fire({
                         title: "エラー",
                         text: "登録に失敗しました。",
@@ -524,7 +573,7 @@
             });
         }
 
-         function setProgressReadonly() {
+       function setProgressReadonly() {
 
             var isLockedProject = $("#ProjectCdLock").val() === "true";
             var originalEndFlag = $("#OriginalEndFlag").val() === "true";
@@ -577,6 +626,10 @@
                 .find("td:eq(0)")
                 .text()
                 .trim();
+
+          if (staffName === "合　計" || staffName === "合計") {
+                return;
+            }
 
             let percentage = parseFloat(
                 $(this)
@@ -829,7 +882,7 @@
             });
         }
 
-         function enableColumnResize1(tableId) {
+       function enableColumnResize1(tableId) {
 
             const table = document.getElementById(tableId);
 
@@ -899,9 +952,7 @@
             });
         }
 
-
-               
-        function enableColumnResize(tableId) {
+       function enableColumnResize(tableId) {
 
             const table = document.getElementById(tableId);
 
@@ -990,6 +1041,5 @@
         }
         
 
-
-    </script>
+       </script>
 }
