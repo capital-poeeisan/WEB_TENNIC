@@ -119,36 +119,7 @@
                 nextInput[0].select();
             }
         });
-     // $(document).on('keydown', '#progressTable input', function (e) {
-
-     //        if (e.key !== 'Enter') {
-     //            return;
-     //        }
-
-     //        e.preventDefault();
-
-     //        const editableInputs = $('#progressTable')
-     //            .find('input.active, input.resultamt, input.remark')
-     //            .filter(':visible:not(:disabled)');
-
-     //        const currentIndex = editableInputs.index(this);
-
-     //        if (currentIndex === -1) {
-     //            return;
-     //        }
-
-     //        const nextInput = editableInputs.eq(currentIndex + 1);
-
-     //        if (nextInput.length) {
-
-     //            nextInput.focus();
-
-     //            // Select existing value for number/text input
-     //            if (nextInput.is('input[type="text"], input[type="number"]')) {
-     //                nextInput[0].select();
-     //            }
-     //        }
-     //    });
+     
         
      $.fn.dataTable.ext.order['dom-remark'] = function (settings, col) {
 
@@ -992,6 +963,7 @@
             });
         }
 
+
        function enableColumnResize(tableId) {
 
             const table = document.getElementById(tableId);
@@ -1002,10 +974,10 @@
 
             headers.forEach(function (th) {
 
-                // Don't add duplicate resizer
+                
                 if (th.querySelector(".column-resizer")) return;
 
-                // Make sure header can contain absolute resizer
+                
                 th.style.position = "relative";
 
                 const resizer = document.createElement("div");
@@ -1015,6 +987,8 @@
 
                 let startX = 0;
                 let startWidth = 0;
+                let currentWidth = 0;
+                let animationFrame = null;
 
                 resizer.addEventListener("mousedown", function (e) {
 
@@ -1028,58 +1002,46 @@
 
                     function mouseMove(e) {
 
-                        const newWidth =
-                            startWidth + (e.pageX - startX);
+                        const diff = e.pageX - startX;
 
-                        if (newWidth >= 50) {
+                        let newWidth = startWidth + diff;
 
-                            th.style.width = newWidth + "px";
-                            th.style.minWidth = newWidth + "px";
+                        
+                        newWidth = Math.max(50, newWidth);
 
-                            // Apply width to corresponding TDs
-                            const columnIndex =
-                                Array.from(th.parentElement.children).indexOf(th);
+                        currentWidth = newWidth;
 
-                            table.querySelectorAll("tbody tr").forEach(function (row) {
+                       
+                        if (!animationFrame) {
 
-                                const td = row.children[columnIndex];
+                            animationFrame = requestAnimationFrame(function () {
 
-                                if (td) {
-                                    td.style.width = newWidth + "px";
-                                    td.style.minWidth = newWidth + "px";
-                                }
+                                th.style.width = currentWidth + "px";
+                                th.style.minWidth = currentWidth + "px";
+
+                                animationFrame = null;
                             });
                         }
                     }
 
                     function mouseUp() {
 
-                        document.removeEventListener(
-                            "mousemove",
-                            mouseMove
-                        );
+                        if (animationFrame) {
+                            cancelAnimationFrame(animationFrame);
+                            animationFrame = null;
+                        }
 
-                        document.removeEventListener(
-                            "mouseup",
-                            mouseUp
-                        );
+                        document.removeEventListener("mousemove", mouseMove);
+                        document.removeEventListener("mouseup", mouseUp);
 
                         document.body.classList.remove("resizing");
                     }
 
-                    document.addEventListener(
-                        "mousemove",
-                        mouseMove
-                    );
-
-                    document.addEventListener(
-                        "mouseup",
-                        mouseUp
-                    );
+                    document.addEventListener("mousemove", mouseMove);
+                    document.addEventListener("mouseup", mouseUp);
                 });
             });
         }
-        
-
+      
        </script>
 }

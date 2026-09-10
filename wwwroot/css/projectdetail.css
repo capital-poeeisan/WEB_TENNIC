@@ -127,10 +127,7 @@
     
 
     
-body.resizing {
-    cursor: col-resize !important;
-    user-select: none;
-}
+
 
 .summary-card {
     display: flex;
@@ -371,6 +368,7 @@ body.resizing {
     height: 100%;
     cursor: col-resize;
     z-index: 100;
+    touch-action: none;
 }
 
     .column-resizer:hover {
@@ -379,9 +377,8 @@ body.resizing {
 
 body.resizing {
     cursor: col-resize !important;
-    user-select: none;
+    user-select: none !important;
 }
-
 
 .resultamt::-webkit-outer-spin-button,
 .resultamt::-webkit-inner-spin-button {
