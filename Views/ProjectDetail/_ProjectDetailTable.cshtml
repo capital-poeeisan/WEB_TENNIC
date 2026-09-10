@@ -100,18 +100,12 @@
                                         <input type="text"
                                                class="form-control form-control-sm text-end resultamt"
                                                name="ProjectProgress[@(no - 1)].ResultAmt"
-                                               value="@(item.ResultAmt.ToString("#,##0"))"
+                                               value="@(item.ResultAmt.ToString("N0"))"
                                                inputmode="numeric"
                                                autocomplete="off" 
-                                               maxlength="5"/>
-                                       @*  <input type="number"
-                                               class="form-control form-control-sm text-end resultamt"
-                                               name="ProjectProgress[@(no - 1)].ResultAmt"
-                                               value="@item.ResultAmt"
-                                               step="1"
-                                               min="0"
-                                               oninput="this.value = this.value.replace(/[^0-9]/g, '')"
-                                               autocomplete="off" /> *@
+                                               maxlength="5"
+                                               oninput="this.value = this.value.replace(/[^0-9]/g, '')" />
+                                      
                                     </td>
                                     <td>
                                         <input type="text"
