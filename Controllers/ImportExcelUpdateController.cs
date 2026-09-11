@@ -63,6 +63,7 @@ namespace WEB_TENNIC.Controllers
 
             try
             {
+                model.ProjectName = model.ProjectName.Trim();
                 // Validation
                 var validationResult =
                     await ValidateUpdateAsync(model);
