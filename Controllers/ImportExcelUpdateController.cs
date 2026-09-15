@@ -223,7 +223,7 @@ namespace WEB_TENNIC.Controllers
                             success = false,
                             type = "error",
                             message =
-                                "Excelファイルにデータがありません"
+                                  $"'{model.fileName.FileName}'Excelファイルにデータがありません。"
                         });
                     }
 
