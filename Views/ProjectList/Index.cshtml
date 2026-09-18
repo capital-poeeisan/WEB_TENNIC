@@ -12,9 +12,10 @@
 
 <div class="card shadow-sm table-card">
     <div class="card-body progress-card card-body-padding">
-       
+
         <div class="d-flex align-items-center gap-3 mt-3 card-body-padding">
-            <form asp-action="Index" method="get" id="searchForm" class="form-check F_check me-3">
+            
+            <div id="searchForm" class="form-check F_check me-3">
                 <input type="checkbox"
                        class="form-check-input border-2 border-dark"
                        name="EndFlag"
@@ -24,18 +25,18 @@
                        @(ViewBag.EndFlag == 1 ? "checked" : "") />
 
                 <label class="form-check-label fw-semibold align-items-center"
-                        id="chk_label1" for="chkEndFlag">
+                       id="chk_label1" for="chkEndFlag">
                     全て
                 </label>
 
                 &nbsp;&nbsp;
                 <button class="btn btn-primary  px-4 ms-3 shadow-sm px-4"
-                        id="btnShow "
-                        type="submit">
+                        id="btnShow " onclick="ShowALL()"
+                >
                     表示
-                </button>               
+                </button>
 
-            </form>
+            </div>
         </div>
         <div class="table-responsive  table-scroll1">
             <table id="projectTable"
@@ -51,65 +52,32 @@
                 </thead>
 
                 <tbody>
-                    @foreach (var item in Model)
-                    {
-                        <tr>
-                            <td class="text-center">@item.No</td>
-
-                            <td class="text-truncate"
-                                title="@item.ProjectName">
-                                @item.ProjectName
-                            </td>
-
-                            <td class="text-truncate"
-                                title="@item.FileName" hidden>
-                                @item.FileName
-                            </td>
-
-                            <td class="text-center">@item.EndFlag</td>
-
-                            <td class="text-center text-nowrap">
-                                <a class="btn btn-outline-success btn-sm me-2 fw-semibold"
-                                   asp-controller="ProjectDetail"
-                                   asp-action="Index"
-                                   asp-route-projectCd="@item.ProjectCD">
-                                    明細
-                                </a>
-                                <a class="btn btn-outline-primary btn-sm me-2 fw-semibold"
-                                   onclick="location.href='@Url.Action("Index", "ImportExcelUpdate", new { projectCd = item.ProjectCD })'">
-                                    修正
-                                </a>
-                                <a class="btn btn-outline-danger btn-sm me-2 fw-bold btnDeletePrj"  data-projectcd="@item.ProjectCD">
-                                    削除
-                                </a>
-                                <a class="btn btn-outline-primary  btn-sm me-2 btnDownloadPrj "
-                                   data-id="@item.ProjectCD" data-filename="@item.FileName" >
-                                   <i class="fas fa-download"></i>
-                                </a>
-                              
-                            </td>
-                        
-                        </tr>
-                    }
+                    <tr>
+                        <td class="text-center"></td>
+                        <td class="text-truncate"></td>
+                        <td class="text-truncate" hidden></td>
+                        <td class="text-center"></td>
+                        <td class="text-center text-nowrap"></td>
+                    </tr>
                 </tbody>
+
             </table>
         </div>
     </div>
-      
-       @*  <div class="d-flex justify-content-center gap-3 mt-3"> *@
 
-        <div class="card-footer bg-light border-0 text-center">
-                <a class="btn btn-outline-secondary px-4 fw-semibold" onclick="location.href='@Url.Action("Index", "ProjectList")'">
-                    クリア
-                </a>
-                <button id="btnSave" type="button" onclick="location.href='@Url.Action("Index", "ImportExcel")'" class="btn btn-success  px-4 ms-3 fw-semibold ">
-                 プロジェクトを作る
-                </button>
-            </div>
+  
+    <div class="card-footer bg-light border-0 text-center">
+        <a class="btn btn-outline-secondary px-4 fw-semibold" onclick="ReloadTable()">
+            クリア
+        </a>
+        <button id="btnSave" type="button" onclick="location.href='@Url.Action("Index", "ImportExcel")'" class="btn btn-success  px-4 ms-3 fw-semibold ">
+            プロジェクトを作る
+        </button>
+    </div>
 
-       @*  </div> *@
+   
 
- 
+
 </div>
 
 
@@ -117,41 +85,61 @@
 @section Scripts {
     <script>
 
-          $(document).ready(function () {
+      $(document).ready(function () {   
+               
+      var table = $('#projectTable').DataTable({
+                ajax: {
+                url: '@Url.Action("GetProjects", "ProjectList")',
+                type: 'GET',
+                data: function (d) {
+                d.EndFlag = $('#chkEndFlag').is(':checked') ? 1 : 0;
+                }
+                },
 
-                var table = $('#projectTable').DataTable({
-                    paging: true,
-                    searching: true,
-                    ordering: true,
-                    info: true,
-                    lengthChange: false,
-                    // lengthChange: true,
-                    // lengthMenu:[10,20,30,50,-1],
-                    responsive: true,
-                    autoWidth: false,
-                    order: [],
-                     columnDefs: [
-                    {
-                        targets: 4,   // No column
-                        orderable: false
-                    }
-                ],
-                     pageLength: 10
-                     ,
-                     /*  scrollY: '60vh',  */  // Vertical Height
-                    scrollCollapse: true
-                });
+                paging: true,
+                searching: true,
+                ordering: true,
+                info: true,
+                lengthChange: false,
+                responsive: true,
+                autoWidth: false,
+                
+                order: [],
+                pageLength: 10,
+                scrollCollapse: true,
+                columnDefs: [ 
+                    { targets: 0, width: '8%', className: 'text-center' ,autoWidth:true}, 
+                    { targets: 1, width: '42%' }, { targets: 2, visible: false }, 
+                    { targets: 3, width: '10%', className: 'text-center' }, 
+                    { targets: 4, width: '40%', className: 'text-center text-nowrap', orderable: false } 
+                ], 
+                columns: [ 
+                    { data: 'no' }, 
+                    { data: 'projectName'}, 
+                    { data: 'fileName'}, 
+                    { data: 'endFlag'}, 
+                    { data: null, orderable: false, render: function (data, type, row) 
+                        { return ` <a class="btn btn-outline-success btn-sm me-2 fw-semibold" href="/ProjectDetail/Index?projectCd=${row.projectCD}"> 明細 </a> 
+                        <a class="btn btn-outline-primary btn-sm me-2 fw-semibold" href="/ImportExcelUpdate/Index?projectCd=${row.projectCD}"> 修正 </a> 
+                        <a class="btn btn-outline-danger btn-sm me-2 fw-bold btnDeletePrj" data-projectcd="${row.projectCD}"> 削除 </a> 
+                        <a class="btn btn-outline-primary btn-sm me-2 btnDownloadPrj" data-id="${row.projectCD}" data-filename="${row.fileName}"> <i class="fas fa-download"></i> </a> `; } 
+                    } ],
+                initComplete: function () 
+                { 
+                    addAllButton(); 
+                }
+                
+                  
+        });
 
-                addAllButton();
-
-                table.on('draw', function () {
-                    addAllButton();
-                });
-
+              addAllButton();
+              table.on('draw.dt', function () {
+                        addAllButton();
+                    });
 
                 $(document).on('click', '#btnShowAll', function () {
                         table.page.len(-1).draw();
-                         $('.dt-paging-button').removeClass('current active');                         
+                         $('.dt-paging-button').removeClass('current active');
                          $('#btnShowAll').addClass("dt-paging-button page-item active");
                 });
 
@@ -176,7 +164,7 @@
                 $(document).on("click", ".btnDeletePrj", function () {
 
                    var projectCD = $(this).data("projectcd");
-                  
+
                   var message = "本当に削除しますか？";
                 Swal.fire({
                  title: "確認？",
@@ -198,7 +186,7 @@
                 if (result.isConfirmed) {
                     $.ajax({
                 url: '@Url.Action("DeleteProject", "ProjectList")/' + projectCD,
-                type: "POST",   
+                type: "POST",
                 contentType: "application/json",
                 success: function () {
 
@@ -233,7 +221,7 @@
                     }).then(() => {
                           location.reload();
                               });
-　　　          }　
+             }　
                 });
            }
             });
@@ -241,7 +229,7 @@
 
         });
 
-               
+
                 $(document).on("click", ".btnDownloadPrj", async function ()
                 {
 
@@ -249,8 +237,8 @@
                     var filename = $(this).data("filename");
 
                     try {
-                        
-                        const result = await 
+
+                        const result = await
                         Swal.fire({
                              title: "確認？",
                              showCancelButton: true,
@@ -267,7 +255,7 @@
                                },
                             buttonsStyling: false
                         });
-                        
+
                         if (!result.isConfirmed) {
                             return;
                         }
@@ -283,8 +271,8 @@
                         //             }
                         //         }
                         //     ]
-                        // }); 
-                        
+                        // });
+
                         $.ajax({
                             url: '@Url.Action("DownloadProject", "ProjectList")',
                             type: "POST",
@@ -355,7 +343,7 @@
                             }
                         });
 
-                    } catch (err) {                
+                    } catch (err) {
                         if (err.name === "AbortError") {
                             return;
                         }
@@ -364,16 +352,15 @@
 
 
 
-                });             
+                });
 
-             
+                 
+
+
            });
 
-
-
-
           function addAllButton() {
-               var table = $('#projectTable').DataTable();
+            var table = $('#projectTable').DataTable();
             var rowCount = table.rows().count();
 
             // No data
@@ -401,6 +388,27 @@
                         );
                     }
                 }
+
+         function ReloadTable() {
+
+            $('#chkEndFlag').prop('checked', false);
+            var table = $('#projectTable').DataTable();            
+            table.search('').draw();
+            table.page.len(10);
+            table.ajax.reload(function () 
+            {
+                  table.page(0).draw('page');
+
+            }, true);
+
+
+        }
+        function ShowALL(){
+                
+             var table = $('#projectTable').DataTable();
+             table.ajax.reload(null, true);
+
+        }
 
     </script>
 }

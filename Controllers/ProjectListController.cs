@@ -154,7 +154,21 @@ namespace WEB_TENNIC.Controllers
 
         }
 
-     
+        [HttpGet]
+        public async Task<IActionResult> GetProjects(int EndFlag)
+        {
+            try
+            {
+                var data = await _service.GetProjectList(EndFlag);
+
+                return Json(new { data = data }); // DataTable JSON format
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex);
+                return Json(new { data = new List<ProjectViewModel>() });
+            }
+        }
 
     }
 }
