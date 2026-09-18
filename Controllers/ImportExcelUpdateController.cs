@@ -63,6 +63,7 @@ namespace WEB_TENNIC.Controllers
 
             try
             {
+                model.ProjectName = model.ProjectName.Trim();
                 // Validation
                 var validationResult =
                     await ValidateUpdateAsync(model);
@@ -222,7 +223,7 @@ namespace WEB_TENNIC.Controllers
                             success = false,
                             type = "error",
                             message =
-                                "Excelファイルにデータがありません。"
+                                  "Excelファイルにデータがありません。"
                         });
                     }
 
