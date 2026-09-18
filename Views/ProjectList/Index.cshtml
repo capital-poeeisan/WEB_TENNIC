@@ -2,12 +2,10 @@
 
 <!-- Page Heading -->
 <div class="d-sm-flex align-items-center justify-content-between mb-4">
-
     <h3 class="mb-0 text-primary fw-semibold" id="pg-header">
         <i class="fas fa-project-diagram me-2"></i>
         プロジェクト一覧
     </h3>
-
 </div>
 
 <div class="card shadow-sm table-card">
@@ -63,9 +61,7 @@
 
             </table>
         </div>
-    </div>
-
-  
+    </div>  
     <div class="card-footer bg-light border-0 text-center">
         <a class="btn btn-outline-secondary px-4 fw-semibold" onclick="ReloadTable()">
             クリア
@@ -73,18 +69,11 @@
         <button id="btnSave" type="button" onclick="location.href='@Url.Action("Index", "ImportExcel")'" class="btn btn-success  px-4 ms-3 fw-semibold ">
             プロジェクトを作る
         </button>
-    </div>
-
-   
-
-
+    </div>   
 </div>
-
-
 
 @section Scripts {
     <script>
-
       $(document).ready(function () {   
                
       var table = $('#projectTable').DataTable({
@@ -358,8 +347,7 @@
 
 
            });
-
-          function addAllButton() {
+       function addAllButton() {
             var table = $('#projectTable').DataTable();
             var rowCount = table.rows().count();
 
@@ -388,8 +376,7 @@
                         );
                     }
                 }
-
-         function ReloadTable() {
+       function ReloadTable() {
 
             $('#chkEndFlag').prop('checked', false);
             var table = $('#projectTable').DataTable();            
@@ -403,13 +390,12 @@
 
 
         }
-        function ShowALL(){
+       function ShowALL(){
                 
              var table = $('#projectTable').DataTable();
              table.ajax.reload(null, true);
 
         }
-
     </script>
 }
 

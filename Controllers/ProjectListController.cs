@@ -9,10 +9,10 @@ using WEB_TENNIC.Service.Project;
 namespace WEB_TENNIC.Controllers
 {
     public class ProjectListController : Controller
-    {
-        
+    {       
         private readonly IProjectService _service;
         private readonly AppDbContext _context;
+
         public ProjectListController(IProjectService service, AppDbContext context)
         {
             _service = service;
