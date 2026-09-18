@@ -5,13 +5,13 @@
 /*Table CArd*/
 
 .table-card .card-body {
-    padding: 0;  
-    margin:0;
+    padding: 0;
+    margin: 0;
 }
 
 .table-card table {
-    margin: 0;  
-    padding:0;
+    margin: 0;
+    padding: 0;
 }
 
 
@@ -21,18 +21,20 @@
     flex-direction: column;
     height: auto;
 }
-.progress-card.has-data {
-       max-height: calc(100vh - 351px);
-}
+
+    .progress-card.has-data {
+        max-height: calc(100vh - 351px);
+    }
 
 
     /* Card body */
-.progress-card .card-body {
+    .progress-card .card-body {
         flex: 1;
         min-height: 0;
         padding: 0;
         overflow: hidden;
     }
+
     .progress-card .table-scroll {
         height: 100%;
         max-height: 100%;
@@ -66,6 +68,7 @@
             background: #d1e7dd !important;
             box-shadow: 0 1px 0 #adb5bd;
         }
+
     #progressTable td {
         padding-left: 0.1rem;
         padding-right: 0.1rem;
@@ -82,51 +85,59 @@
     /* No */
     #progressTable th:nth-child(1),
     #progressTable td:nth-child(1) {
-        width: 20px;
+        width: 35px;
+        min-width: 35px;
+        max-width: 35px;
     }
 
-   
+
     #progressTable th:nth-child(2),
     #progressTable td:nth-child(2) {
-        width: 100px;
+        width: 150px;
+        min-width: 120px;
         white-space: nowrap;
         overflow: hidden;
         text-overflow: ellipsis;
     }
-    #progressTable td:nth-child(2) span {
+
+        #progressTable td:nth-child(2) span {
             display: block;
             white-space: nowrap;
             overflow: hidden;
             text-overflow: ellipsis;
         }
-    
+
     #progressTable th:nth-child(3),
     #progressTable td:nth-child(3) {
-        width: 40px;
+        width: 52px;
+        min-width: 50px;
     }
 
- 
+
     #progressTable th:nth-child(4),
     #progressTable td:nth-child(4) {
         width: 52px;
+        min-width: 50px;
     }
 
     #progressTable th:nth-child(5),
     #progressTable td:nth-child(5) {
         width: 40px;
+        min-width: 35px;
     }
 
     #progressTable th:nth-child(6),
     #progressTable td:nth-child(6) {
-        width: 200px;
+        width: 190px;
+        min-width: 130px;
         white-space: nowrap;
         overflow: hidden;
         text-overflow: ellipsis;
     }
 
-    
 
-    
+
+
 
 
 .summary-card {
@@ -136,21 +147,21 @@
 }
 
 
-   
+
     .summary-card.has-data {
         /*height: calc(100vh - 400px);*/
         max-height: calc(100vh - 320px);
     }
 
-   
+
     .summary-card .card-body {
-        padding: 0 !important;
+        padding-left: 0 !important;
         min-height: 0;
         overflow-y: auto;
         overflow-x: hidden;
     }
 
-   
+
 
     .summary-card .table-responsive {
         width: 100%;
@@ -160,55 +171,46 @@
         -webkit-overflow-scrolling: touch;
     }
 
-
 #summaryTable {
     width: 100% !important;
-    min-width: 330px ;
+    min-width: 0 !important;
     font-size: 0.88rem;
     table-layout: fixed;
     margin: 0;
 }
 
-    #summaryTable th,#summaryTable td {
+    #summaryTable th, #summaryTable td {
         padding: 0.1rem !important;
         white-space: nowrap;
         overflow: hidden;
         text-overflow: ellipsis;
     }
 
-      
- #summaryTable th:nth-child(1),
- #summaryTable td:nth-child(1) {
-            width: 91px;
+        #summaryTable th:nth-child(1), #summaryTable td:nth-child(1) {
+            width: 100px;
+            min-width:100px;
         }
 
-
-   
- #summaryTable th:nth-child(2),
- #summaryTable td:nth-child(2) {
-     width: 90px ;
-     
- }
-   
-
- #summaryTable th:nth-child(3),
- #summaryTable td:nth-child(3) {
-            width: 102px;
-           
+        #summaryTable th:nth-child(2), #summaryTable td:nth-child(2) {
+            width: 90px;
+            min-width: 90px;
         }
 
+        #summaryTable th:nth-child(3), #summaryTable td:nth-child(3) {
+            width: 90px;
+            min-width: 90px;
+        }
 
- #summaryTable th:nth-child(4),
-        #summaryTable td:nth-child(4) {
+        #summaryTable th:nth-child(4), #summaryTable td:nth-child(4) {
             width: 58px;
+            min-width: 58px;
             text-align: center;
         }
 
 
-.col-custom{
-          width:120px;
-          
-      }
+.col-custom {
+    width: 120px;
+}
 
 .textcolor-custom {
     color: #073584;
@@ -299,16 +301,16 @@
 
 
 
-.pie-card .card-header {
-    height: 45px;
-    min-height: 45px;
-    display: flex;
-    align-items: center;
-    padding: 0 5px;
-    font-weight: 600;
-    font-size: 1rem;
-    border-bottom: 1px solid #dee2e6;
-}
+    .pie-card .card-header {
+        height: 45px;
+        min-height: 45px;
+        display: flex;
+        align-items: center;
+        padding: 0 5px;
+        font-weight: 600;
+        font-size: 1rem;
+        border-bottom: 1px solid #dee2e6;
+    }
 
 
 
@@ -363,16 +365,17 @@
 .column-resizer {
     position: absolute;
     top: 0;
-    right: -3px;
-    width: 7px;
+    right: -4px;
+    width: 8px;
     height: 100%;
     cursor: col-resize;
-    z-index: 100;
+    z-index: 999;
     touch-action: none;
+    transition: background-color 0.12s ease;
 }
 
     .column-resizer:hover {
-        background-color: rgba(0, 0, 0, 0.15);
+        background-color: rgba(0, 0, 0, 0.18);
     }
 
 body.resizing {
@@ -380,12 +383,8 @@ body.resizing {
     user-select: none !important;
 }
 
-.resultamt::-webkit-outer-spin-button,
-.resultamt::-webkit-inner-spin-button {
-    -webkit-appearance: none;
-    margin: 0;
-}
-
-.resultamt {
-    -moz-appearance: textfield;
-}
+    body.resizing table,
+    body.resizing th,
+    body.resizing td {
+        user-select: none !important;
+    }
