@@ -962,9 +962,89 @@
                 });
             });
         }
+                function enableColumnResize(tableId) {
 
+            const table = document.getElementById(tableId);
 
-       function enableColumnResize(tableId) {
+            if (!table) return;
+
+            const headers = table.querySelectorAll("thead th");
+
+            headers.forEach(function (th, index) {
+
+                // Prevent duplicate resizer
+                if (th.querySelector(".column-resizer")) return;
+
+                th.style.position = "relative";
+
+                const resizer = document.createElement("div");
+                resizer.className = "column-resizer";
+
+                th.appendChild(resizer);
+
+                let startX = 0;
+                let startWidth = 0;
+                let animationFrame = null;
+                let currentWidth = 0;
+
+                resizer.addEventListener("mousedown", function (e) {
+
+                    e.preventDefault();
+                    e.stopPropagation();
+
+                    startX = e.clientX;
+                    startWidth = th.getBoundingClientRect().width;
+                    currentWidth = startWidth;
+
+                    document.body.classList.add("resizing");
+
+                    function mouseMove(e) {
+
+                        const diff = e.clientX - startX;
+
+                        currentWidth = Math.max(
+                            50,
+                            startWidth + diff
+                        );
+
+                        if (!animationFrame) {
+
+                            animationFrame = requestAnimationFrame(function () {
+
+                                th.style.width = currentWidth + "px";
+
+                                table.querySelectorAll(
+                                    `tbody tr td:nth-child(${index + 1})`
+                                ).forEach(function (td) {
+
+                                    td.style.width = currentWidth + "px";
+                                });
+
+                                animationFrame = null;
+                            });
+                        }
+                    }
+
+                    function mouseUp() {
+
+                        if (animationFrame) {
+                            cancelAnimationFrame(animationFrame);
+                            animationFrame = null;
+                        }
+
+                        document.removeEventListener("mousemove", mouseMove);
+                        document.removeEventListener("mouseup", mouseUp);
+
+                        document.body.classList.remove("resizing");
+                    }
+
+                    document.addEventListener("mousemove", mouseMove);
+                    document.addEventListener("mouseup", mouseUp);
+                });
+            });
+        }
+
+       function enableColumnResize1(tableId) {
 
             const table = document.getElementById(tableId);
 
